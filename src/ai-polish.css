@@ -1,0 +1,44 @@
+/* AI assistant desktop/tablet polish */
+.ai-panel {
+  display: grid;
+  gap: 14px;
+  background: linear-gradient(180deg, #ffffff, #fff8f8);
+  border-color: #fee2e2;
+}
+
+.ai-orb {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #111827, #d71920);
+  font-weight: 900;
+}
+
+.ai-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ai-list span {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 14px;
+  color: #374151;
+  background: #ffffff;
+  border: 1px solid #f3d6d8;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.ai-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ai-actions button {
+  min-height: 42px;
+}

@@ -4,6 +4,8 @@ import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import * as XLSX from 'xlsx'
 import './App.css'
+import './ai-polish.css'
+import './mobile-audit.css'
 
 type FieldType = 'Text' | 'Number' | 'Date' | 'Dropdown' | 'Textarea' | 'Email' | 'Phone' | 'Image/File' | 'Checkbox'
 type Status = 'Draft' | 'Generated' | 'Final' | 'Archived'
@@ -222,6 +224,7 @@ function App() {
         {active === 'quotation' && <div className="page-grid">
           <section className="panel wide"><div className="section-title"><div><p className="kicker">Step 1</p><h2>Quotation details</h2></div><span className="pill">Controlled from Settings</span></div><DynamicForm fields={visibleQuoteFields} data={quoteData} setData={setQuoteData} /></section>
           <SummaryCard totals={totals} settings={settings} onPdf={generatePdf} onExcel={() => generateExcel()} />
+          <SmartAssistant quoteData={quoteData} items={items} totals={totals} settings={settings} />
           <LineItemsPanel items={items} setItems={setItems} settings={settings} />
         </div>}
 
@@ -239,6 +242,21 @@ function DynamicForm({ fields, data, setData }: { fields: FieldConfig[]; data: R
 
 function SummaryCard({ totals, settings, onPdf, onExcel }: { totals: Totals; settings: Settings; onPdf: () => void; onExcel: () => void }) {
   return <section className="panel summary-card"><p className="kicker">Calculation summary</p><h2>{money(totals.final)}</h2><div className="total-row"><span>Taxable Amount</span><strong>{money(totals.taxable)}</strong></div><div className="total-row"><span>Total GST</span><strong>{settings.tax.gstEnabled ? money(totals.gst) : 'Disabled'}</strong></div><div className="total-row"><span>Grand Total</span><strong>{money(totals.grand)}</strong></div><div className="total-row"><span>Round Off</span><strong>{settings.tax.roundOff ? money(totals.roundOff) : 'Disabled'}</strong></div><div className="total-row grand"><span>Final Amount</span><strong>{money(totals.final)}</strong></div>{settings.tax.amountInWords && <p className="amount-words">{totals.words}</p>}<div className="stack-actions"><button className="primary full" onClick={onPdf}>Generate beautiful PDF</button><button className="ghost full" onClick={onExcel}>Download Excel</button></div></section>
+}
+
+function SmartAssistant({ quoteData, items, totals, settings }: { quoteData: Record<string, string>; items: QuoteItem[]; totals: Totals; settings: Settings }) {
+  const missing = [
+    !quoteData.customer_name && 'customer name',
+    !quoteData.phone && 'phone number',
+    !items.some((item) => item.productName && item.price > 0) && 'priced product item',
+  ].filter(Boolean)
+  const insights = [
+    missing.length ? `Missing: ${missing.join(', ')}.` : 'Ready to generate a clean quotation.',
+    settings.tax.gstEnabled ? `GST is active at ${settings.tax.rowLevelGst ? 'row level' : `${settings.tax.defaultGst}% default`}.` : 'GST is disabled for this quote.',
+    totals.final > 0 ? `Final amount is ${money(totals.final)}.` : 'Add price to unlock PDF/Excel totals.',
+  ]
+
+  return <section className="panel ai-panel"><div className="ai-orb">AI</div><div><p className="kicker">BSM AI Co-Pilot</p><h2>Smart quote assistant</h2><p className="muted">Checks missing fields, pricing readiness, GST settings and PDF quality before the team sends a quote.</p></div><div className="ai-list">{insights.map((item) => <span key={item}>{item}</span>)}</div><div className="ai-actions"><button className="ghost">Improve wording</button><button className="ghost">Check margins</button><button className="ghost">Suggest terms</button></div></section>
 }
 
 function LineItemsPanel({ items, setItems, settings }: { items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; settings: Settings }) {
