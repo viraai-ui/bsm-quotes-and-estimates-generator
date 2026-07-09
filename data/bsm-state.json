@@ -434,7 +434,7 @@
     },
     "tax": {
       "gstEnabled": true,
-      "defaultGst": 18,
+      "defaultGst": 0,
       "rowLevelGst": true,
       "roundOff": false,
       "amountInWords": true,
@@ -981,5 +981,5 @@
       "pdfGeneratedAt": "2026-07-09T07:03:40.279Z"
     }
   ],
-  "updatedAt": "2026-07-09T10:33:54.088Z"
+  "updatedAt": "2026-07-09T10:34:05.873Z"
 }
