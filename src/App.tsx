@@ -553,7 +553,7 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
   pdf.setTextColor(...dark); pdf.setFontSize(9); pdf.text(`${numberLabel}: ${doc.number || doc.headerData[numberKey] || '-'}`, 14, 60)
   pdf.setFont('helvetica', 'normal'); pdf.text(`${title} Date: ${doc.date || today()}`, 14, 66)
 
-  const bankX = 14, bankY = 74, bankW = 84, bankH = 42
+  const bankX = 14, bankY = 74, bankW = 84, bankH = 48
   const billX = 106, billY = bankY, billW = pageWidth - billX - 14, billH = bankH
   pdf.setFillColor(248, 249, 251); pdf.roundedRect(bankX, bankY, bankW, bankH, 3, 3, 'F')
   pdf.setTextColor(...red); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(10); pdf.text('Account Details', bankX + 4, bankY + 8)
@@ -564,13 +564,22 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
   pdf.setFillColor(248, 249, 251); pdf.roundedRect(billX, billY, billW, billH, 3, 3, 'F')
   pdf.setTextColor(...red); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(10); pdf.text('Customer Details', billX + 4, billY + 8)
   pdf.setTextColor(...dark); pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8)
-  const customerLines = [
-    doc.company || doc.headerData.company_name || doc.customer || doc.headerData.customer_name || '-',
-    doc.headerData.address || doc.location || '',
+  const customerDetails = [
+    doc.company || doc.headerData.company_name || '-',
+    doc.headerData.address || doc.location || '-',
+    doc.customer || doc.headerData.customer_name || '-',
     `Phone: ${doc.headerData.phone || '-'}`,
     `Email: ${doc.headerData.email || '-'}`,
-  ].filter(Boolean)
-  customerLines.forEach((line, i) => pdf.text(String(line), billX + 4, billY + 15 + i * 6, { maxWidth: billW - 8 }))
+  ]
+  let customerY = billY + 15
+  customerDetails.forEach((line) => {
+    const wrapped = pdf.splitTextToSize(String(line), billW - 8).slice(0, 2)
+    wrapped.forEach((textLine: string) => {
+      pdf.text(textLine, billX + 4, customerY)
+      customerY += 4.6
+    })
+    customerY += 1.2
+  })
 
   const headers = isEstimate ? [['#', 'Expense / Item', 'Days', 'Cost', 'GST %', 'GST Amt.', 'Total Amount']] : [['#', 'Product', 'Picture', 'Qty', 'List Price', 'Tax %', 'Tax Amt.', 'Total Amount']]
   const body = doc.items.map((item, i) => {
@@ -581,7 +590,7 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
       : [String(i + 1), `${item.productName || 'Product'}${item.description ? `\n${item.description}` : ''}`, item.image ? 'Image' : '-', item.quantity, moneyPlain(item.price), item.gst, moneyPlain(gstAmt), moneyPlain(taxable + gstAmt)]
   })
   autoTable(pdf, {
-    startY: 124,
+    startY: 132,
     head: headers,
     body,
     styles: { fontSize: 8, cellPadding: 2.3, valign: 'middle', lineColor: [229, 231, 235], lineWidth: 0.1 },
