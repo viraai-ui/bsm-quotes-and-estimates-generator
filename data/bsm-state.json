@@ -8,7 +8,7 @@
       "phone": "+91 9310423242",
       "email": "info@bsmindia.com",
       "website": "www.bsmindia.com",
-      "gstin": "07AACCB4067D1Z",
+      "gstin": "07AACCB4067D1Z0",
       "cin": ""
     },
     "security": {
@@ -419,7 +419,7 @@
     "quotationTemplate": {
       "headerText": "Quotation from {{company_name}}",
       "bodyText": "Dear {{customer_name}},\nPlease find below our quotation {{quotation_number}} dated {{quotation_date}}.\n\n{{quotation_items_table}}",
-      "terms": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed.",
+      "terms": "1.  Valid For 7 Days.\n2. Payment Terms - 100% Payment In Advance.\n3. Price: Ex-Works Delhi.\n4. TRANSPORTATION CHARGES will be Additional (As Per Actual).\n5. Machine Installation, Service and Spare Parts Chargeable (As Per\nActual).\n6. We are not responsible for any loss or damaged incurred during\ntransportation of the goods.\nThe goods will remain exclusive property of Bengal Shoe Machinery Pvt Ltd.\nuntil full & final payment has been received.",
       "bankDetails": "Bank Name: Update in Settings\nAccount Name: BSM India\nAccount Number: Update\nIFSC: Update",
       "footerText": "Thank you for choosing BSM India.",
       "signatureText": "Authorized Signatory\nBSM India"
@@ -981,5 +981,5 @@
       "pdfGeneratedAt": "2026-07-09T07:03:40.279Z"
     }
   ],
-  "updatedAt": "2026-07-09T10:32:09.084Z"
+  "updatedAt": "2026-07-09T10:32:15.150Z"
 }
