@@ -5,6 +5,7 @@ import autoTable from 'jspdf-autotable'
 import * as XLSX from 'xlsx'
 import './App.css'
 import './ai-polish.css'
+import './settings-saas.css'
 import './mobile-audit.css'
 
 type FieldType = 'Text' | 'Number' | 'Date' | 'Dropdown' | 'Textarea' | 'Email' | 'Phone' | 'Image/File' | 'Checkbox'
@@ -283,7 +284,39 @@ function EstimateView({ settings, totals, items, setItems }: { settings: Setting
 }
 
 function SettingsView({ settings, setSettings }: { settings: Settings; setSettings: React.Dispatch<React.SetStateAction<Settings>> }) {
-  return <div className="settings-grid"><CompanySettings settings={settings} setSettings={setSettings} /><FieldSettings title="Quotation Field Settings" fields={settings.quotationFields} onChange={(quotationFields) => setSettings((s) => ({ ...s, quotationFields }))} /><FieldSettings title="Quotation Line Item Settings" fields={settings.quotationLineFields} onChange={(quotationLineFields) => setSettings((s) => ({ ...s, quotationLineFields }))} /><TemplateEditor title="Quotation Template Editor" template={settings.quotationTemplate} onChange={(quotationTemplate) => setSettings((s) => ({ ...s, quotationTemplate }))} /><FieldSettings title="Estimate Field Settings" fields={settings.estimateFields} onChange={(estimateFields) => setSettings((s) => ({ ...s, estimateFields }))} /><EstimateCategorySettings settings={settings} setSettings={setSettings} /><TemplateEditor title="Estimate Template Editor" template={settings.estimateTemplate} onChange={(estimateTemplate) => setSettings((s) => ({ ...s, estimateTemplate }))} /><TaxSettingsPanel settings={settings} setSettings={setSettings} /><NumberingSettings settings={settings} setSettings={setSettings} /><BankSignatureSettings settings={settings} setSettings={setSettings} /></div>
+  const [section, setSection] = useState('company')
+  const sections = [
+    ['company', 'Company Profile', 'Logo, contact and GST details'],
+    ['quote-fields', 'Quotation Fields', 'Header form configuration'],
+    ['quote-items', 'Line Items', 'Product table columns'],
+    ['quote-template', 'Quotation Template', 'PDF letter editor'],
+    ['estimate-fields', 'Estimate Fields', 'Estimate form configuration'],
+    ['estimate-categories', 'Estimate Categories', 'Expense category builder'],
+    ['estimate-template', 'Estimate Template', 'Estimate PDF editor'],
+    ['tax', 'Tax & Calculation', 'GST, round off and words'],
+    ['numbering', 'Numbering', 'Document formats'],
+    ['bank', 'Bank & Signature', 'Payment and sign-off'],
+  ]
+  return <div className="settings-saas">
+    <aside className="settings-menu">
+      <p className="kicker">Admin console</p>
+      <h2>Settings</h2>
+      <div className="settings-menu-list">{sections.map(([key, label, desc]) => <button key={key} className={section === key ? 'active' : ''} onClick={() => setSection(key)}><strong>{label}</strong><span>{desc}</span></button>)}</div>
+    </aside>
+    <section className="settings-content">
+      <div className="settings-content-head"><div><p className="kicker">Backend configuration</p><h2>{sections.find(([key]) => key === section)?.[1]}</h2></div><span className="pill">Auto-saved locally</span></div>
+      {section === 'company' && <CompanySettings settings={settings} setSettings={setSettings} />}
+      {section === 'quote-fields' && <FieldSettings title="Quotation Field Settings" fields={settings.quotationFields} onChange={(quotationFields) => setSettings((s) => ({ ...s, quotationFields }))} />}
+      {section === 'quote-items' && <FieldSettings title="Quotation Line Item Settings" fields={settings.quotationLineFields} onChange={(quotationLineFields) => setSettings((s) => ({ ...s, quotationLineFields }))} />}
+      {section === 'quote-template' && <TemplateEditor title="Quotation Template Editor" template={settings.quotationTemplate} onChange={(quotationTemplate) => setSettings((s) => ({ ...s, quotationTemplate }))} />}
+      {section === 'estimate-fields' && <FieldSettings title="Estimate Field Settings" fields={settings.estimateFields} onChange={(estimateFields) => setSettings((s) => ({ ...s, estimateFields }))} />}
+      {section === 'estimate-categories' && <EstimateCategorySettings settings={settings} setSettings={setSettings} />}
+      {section === 'estimate-template' && <TemplateEditor title="Estimate Template Editor" template={settings.estimateTemplate} onChange={(estimateTemplate) => setSettings((s) => ({ ...s, estimateTemplate }))} />}
+      {section === 'tax' && <TaxSettingsPanel settings={settings} setSettings={setSettings} />}
+      {section === 'numbering' && <NumberingSettings settings={settings} setSettings={setSettings} />}
+      {section === 'bank' && <BankSignatureSettings settings={settings} setSettings={setSettings} />}
+    </section>
+  </div>
 }
 
 function CompanySettings({ settings, setSettings }: { settings: Settings; setSettings: React.Dispatch<React.SetStateAction<Settings>> }) {
@@ -294,7 +327,7 @@ function CompanySettings({ settings, setSettings }: { settings: Settings; setSet
 function FieldSettings({ title, fields, onChange }: { title: string; fields: FieldConfig[]; onChange: (f: FieldConfig[]) => void }) {
   const update = (id: string, patch: Partial<FieldConfig>) => onChange(fields.map((f) => f.id === id ? { ...f, ...patch } : f))
   const add = () => onChange([...fields, { ...field(`custom_${Date.now()}`, 'New Custom Field', 'Text'), id: crypto.randomUUID(), sortOrder: fields.length + 1 }])
-  return <section className="panel settings-card"><div className="section-title"><div><p className="kicker">Admin configurable</p><h2>{title}</h2></div><button className="ghost" onClick={add}>+ Add field</button></div><div className="field-list">{fields.map((f) => <article key={f.id} className={!f.visible ? 'muted-row' : ''}><div className="settings-row-main"><input value={f.label} onChange={(e) => update(f.id, { label: e.target.value })} /><select value={f.type} onChange={(e) => update(f.id, { type: e.target.value as FieldType })}>{['Text','Number','Date','Dropdown','Textarea','Email','Phone','Image/File','Checkbox'].map((t) => <option key={t}>{t}</option>)}</select><input type="number" value={f.sortOrder} onChange={(e) => update(f.id, { sortOrder: Number(e.target.value) })} /></div><div className="toggles"><Toggle label="Visible" value={f.visible} onChange={(visible) => update(f.id, { visible })} /><Toggle label="Mandatory" value={f.mandatory} onChange={(mandatory) => update(f.id, { mandatory })} /><Toggle label="PDF" value={f.showPdf} onChange={(showPdf) => update(f.id, { showPdf })} /><Toggle label="Excel" value={f.showExcel} onChange={(showExcel) => update(f.id, { showExcel })} /></div></article>)}</div></section>
+  return <section className="panel settings-card field-settings-panel"><div className="section-title"><div><p className="kicker">Admin configurable</p><h2>{title}</h2></div><button className="ghost" onClick={add}>+ Add field</button></div><div className="field-settings-table"><div className="field-settings-head"><span>Field</span><span>Type</span><span>Order</span><span>Visibility</span></div>{fields.map((f) => <article key={f.id} className={`field-config-row ${!f.visible ? 'muted-row' : ''}`}><input className="field-label-input" value={f.label} onChange={(e) => update(f.id, { label: e.target.value })} /><select value={f.type} onChange={(e) => update(f.id, { type: e.target.value as FieldType })}>{['Text','Number','Date','Dropdown','Textarea','Email','Phone','Image/File','Checkbox'].map((t) => <option key={t}>{t}</option>)}</select><input className="order-input" type="number" value={f.sortOrder} onChange={(e) => update(f.id, { sortOrder: Number(e.target.value) })} /><div className="settings-switches"><Toggle label="Visible" value={f.visible} onChange={(visible) => update(f.id, { visible })} /><Toggle label="Required" value={f.mandatory} onChange={(mandatory) => update(f.id, { mandatory })} /><Toggle label="PDF" value={f.showPdf} onChange={(showPdf) => update(f.id, { showPdf })} /><Toggle label="Excel" value={f.showExcel} onChange={(showExcel) => update(f.id, { showExcel })} /></div></article>)}</div></section>
 }
 
 function TemplateEditor({ title, template, onChange }: { title: string; template: TemplateConfig; onChange: (t: TemplateConfig) => void }) {
