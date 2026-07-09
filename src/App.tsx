@@ -14,6 +14,7 @@ import './documents-saas.css'
 import './settings-auth.css'
 import './logo-upload.css'
 import './mobile-app-polish.css'
+import './mobile-summary-fix.css'
 
 type FieldType = 'Text' | 'Number' | 'Date' | 'Dropdown' | 'Textarea' | 'Email' | 'Phone' | 'Image/File' | 'Checkbox'
 type Status = 'Draft' | 'Generated' | 'Final' | 'Archived'

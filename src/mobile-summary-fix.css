@@ -1,0 +1,111 @@
+/* Emergency mobile summary/layout correction */
+@media (max-width: 820px) {
+  .summary-card.final-step {
+    padding: 18px !important;
+    border-radius: 26px !important;
+    background: #ffffff !important;
+    box-shadow: 0 16px 42px rgba(17, 24, 39, 0.08) !important;
+  }
+
+  .summary-card.final-step .section-title {
+    margin-bottom: 14px;
+  }
+
+  .summary-card.final-step > h2 {
+    width: 100%;
+    margin: 4px 0 16px !important;
+    padding: 16px 18px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #111827, #1f2937);
+    color: #ffffff !important;
+    font-size: 34px !important;
+    line-height: 1;
+    text-align: center;
+    letter-spacing: -0.05em;
+  }
+
+  .quote-flow .summary-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    width: 100%;
+  }
+
+  .quote-flow .total-row,
+  .quote-flow .total-row.grand {
+    min-height: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 14px !important;
+    width: 100%;
+    padding: 15px 16px !important;
+    text-align: left !important;
+    border-radius: 18px !important;
+  }
+
+  .quote-flow .total-row {
+    background: #f9fafb !important;
+    border: 1px solid #e8eaef !important;
+    color: #4b5563 !important;
+  }
+
+  .quote-flow .total-row.grand {
+    background: #111827 !important;
+    border-color: #111827 !important;
+    color: #d1d5db !important;
+  }
+
+  .quote-flow .total-row span,
+  .quote-flow .total-row.grand span {
+    display: block;
+    min-width: 0;
+    color: inherit !important;
+    font-size: 14px !important;
+    line-height: 1.2;
+    font-weight: 750;
+    text-align: left !important;
+  }
+
+  .quote-flow .total-row strong,
+  .quote-flow .total-row.grand strong {
+    flex: 0 0 auto;
+    color: #111827 !important;
+    font-size: 18px !important;
+    line-height: 1;
+    font-weight: 950;
+    text-align: right !important;
+    white-space: nowrap;
+  }
+
+  .quote-flow .total-row.grand strong {
+    color: #ffffff !important;
+  }
+
+  .quote-flow .amount-words {
+    margin: 12px 0 14px !important;
+    padding: 0 2px;
+    color: #4b5563 !important;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .quote-flow .stack-actions {
+    position: static !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    margin-top: 10px !important;
+    padding-top: 0 !important;
+    background: transparent !important;
+  }
+
+  .quote-flow .stack-actions .ghost,
+  .quote-flow .stack-actions .primary {
+    width: 100%;
+    min-height: 58px !important;
+    border-radius: 18px !important;
+    font-size: 15px !important;
+    font-weight: 900 !important;
+  }
+}
