@@ -13,6 +13,7 @@ import './estimate-flow.css'
 import './documents-saas.css'
 import './settings-auth.css'
 import './logo-upload.css'
+import './mobile-app-polish.css'
 
 type FieldType = 'Text' | 'Number' | 'Date' | 'Dropdown' | 'Textarea' | 'Email' | 'Phone' | 'Image/File' | 'Checkbox'
 type Status = 'Draft' | 'Generated' | 'Final' | 'Archived'
@@ -308,10 +309,10 @@ function LineItemsPanel({ items, setItems, settings, mode = 'quotation' }: { ite
       {items.map((item) => { const taxable = item.quantity * item.price; const total = taxable + (settings.tax.gstEnabled ? taxable * ((settings.tax.rowLevelGst ? item.gst : settings.tax.defaultGst) / 100) : 0); return <div className="line-row" key={item.id}>
         {!isEstimate && <div className="image-cell">{item.image ? <img src={item.image} alt={item.productName || 'Product'} /> : <span>No image</span>}<label className="mini-upload">{item.image ? 'Replace' : 'Upload / Camera'}<input type="file" accept="image/*" capture="environment" onChange={(e) => onImage(item.id, e)} /></label>{item.image && <button className="text-danger" onClick={() => update(item.id, { image: undefined, imageName: undefined })}>Remove</button>}</div>}
         <div className="product-inputs stacked"><input value={item.productName} onChange={(e) => update(item.id, { productName: e.target.value })} placeholder={isEstimate ? 'Expense / item name' : 'Product name'} /><textarea value={item.description} onChange={(e) => update(item.id, { description: e.target.value })} placeholder="Description" /></div>
-        <input type="number" value={item.quantity} onChange={(e) => update(item.id, { quantity: Number(e.target.value) })} />
-        <input type="number" value={item.price} onChange={(e) => update(item.id, { price: Number(e.target.value) })} />
-        <input type="number" value={item.gst} disabled={!settings.tax.rowLevelGst} onChange={(e) => update(item.id, { gst: Number(e.target.value) })} />
-        <strong>{money(total)}</strong><button className="icon-button delete-row" aria-label="Delete row" title="Delete row" onClick={() => remove(item.id)}>🗑</button>
+        <label className="mobile-line-field"><span>{isEstimate ? 'Days' : 'Quantity'}</span><input type="number" value={item.quantity} onChange={(e) => update(item.id, { quantity: Number(e.target.value) })} /></label>
+        <label className="mobile-line-field"><span>{isEstimate ? 'Cost' : 'Price'}</span><input type="number" value={item.price} onChange={(e) => update(item.id, { price: Number(e.target.value) })} /></label>
+        <label className="mobile-line-field"><span>GST %</span><input type="number" value={item.gst} disabled={!settings.tax.rowLevelGst} onChange={(e) => update(item.id, { gst: Number(e.target.value) })} /></label>
+        <div className="mobile-total-chip"><span>Total</span><strong>{money(total)}</strong></div><button className="icon-button delete-row" aria-label="Delete row" title="Delete row" onClick={() => remove(item.id)}>🗑</button>
       </div>})}
     </div>
     <div className="line-footer-actions"><button className="ghost" onClick={addItem}>+ Add item</button></div>
