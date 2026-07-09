@@ -596,7 +596,10 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
     styles: { fontSize: 8, cellPadding: 2.3, valign: 'middle', lineColor: [229, 231, 235], lineWidth: 0.1 },
     headStyles: { fillColor: red, textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' },
     alternateRowStyles: { fillColor: [252, 252, 253] },
-    columnStyles: isEstimate ? { 1: { cellWidth: 72 } } : { 1: { cellWidth: 48 }, 2: { cellWidth: 24, halign: 'center' } },
+    columnStyles: isEstimate ? { 1: { cellWidth: 72, fontStyle: 'bold' } } : { 1: { cellWidth: 48, fontStyle: 'bold' }, 2: { cellWidth: 24, halign: 'center' } },
+    didParseCell: (data) => {
+      if (data.section === 'body' && data.column.index === 1) data.cell.styles.fontStyle = 'bold'
+    },
     didDrawCell: (data) => {
       if (data.section === 'body' && data.column.index === 1) {
         const raw = String(data.cell.raw || '')
@@ -624,12 +627,21 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
   })
 
   const y = Math.min((pdf as any).lastAutoTable.finalY + 10, 228)
-  pdf.setTextColor(...dark); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(9); pdf.text('Contact Person', 14, y)
-  pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8); pdf.text(settings.company.companyName || 'BSM India', 14, y + 6); pdf.text(settings.company.email || '', 14, y + 11)
-  pdf.setFont('helvetica', 'bold'); pdf.setFontSize(9); pdf.text('Terms & Conditions', 14, y + 22)
-  pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8)
+  pdf.setTextColor(...dark); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(9); pdf.text('Terms & Conditions', 14, y)
+  pdf.setFont('helvetica', 'normal'); pdf.setFontSize(7.4)
   const terms = (isEstimate ? settings.estimateTemplate.terms : settings.quotationTemplate.terms).split('\n').filter(Boolean)
-  terms.slice(0, 5).forEach((line, i) => pdf.text(`• ${line.replace(/^\d+\.\s*/, '')}`, 14, y + 29 + i * 5, { maxWidth: 105 }))
+  let termsY = y + 7
+  terms.forEach((line) => {
+    const bullet = `• ${line.replace(/^\d+\.\s*/, '')}`
+    const wrapped = pdf.splitTextToSize(bullet, 105)
+    wrapped.forEach((textLine: string) => {
+      if (termsY <= 266) {
+        pdf.text(textLine, 14, termsY)
+        termsY += 4.4
+      }
+    })
+    termsY += 1.2
+  })
 
   const tx = pageWidth - 78
   pdf.setFillColor(248, 249, 251); pdf.roundedRect(tx, y - 4, 64, 42, 3, 3, 'F')
