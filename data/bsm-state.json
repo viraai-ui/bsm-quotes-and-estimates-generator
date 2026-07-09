@@ -419,7 +419,7 @@
     "quotationTemplate": {
       "headerText": "Quotation from {{company_name}}",
       "bodyText": "Dear {{customer_name}},\nPlease find below our quotation {{quotation_number}} dated {{quotation_date}}.\n\n{{quotation_items_table}}",
-      "terms": "1.  Valid For 7 Days.\n2. Payment Terms - 100% Payment In Advance.\n3. Price: Ex-Works Delhi.\n4. TRANSPORTATION CHARGES will be Additional (As Per Actual).\n5. Machine Installation, Service and Spare Parts Chargeable (As Per Actual).\n6. We are not responsible for any loss or damaged incurred during transportation of the goods.\n\nThe goods will remain exclusive property of Bengal Shoe Machinery Pvt Ltd. until full & final payment has been received.",
+      "terms": "1.  Valid For 7 Days.\n2. Payment Terms - 100% Payment In Advance.\n3. Price: Ex-Works Delhi.\n4. TRANSPORTATION CHARGES will be Additional (As Per Actual).\n5. Machine Installation, Service and Spare Parts Chargeable (As Per Actual).\n6. We are not responsible for any loss or damaged incurred during transportation of the goods.",
       "bankDetails": "A/c Name:  Build Scale Manufacture Pvt. Ltd.\nAccount No.: 015505006648\nIFSC: ICIC0000155\nBank Name: ICICI Bank\nBranch: Punjabi Bagh, Delhi\nType: Current Account",
       "footerText": "Thank you for choosing BSM India.",
       "signatureText": "Authorized Signatory\nBSM India"
@@ -981,5 +981,5 @@
       "pdfGeneratedAt": "2026-07-09T07:03:40.279Z"
     }
   ],
-  "updatedAt": "2026-07-09T10:46:53.063Z"
+  "updatedAt": "2026-07-09T10:47:07.948Z"
 }
