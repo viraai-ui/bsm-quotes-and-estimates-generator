@@ -208,17 +208,26 @@ function App() {
   }, [settings, documents, cloudLoaded])
 
   useEffect(() => {
-    setQuoteData((current) => ({ ...makeDefaults(settings.quotationFields), ...current }))
-  }, [settings.quotationFields])
+    setQuoteData((current) => ({
+      ...makeDefaults(settings.quotationFields),
+      ...current,
+      quotation_number: nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding),
+    }))
+  }, [settings.quotationFields, settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding])
 
   useEffect(() => {
-    setEstimateData((current) => ({ ...makeDefaults(settings.estimateFields), estimate_number: nextNumber(settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate, settings.numbering.padding), estimate_date: today(), ...current }))
+    setEstimateData((current) => ({
+      ...makeDefaults(settings.estimateFields),
+      ...current,
+      estimate_number: nextNumber(settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate, settings.numbering.padding),
+      estimate_date: current.estimate_date || today(),
+    }))
   }, [settings.estimateFields, settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate, settings.numbering.padding])
 
   const nav = [['quotation', 'Create Quotation'], ['estimate', 'Create Estimate'], ['documents', 'Documents'], ['settings', 'Settings']]
 
   function saveQuotation(status: Status = 'Generated') {
-    const number = quoteData.quotation_number || nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding)
+    const number = nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding)
     const now = new Date().toISOString()
     const doc: SavedDocument = {
       id: crypto.randomUUID(), type: 'quotation', number, date: quoteData.quotation_date || today(), customer: quoteData.customer_name || 'Customer', company: quoteData.company_name, headerData: { ...quoteData, quotation_number: number }, items, totals, status, createdBy: quoteData.salesperson_name || 'Admin', createdAt: now, updatedAt: now,
@@ -240,7 +249,7 @@ function App() {
   }
 
   function saveEstimate(status: Status = 'Generated') {
-    const number = estimateData.estimate_number || nextNumber(settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate, settings.numbering.padding)
+    const number = nextNumber(settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate, settings.numbering.padding)
     const now = new Date().toISOString()
     const doc: SavedDocument = {
       id: crypto.randomUUID(), type: 'estimate', number, date: estimateData.estimate_date || today(), customer: estimateData.customer_name || 'Customer', company: estimateData.company_name, location: estimateData.location, headerData: { ...estimateData, estimate_number: number }, items, totals, status, createdBy: 'Admin', createdAt: now, updatedAt: now,
