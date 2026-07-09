@@ -499,7 +499,7 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
   pdf.setFont('helvetica', 'normal'); pdf.text(`${title} Date: ${doc.date || today()}`, 14, 66)
 
   const bankX = 14, bankY = 74, bankW = 84, bankH = 42
-  const billX = 106, billY = 52, billW = pageWidth - billX - 14, billH = 64
+  const billX = 106, billY = isEstimate ? bankY : 52, billW = pageWidth - billX - 14, billH = isEstimate ? bankH : 64
   pdf.setFillColor(248, 249, 251); pdf.roundedRect(bankX, bankY, bankW, bankH, 3, 3, 'F')
   pdf.setTextColor(...red); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(10); pdf.text('Account Details', bankX + 4, bankY + 8)
   pdf.setTextColor(...dark); pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8)
@@ -525,7 +525,39 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
       ? [String(i + 1), `${item.productName || 'Expense'}${item.description ? `\n${item.description}` : ''}`, item.quantity, moneyPlain(item.price), item.gst, moneyPlain(gstAmt), moneyPlain(taxable + gstAmt)]
       : [String(i + 1), `${item.productName || 'Product'}${item.description ? `\n${item.description}` : ''}`, item.image ? 'Image' : '-', item.quantity, moneyPlain(item.price), item.gst, moneyPlain(gstAmt), moneyPlain(taxable + gstAmt)]
   })
-  autoTable(pdf, { startY: 124, head: headers, body, styles: { fontSize: 8, cellPadding: 2.3, valign: 'middle', lineColor: [229, 231, 235], lineWidth: 0.1 }, headStyles: { fillColor: red, textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' }, alternateRowStyles: { fillColor: [252, 252, 253] }, columnStyles: isEstimate ? { 1: { cellWidth: 72 } } : { 1: { cellWidth: 48 }, 2: { cellWidth: 24, halign: 'center' } }, didDrawCell: (data) => { if (!isEstimate && data.section === 'body' && data.column.index === 2) { const item = doc.items[data.row.index]; if (item?.image) { try { pdf.addImage(item.image, 'JPEG', data.cell.x + 3, data.cell.y + 2, 16, 12) } catch { /* ignore */ } } } } })
+  autoTable(pdf, {
+    startY: 124,
+    head: headers,
+    body,
+    styles: { fontSize: 8, cellPadding: 2.3, valign: 'middle', lineColor: [229, 231, 235], lineWidth: 0.1 },
+    headStyles: { fillColor: red, textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' },
+    alternateRowStyles: { fillColor: [252, 252, 253] },
+    columnStyles: isEstimate ? { 1: { cellWidth: 72 } } : { 1: { cellWidth: 48 }, 2: { cellWidth: 24, halign: 'center' } },
+    didDrawCell: (data) => {
+      if (data.section === 'body' && data.column.index === 1) {
+        const raw = String(data.cell.raw || '')
+        const [main, ...descParts] = raw.split('\n')
+        const desc = descParts.join(' ')
+        if (desc) {
+          const fill = data.row.index % 2 === 0 ? [255, 255, 255] : [252, 252, 253]
+          pdf.setFillColor(fill[0], fill[1], fill[2])
+          pdf.rect(data.cell.x + 0.6, data.cell.y + 0.6, data.cell.width - 1.2, data.cell.height - 1.2, 'F')
+          pdf.setFont('helvetica', 'bold')
+          pdf.setFontSize(8)
+          pdf.setTextColor(...dark)
+          pdf.text(main, data.cell.x + 2.4, data.cell.y + 5.2, { maxWidth: data.cell.width - 4.8 })
+          pdf.setFont('helvetica', 'normal')
+          pdf.setFontSize(7)
+          pdf.setTextColor(145, 151, 161)
+          pdf.text(desc, data.cell.x + 2.4, data.cell.y + 9.5, { maxWidth: data.cell.width - 4.8 })
+        }
+      }
+      if (!isEstimate && data.section === 'body' && data.column.index === 2) {
+        const item = doc.items[data.row.index]
+        if (item?.image) { try { pdf.addImage(item.image, 'JPEG', data.cell.x + 3, data.cell.y + 2, 16, 12) } catch { /* ignore */ } }
+      }
+    }
+  })
 
   const y = Math.min((pdf as any).lastAutoTable.finalY + 10, 228)
   pdf.setTextColor(...dark); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(9); pdf.text('Contact Person', 14, y)
