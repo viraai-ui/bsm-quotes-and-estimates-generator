@@ -10,6 +10,7 @@ import './quote-flow.css'
 import './quote-refine.css'
 import './mobile-audit.css'
 import './estimate-flow.css'
+import './documents-saas.css'
 
 type FieldType = 'Text' | 'Number' | 'Date' | 'Dropdown' | 'Textarea' | 'Email' | 'Phone' | 'Image/File' | 'Checkbox'
 type Status = 'Draft' | 'Generated' | 'Final' | 'Archived'
@@ -181,7 +182,7 @@ function App() {
     setEstimateData((current) => ({ ...makeDefaults(settings.estimateFields), estimate_number: nextNumber(settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate, settings.numbering.padding), estimate_date: today(), ...current }))
   }, [settings.estimateFields, settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate, settings.numbering.padding])
 
-  const nav = [['quotation', 'Create Quotation'], ['estimate', 'Create Estimate'], ['documents', 'Created Documents'], ['settings', 'Settings']]
+  const nav = [['quotation', 'Create Quotation'], ['estimate', 'Create Estimate'], ['documents', 'Documents'], ['settings', 'Settings']]
 
   function saveQuotation(status: Status = 'Generated') {
     const number = quoteData.quotation_number || nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding)
@@ -190,7 +191,8 @@ function App() {
       id: editingId || crypto.randomUUID(), type: 'quotation', number, date: quoteData.quotation_date || today(), customer: quoteData.customer_name || 'Customer', company: quoteData.company_name, headerData: { ...quoteData, quotation_number: number }, items, totals, status, createdBy: quoteData.salesperson_name || 'Admin', createdAt: now, updatedAt: now,
     }
     setDocuments((docs) => editingId ? docs.map((d) => d.id === editingId ? { ...doc, createdAt: d.createdAt, updatedAt: now } : d) : [doc, ...docs])
-    setQuoteData((d) => ({ ...d, quotation_number: number }))
+    if (!editingId) setSettings((s) => ({ ...s, numbering: { ...s.numbering, nextQuotation: s.numbering.nextQuotation + 1 } }))
+    setQuoteData((d) => ({ ...d, quotation_number: nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation + 1, settings.numbering.padding) }))
     return doc
   }
 
@@ -225,7 +227,7 @@ function App() {
         <nav>{nav.map(([key, label]) => <button key={key} className={active === key ? 'active' : ''} onClick={() => setActive(key)}>{label}</button>)}</nav>
       </aside>
       <section className="workspace">
-        <header className="topbar"><div><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div>{!['quotation', 'estimate'].includes(active) && <div className="header-actions"><button className="ghost" onClick={() => saveQuotation('Draft')}>Save Draft</button><button className="primary" onClick={generatePdf}>Generate PDF</button></div>}</header>
+        <header className="topbar"><div><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div></header>
 
         {active === 'quotation' && <div className="page-grid quote-flow">
           <section className="panel wide"><div className="section-title"><div><h2>Step 1. Quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={quoteData} setData={setQuoteData} /></section>
@@ -234,7 +236,7 @@ function App() {
         </div>}
 
         {active === 'estimate' && <EstimateView settings={settings} totals={totals} items={items} setItems={setItems} estimateData={estimateData} setEstimateData={setEstimateData} />}
-        {active === 'documents' && <DocumentsView documents={documents} tab={docTab} setTab={setDocTab} onEdit={editDocument} onDuplicate={duplicateDocument} onPdf={(d) => downloadQuotationPdf(d, settings)} onExcel={(d) => downloadExcel(d, settings)} onArchive={(id) => setDocuments((docs) => docs.map((d) => d.id === id ? { ...d, status: 'Archived' } : d))} />}
+        {active === 'documents' && <DocumentsView documents={documents} tab={docTab} setTab={setDocTab} onEdit={editDocument} onDuplicate={duplicateDocument} onPdf={(d) => downloadQuotationPdf(d, settings)} onExcel={(d) => downloadExcel(d, settings)} onDelete={(id) => setDocuments((docs) => docs.filter((d) => d.id !== id))} />}
         {active === 'settings' && <SettingsView settings={settings} setSettings={setSettings} />}
       </section>
     </main>
@@ -295,10 +297,22 @@ function LineItemsPanel({ items, setItems, settings, mode = 'quotation' }: { ite
   </section>
 }
 
-function DocumentsView({ documents, tab, setTab, onEdit, onDuplicate, onPdf, onExcel, onArchive }: { documents: SavedDocument[]; tab: 'quotation' | 'estimate'; setTab: (t: 'quotation' | 'estimate') => void; onEdit: (d: SavedDocument) => void; onDuplicate: (d: SavedDocument) => void; onPdf: (d: SavedDocument) => void; onExcel: (d: SavedDocument) => void; onArchive: (id: string) => void }) {
+function DocumentsView({ documents, tab, setTab, onEdit, onDuplicate, onPdf, onExcel, onDelete }: { documents: SavedDocument[]; tab: 'quotation' | 'estimate'; setTab: (t: 'quotation' | 'estimate') => void; onEdit: (d: SavedDocument) => void; onDuplicate: (d: SavedDocument) => void; onPdf: (d: SavedDocument) => void; onExcel: (d: SavedDocument) => void; onDelete: (id: string) => void }) {
   const [search, setSearch] = useState('')
-  const docs = documents.filter((d) => d.type === tab && JSON.stringify(d).toLowerCase().includes(search.toLowerCase()))
-  return <section className="panel"><div className="section-title"><div><p className="kicker">Saved database records</p><h2>Created Documents</h2></div><input className="search" placeholder="Search number, customer, project, status..." value={search} onChange={(e) => setSearch(e.target.value)} /></div><div className="tabbar"><button className={tab === 'quotation' ? 'active' : ''} onClick={() => setTab('quotation')}>Created Quotations</button><button className={tab === 'estimate' ? 'active' : ''} onClick={() => setTab('estimate')}>Created Estimates</button></div><div className="records">{docs.length === 0 && <div className="empty">No saved {tab}s yet. Generate one from Create Quotation.</div>}{docs.map((doc) => <article key={doc.id} className="record-card"><div><strong>{doc.number}</strong><span>{doc.customer} {doc.company ? `• ${doc.company}` : ''}</span></div><div><strong>{money(doc.totals.final)}</strong><span>{doc.date}</span></div><span className="status">{doc.status}</span><div className="mini-actions"><button onClick={() => onEdit(doc)}>Edit</button><button onClick={() => onDuplicate(doc)}>Duplicate</button><button onClick={() => onPdf(doc)}>PDF</button><button onClick={() => onExcel(doc)}>Excel</button><button onClick={() => onArchive(doc.id)}>Archive</button></div><small>Created by {doc.createdBy} • Created {formatDate(doc.createdAt)} • Edited {formatDate(doc.updatedAt)}</small></article>)}</div></section>
+  const [view, setView] = useState<'list' | 'grid'>('list')
+  const docs = documents.filter((d) => d.type === tab && d.status !== 'Draft' && JSON.stringify(d).toLowerCase().includes(search.toLowerCase()))
+  const confirmAction = (label: string, action: () => void) => { if (window.confirm(`Are you sure you want to ${label}?`)) action() }
+  return <section className="panel documents-module">
+    <div className="documents-hero">
+      <div><h2>Documents</h2><span>{docs.length} {tab === 'quotation' ? 'quotations' : 'estimates'} generated</span></div>
+      <input className="search" placeholder="Search number, customer, project, status..." value={search} onChange={(e) => setSearch(e.target.value)} />
+    </div>
+    <div className="documents-toolbar">
+      <div className="tabbar"><button className={tab === 'quotation' ? 'active' : ''} onClick={() => setTab('quotation')}>Quotations</button><button className={tab === 'estimate' ? 'active' : ''} onClick={() => setTab('estimate')}>Estimates</button></div>
+      <div className="view-toggle"><button className={view === 'list' ? 'active' : ''} onClick={() => setView('list')}>List</button><button className={view === 'grid' ? 'active' : ''} onClick={() => setView('grid')}>Grid</button></div>
+    </div>
+    <div className={`records ${view === 'grid' ? 'records-grid' : 'records-list'}`}>{docs.length === 0 && <div className="empty">No generated {tab}s yet. Complete the form and click Generate PDF.</div>}{docs.map((doc) => <article key={doc.id} className="record-card document-card"><div className="doc-main"><strong>{doc.number}</strong><span>{doc.customer} {doc.company ? `• ${doc.company}` : ''}</span></div><div className="doc-amount"><strong>{money(doc.totals.final)}</strong><span>{doc.date}</span></div><span className="status">{doc.status}</span><div className="mini-actions"><button onClick={() => confirmAction('edit this document', () => onEdit(doc))}>Edit</button><button onClick={() => confirmAction('duplicate this document', () => onDuplicate(doc))}>Duplicate</button><button onClick={() => onPdf(doc)}>PDF</button><button onClick={() => onExcel(doc)}>Excel</button><button className="danger-action" onClick={() => confirmAction('delete this document', () => onDelete(doc.id))}>Delete</button></div><small>Generated {formatDate(doc.updatedAt)}</small></article>)}</div>
+  </section>
 }
 
 function EstimateView({ settings, totals, items, setItems, estimateData, setEstimateData }: { settings: Settings; totals: Totals; items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; estimateData: Record<string, string>; setEstimateData: (fn: (d: Record<string, string>) => Record<string, string>) => void }) {
