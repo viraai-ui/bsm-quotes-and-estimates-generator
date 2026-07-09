@@ -450,6 +450,393 @@
       "resetYearly": true
     }
   },
-  "documents": [],
-  "updatedAt": "2026-07-09T08:50:26.725Z"
+  "documents": [
+    {
+      "id": "4db74077-4008-49ae-975e-42633d906827",
+      "type": "estimate",
+      "number": "BSM/EST/2026-27/0002",
+      "date": "2026-07-09",
+      "customer": "Ankur ji",
+      "company": "MMM Enterprises",
+      "location": "Haridwar",
+      "headerData": {
+        "estimate_number": "BSM/EST/2026-27/0002",
+        "estimate_date": "2026-07-09",
+        "prepared_for": "",
+        "location": "Haridwar",
+        "prepared_by": "BSM India",
+        "notes": "",
+        "customer_name": "Ankur ji",
+        "company_name": "MMM Enterprises",
+        "phone": "9910844505",
+        "email": "ankur@mm.com",
+        "address": "",
+        "duration_days": "3"
+      },
+      "items": [
+        {
+          "id": "642cc400-4954-4de4-af84-1f77e429c878",
+          "productName": "Technician (per day wage)",
+          "description": "",
+          "quantity": 3,
+          "price": 2500,
+          "gst": 0
+        },
+        {
+          "id": "60d37fb3-fa7c-445e-ba04-9162e53b8208",
+          "productName": "Food Expenses",
+          "description": "",
+          "quantity": 3,
+          "price": 500,
+          "gst": 0
+        },
+        {
+          "id": "aab25f46-3fdc-4362-9087-5b7c664b3970",
+          "productName": "Hotel Expenses",
+          "description": "",
+          "quantity": 3,
+          "price": 1500,
+          "gst": 0
+        },
+        {
+          "id": "5795bc65-37fd-4049-ae01-ddbfd79fc436",
+          "productName": "Bus stand (Up & Down)",
+          "description": "",
+          "quantity": 2,
+          "price": 1000,
+          "gst": 0
+        },
+        {
+          "id": "905cc3c6-4270-474e-8818-f330e3acb8d1",
+          "productName": "Bus ticket (up and down)",
+          "description": "",
+          "quantity": 2,
+          "price": 1200,
+          "gst": 0
+        }
+      ],
+      "totals": {
+        "taxable": 17900,
+        "gst": 0,
+        "grand": 17900,
+        "roundOff": 0,
+        "final": 17900,
+        "words": "Seventeen Thousand Nine Hundred rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Admin",
+      "createdAt": "2026-07-09T08:53:26.607Z",
+      "updatedAt": "2026-07-09T08:53:26.607Z"
+    },
+    {
+      "id": "073a1a4a-72f7-4111-917a-2f5a0799d7c0",
+      "type": "estimate",
+      "number": "BSM/EST/2026-27/0001",
+      "date": "2026-07-09",
+      "customer": "Ankur ji",
+      "company": "MMM Enterprises",
+      "location": "Haridwar",
+      "headerData": {
+        "estimate_number": "BSM/EST/2026-27/0001",
+        "estimate_date": "2026-07-09",
+        "prepared_for": "",
+        "location": "Haridwar",
+        "prepared_by": "BSM India",
+        "notes": "",
+        "customer_name": "Ankur ji",
+        "company_name": "MMM Enterprises",
+        "phone": "9910844505",
+        "email": "ankur@mm.com",
+        "address": "",
+        "duration_days": "3"
+      },
+      "items": [
+        {
+          "id": "642cc400-4954-4de4-af84-1f77e429c878",
+          "productName": "Technician (per day wage)",
+          "description": "2500 per day",
+          "quantity": 3,
+          "price": 2500,
+          "gst": 0
+        },
+        {
+          "id": "60d37fb3-fa7c-445e-ba04-9162e53b8208",
+          "productName": "Food Expenses",
+          "description": "500 Per day",
+          "quantity": 3,
+          "price": 500,
+          "gst": 0
+        },
+        {
+          "id": "aab25f46-3fdc-4362-9087-5b7c664b3970",
+          "productName": "Hotel Expenses",
+          "description": "1500 Per day",
+          "quantity": 3,
+          "price": 1500,
+          "gst": 0
+        },
+        {
+          "id": "5795bc65-37fd-4049-ae01-ddbfd79fc436",
+          "productName": "Bus stand (Up & Down)",
+          "description": "",
+          "quantity": 2,
+          "price": 2000,
+          "gst": 0
+        },
+        {
+          "id": "905cc3c6-4270-474e-8818-f330e3acb8d1",
+          "productName": "Bus ticket (up and down)",
+          "description": "",
+          "quantity": 2,
+          "price": 1198,
+          "gst": 0
+        }
+      ],
+      "totals": {
+        "taxable": 19896,
+        "gst": 0,
+        "grand": 19896,
+        "roundOff": 0,
+        "final": 19896,
+        "words": "Nineteen Thousand Eight Hundred Ninety Six rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Admin",
+      "createdAt": "2026-07-09T08:47:44.530Z",
+      "updatedAt": "2026-07-09T08:47:44.530Z"
+    },
+    {
+      "id": "66cc7833-4d1c-4d14-9810-3e34921589b8",
+      "type": "quotation",
+      "number": "BSM/QTN/2026-27/0001",
+      "date": "2026-07-09",
+      "customer": "Customer",
+      "company": "",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0001",
+        "quotation_date": "2026-07-09",
+        "valid_till": "",
+        "customer_name": "",
+        "company_name": "",
+        "phone": "",
+        "email": "",
+        "address": "",
+        "gstin": "",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": ""
+      },
+      "items": [
+        {
+          "id": "4c857e7e-2790-4779-9f4a-84baec0bf9d0",
+          "productName": "",
+          "description": "",
+          "quantity": 1,
+          "price": 0,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 0,
+        "gst": 0,
+        "grand": 0,
+        "roundOff": 0,
+        "final": 0,
+        "words": "Zero rupees only"
+      },
+      "status": "Draft",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-07-09T07:11:39.093Z",
+      "updatedAt": "2026-07-09T07:11:39.093Z"
+    },
+    {
+      "id": "bc853e2d-e886-4e3b-b6bf-eb5265895725",
+      "type": "quotation",
+      "number": "BSM/QTN/2026-27/0001",
+      "date": "2026-07-09",
+      "customer": "Customer",
+      "company": "",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0001",
+        "quotation_date": "2026-07-09",
+        "valid_till": "",
+        "customer_name": "",
+        "company_name": "",
+        "phone": "",
+        "email": "",
+        "address": "",
+        "gstin": "",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": ""
+      },
+      "items": [
+        {
+          "id": "4c857e7e-2790-4779-9f4a-84baec0bf9d0",
+          "productName": "",
+          "description": "",
+          "quantity": 1,
+          "price": 0,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 0,
+        "gst": 0,
+        "grand": 0,
+        "roundOff": 0,
+        "final": 0,
+        "words": "Zero rupees only"
+      },
+      "status": "Draft",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-07-09T07:11:38.942Z",
+      "updatedAt": "2026-07-09T07:11:38.942Z"
+    },
+    {
+      "id": "9b68605c-dcb0-4cd9-9fff-ee44ce48a0a6",
+      "type": "quotation",
+      "number": "BSM/QTN/2026-27/0001",
+      "date": "2026-07-09",
+      "customer": "Customer",
+      "company": "",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0001",
+        "quotation_date": "2026-07-09",
+        "valid_till": "",
+        "customer_name": "",
+        "company_name": "",
+        "phone": "",
+        "email": "",
+        "address": "",
+        "gstin": "",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": ""
+      },
+      "items": [
+        {
+          "id": "4c857e7e-2790-4779-9f4a-84baec0bf9d0",
+          "productName": "",
+          "description": "",
+          "quantity": 1,
+          "price": 0,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 0,
+        "gst": 0,
+        "grand": 0,
+        "roundOff": 0,
+        "final": 0,
+        "words": "Zero rupees only"
+      },
+      "status": "Draft",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-07-09T07:11:38.522Z",
+      "updatedAt": "2026-07-09T07:11:38.522Z"
+    },
+    {
+      "id": "7a34749a-21b7-4094-a893-1a78f741601b",
+      "type": "quotation",
+      "number": "BSM/QTN/2026-27/0001",
+      "date": "2026-07-09",
+      "customer": "Customer",
+      "company": "",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0001",
+        "quotation_date": "2026-07-09",
+        "valid_till": "",
+        "customer_name": "",
+        "company_name": "",
+        "phone": "",
+        "email": "",
+        "address": "",
+        "gstin": "",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": ""
+      },
+      "items": [
+        {
+          "id": "4c857e7e-2790-4779-9f4a-84baec0bf9d0",
+          "productName": "",
+          "description": "",
+          "quantity": 1,
+          "price": 0,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 0,
+        "gst": 0,
+        "grand": 0,
+        "roundOff": 0,
+        "final": 0,
+        "words": "Zero rupees only"
+      },
+      "status": "Draft",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-07-09T07:11:37.352Z",
+      "updatedAt": "2026-07-09T07:11:37.352Z"
+    },
+    {
+      "id": "13902460-c1dc-4005-80af-a04b5fc7dfd3",
+      "type": "quotation",
+      "number": "BSM/QTN/2026-27/0001",
+      "date": "2026-07-09",
+      "customer": "Ainesh Sikdar",
+      "company": "Build Scale Manufacture India",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0001",
+        "quotation_date": "2026-07-09",
+        "valid_till": "",
+        "customer_name": "Ainesh Sikdar",
+        "company_name": "Build Scale Manufacture India",
+        "phone": "9910844505",
+        "email": "ainesh@bsmindia.com",
+        "address": "",
+        "gstin": "",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": ""
+      },
+      "items": [
+        {
+          "id": "799d1547-2f37-4734-8624-0c6e6b1362b6",
+          "productName": "TTL 810",
+          "description": "",
+          "quantity": 25,
+          "price": 50,
+          "gst": 0
+        },
+        {
+          "id": "eb024fe2-c43d-42f1-9d1a-1cc762c682d7",
+          "productName": "Bobbin 810",
+          "description": "",
+          "quantity": 9,
+          "price": 100,
+          "gst": 0
+        },
+        {
+          "id": "cbc4c0fb-9a34-4613-ae20-ec58ec8ea6b7",
+          "productName": "Needle DBX40",
+          "description": "",
+          "quantity": 3,
+          "price": 502,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 3656,
+        "gst": 271.08,
+        "grand": 3927.08,
+        "roundOff": -0.07999999999992724,
+        "final": 3927,
+        "words": "Three Thousand Nine Hundred Twenty Seven rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-07-09T07:03:40.232Z",
+      "updatedAt": "2026-07-09T07:03:40.232Z",
+      "pdfGeneratedAt": "2026-07-09T07:03:40.279Z"
+    }
+  ],
+  "updatedAt": "2026-07-09T08:54:20.533Z"
 }
