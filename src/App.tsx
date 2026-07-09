@@ -483,7 +483,14 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
 
   pdf.setFillColor(255, 255, 255); pdf.rect(0, 0, pageWidth, 297, 'F')
   if (settings.company.logoImage) {
-    try { pdf.addImage(settings.company.logoImage, 'PNG', 14, 10, 44, 18) } catch { pdf.setTextColor(...red); pdf.setFontSize(24); pdf.setFont('helvetica', 'bold'); pdf.text(settings.company.logoText || 'BSM', 14, 22) }
+    try {
+      const props = pdf.getImageProperties(settings.company.logoImage)
+      const maxW = 54, maxH = 18
+      const ratio = Math.min(maxW / props.width, maxH / props.height)
+      const logoW = props.width * ratio
+      const logoH = props.height * ratio
+      pdf.addImage(settings.company.logoImage, 'PNG', 14, 10, logoW, logoH)
+    } catch { pdf.setTextColor(...red); pdf.setFontSize(24); pdf.setFont('helvetica', 'bold'); pdf.text(settings.company.logoText || 'BSM', 14, 22) }
   } else {
     pdf.setTextColor(...red); pdf.setFontSize(24); pdf.setFont('helvetica', 'bold'); pdf.text(settings.company.logoText || 'BSM', 14, 22)
   }
@@ -499,7 +506,7 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
   pdf.setFont('helvetica', 'normal'); pdf.text(`${title} Date: ${doc.date || today()}`, 14, 66)
 
   const bankX = 14, bankY = 74, bankW = 84, bankH = 42
-  const billX = 106, billY = isEstimate ? bankY : 52, billW = pageWidth - billX - 14, billH = isEstimate ? bankH : 64
+  const billX = 106, billY = bankY, billW = pageWidth - billX - 14, billH = bankH
   pdf.setFillColor(248, 249, 251); pdf.roundedRect(bankX, bankY, bankW, bankH, 3, 3, 'F')
   pdf.setTextColor(...red); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(10); pdf.text('Account Details', bankX + 4, bankY + 8)
   pdf.setTextColor(...dark); pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8)
