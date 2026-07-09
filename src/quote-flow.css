@@ -1,0 +1,101 @@
+/* Create Quotation step-by-step flow cleanup */
+.quote-flow {
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.quote-flow > .panel,
+.quote-flow .line-panel,
+.quote-flow .summary-card {
+  grid-column: 1 / -1;
+}
+
+.quote-flow .section-title {
+  margin-bottom: 18px;
+}
+
+.quote-flow .section-title h2 {
+  font-size: 22px;
+  letter-spacing: -0.03em;
+}
+
+.quote-flow .final-step {
+  color: #111827;
+  background: #ffffff;
+  border: 1px solid #e8eaef;
+}
+
+.quote-flow .final-step h2 {
+  color: #111827;
+}
+
+.quote-flow .final-step > h2 {
+  font-size: clamp(30px, 5vw, 44px);
+  margin-bottom: 12px;
+}
+
+.quote-flow .summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.quote-flow .total-row {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid #edf0f4;
+  border-radius: 18px;
+  background: #fbfbfc;
+  color: #6b7280;
+}
+
+.quote-flow .total-row strong {
+  color: #111827;
+  font-size: 18px;
+}
+
+.quote-flow .total-row.grand {
+  background: #111827;
+  color: #d1d5db;
+}
+
+.quote-flow .total-row.grand strong {
+  color: #ffffff;
+}
+
+.quote-flow .amount-words {
+  color: #4b5563;
+}
+
+.quote-flow .stack-actions {
+  grid-template-columns: 1fr 1fr;
+  margin-top: 20px;
+}
+
+.quote-flow .stack-actions .full {
+  margin-top: 0;
+}
+
+.quote-flow .stack-actions .primary,
+.quote-flow .stack-actions .ghost {
+  min-height: 54px;
+  font-size: 15px;
+}
+
+@media (max-width: 980px) {
+  .quote-flow .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .quote-flow .summary-grid,
+  .quote-flow .stack-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .quote-flow .final-step {
+    order: 99;
+  }
+}

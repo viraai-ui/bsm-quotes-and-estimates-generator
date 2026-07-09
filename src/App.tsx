@@ -6,6 +6,7 @@ import * as XLSX from 'xlsx'
 import './App.css'
 import './ai-polish.css'
 import './settings-saas.css'
+import './quote-flow.css'
 import './mobile-audit.css'
 
 type FieldType = 'Text' | 'Number' | 'Date' | 'Dropdown' | 'Textarea' | 'Email' | 'Phone' | 'Image/File' | 'Checkbox'
@@ -220,13 +221,12 @@ function App() {
         <nav>{nav.map(([key, label]) => <button key={key} className={active === key ? 'active' : ''} onClick={() => setActive(key)}>{label}</button>)}</nav>
       </aside>
       <section className="workspace">
-        <header className="topbar"><div><p className="eyebrow">Simple, configurable, print-ready</p><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div><div className="header-actions"><button className="ghost" onClick={() => saveQuotation('Draft')}>Save Draft</button><button className="primary" onClick={generatePdf}>Generate PDF</button></div></header>
+        <header className="topbar"><div><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div>{active !== 'quotation' && <div className="header-actions"><button className="ghost" onClick={() => saveQuotation('Draft')}>Save Draft</button><button className="primary" onClick={generatePdf}>Generate PDF</button></div>}</header>
 
-        {active === 'quotation' && <div className="page-grid">
-          <section className="panel wide"><div className="section-title"><div><p className="kicker">Step 1</p><h2>Quotation details</h2></div><span className="pill">Controlled from Settings</span></div><DynamicForm fields={visibleQuoteFields} data={quoteData} setData={setQuoteData} /></section>
-          <SummaryCard totals={totals} settings={settings} onPdf={generatePdf} onExcel={() => generateExcel()} />
-          <SmartAssistant quoteData={quoteData} items={items} totals={totals} settings={settings} />
+        {active === 'quotation' && <div className="page-grid quote-flow">
+          <section className="panel wide"><div className="section-title"><div><h2>Step 1. Quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={quoteData} setData={setQuoteData} /></section>
           <LineItemsPanel items={items} setItems={setItems} settings={settings} />
+          <SummaryCard totals={totals} settings={settings} onPdf={generatePdf} onExcel={() => generateExcel()} />
         </div>}
 
         {active === 'estimate' && <EstimateView settings={settings} totals={totals} items={items} setItems={setItems} />}
@@ -242,22 +242,7 @@ function DynamicForm({ fields, data, setData }: { fields: FieldConfig[]; data: R
 }
 
 function SummaryCard({ totals, settings, onPdf, onExcel }: { totals: Totals; settings: Settings; onPdf: () => void; onExcel: () => void }) {
-  return <section className="panel summary-card"><p className="kicker">Calculation summary</p><h2>{money(totals.final)}</h2><div className="total-row"><span>Taxable Amount</span><strong>{money(totals.taxable)}</strong></div><div className="total-row"><span>Total GST</span><strong>{settings.tax.gstEnabled ? money(totals.gst) : 'Disabled'}</strong></div><div className="total-row"><span>Grand Total</span><strong>{money(totals.grand)}</strong></div><div className="total-row"><span>Round Off</span><strong>{settings.tax.roundOff ? money(totals.roundOff) : 'Disabled'}</strong></div><div className="total-row grand"><span>Final Amount</span><strong>{money(totals.final)}</strong></div>{settings.tax.amountInWords && <p className="amount-words">{totals.words}</p>}<div className="stack-actions"><button className="primary full" onClick={onPdf}>Generate beautiful PDF</button><button className="ghost full" onClick={onExcel}>Download Excel</button></div></section>
-}
-
-function SmartAssistant({ quoteData, items, totals, settings }: { quoteData: Record<string, string>; items: QuoteItem[]; totals: Totals; settings: Settings }) {
-  const missing = [
-    !quoteData.customer_name && 'customer name',
-    !quoteData.phone && 'phone number',
-    !items.some((item) => item.productName && item.price > 0) && 'priced product item',
-  ].filter(Boolean)
-  const insights = [
-    missing.length ? `Missing: ${missing.join(', ')}.` : 'Ready to generate a clean quotation.',
-    settings.tax.gstEnabled ? `GST is active at ${settings.tax.rowLevelGst ? 'row level' : `${settings.tax.defaultGst}% default`}.` : 'GST is disabled for this quote.',
-    totals.final > 0 ? `Final amount is ${money(totals.final)}.` : 'Add price to unlock PDF/Excel totals.',
-  ]
-
-  return <section className="panel ai-panel"><div className="ai-orb">AI</div><div><p className="kicker">BSM AI Co-Pilot</p><h2>Smart quote assistant</h2><p className="muted">Checks missing fields, pricing readiness, GST settings and PDF quality before the team sends a quote.</p></div><div className="ai-list">{insights.map((item) => <span key={item}>{item}</span>)}</div><div className="ai-actions"><button className="ghost">Improve wording</button><button className="ghost">Check margins</button><button className="ghost">Suggest terms</button></div></section>
+  return <section className="panel summary-card final-step"><div className="section-title"><div><h2>Step 3. Review & generate</h2></div></div><h2>{money(totals.final)}</h2><div className="summary-grid"><div className="total-row"><span>Taxable Amount</span><strong>{money(totals.taxable)}</strong></div><div className="total-row"><span>Total GST</span><strong>{settings.tax.gstEnabled ? money(totals.gst) : 'Disabled'}</strong></div><div className="total-row"><span>Grand Total</span><strong>{money(totals.grand)}</strong></div><div className="total-row"><span>Round Off</span><strong>{settings.tax.roundOff ? money(totals.roundOff) : 'Disabled'}</strong></div><div className="total-row grand"><span>Final Amount</span><strong>{money(totals.final)}</strong></div></div>{settings.tax.amountInWords && <p className="amount-words">{totals.words}</p>}<div className="stack-actions"><button className="ghost full" onClick={onExcel}>Download Excel</button><button className="primary full" onClick={onPdf}>Generate PDF</button></div></section>
 }
 
 function LineItemsPanel({ items, setItems, settings }: { items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; settings: Settings }) {
@@ -270,7 +255,7 @@ function LineItemsPanel({ items, setItems, settings }: { items: QuoteItem[]; set
     const image = await compressImage(file)
     update(id, { image, imageName: file.name })
   }
-  return <section className="panel line-panel wide"><div className="section-title"><div><p className="kicker">Step 2</p><h2>Product line items</h2></div><button className="ghost" onClick={addItem}>+ Add item</button></div><div className="line-table"><div className="line-head"><span>Picture</span><span>Product</span><span>Qty</span><span>Price</span><span>GST %</span><span>Total</span><span></span></div>{items.map((item) => { const taxable = item.quantity * item.price; const total = taxable + (settings.tax.gstEnabled ? taxable * ((settings.tax.rowLevelGst ? item.gst : settings.tax.defaultGst) / 100) : 0); return <div className="line-row" key={item.id}><div className="image-cell">{item.image ? <img src={item.image} alt={item.productName || 'Product'} /> : <span>No image</span>}<label className="mini-upload">{item.image ? 'Replace' : 'Upload / Camera'}<input type="file" accept="image/*" capture="environment" onChange={(e) => onImage(item.id, e)} /></label>{item.image && <button className="text-danger" onClick={() => update(item.id, { image: undefined, imageName: undefined })}>Remove</button>}</div><div className="product-inputs"><input value={item.productName} onChange={(e) => update(item.id, { productName: e.target.value })} placeholder="Product name" /><input value={item.description} onChange={(e) => update(item.id, { description: e.target.value })} placeholder="Description" /></div><input type="number" value={item.quantity} onChange={(e) => update(item.id, { quantity: Number(e.target.value) })} /><input type="number" value={item.price} onChange={(e) => update(item.id, { price: Number(e.target.value) })} /><input type="number" value={item.gst} disabled={!settings.tax.rowLevelGst} onChange={(e) => update(item.id, { gst: Number(e.target.value) })} /><strong>{money(total)}</strong><button className="icon-button" onClick={() => remove(item.id)}>Archive</button></div>})}</div><p className="helper">Images are used as uploaded, compressed locally before saving/export. No background removal API is used.</p></section>
+  return <section className="panel line-panel wide"><div className="section-title"><div><h2>Step 2. Product line items</h2></div><button className="ghost" onClick={addItem}>+ Add item</button></div><div className="line-table"><div className="line-head"><span>Picture</span><span>Product</span><span>Qty</span><span>Price</span><span>GST %</span><span>Total</span><span></span></div>{items.map((item) => { const taxable = item.quantity * item.price; const total = taxable + (settings.tax.gstEnabled ? taxable * ((settings.tax.rowLevelGst ? item.gst : settings.tax.defaultGst) / 100) : 0); return <div className="line-row" key={item.id}><div className="image-cell">{item.image ? <img src={item.image} alt={item.productName || 'Product'} /> : <span>No image</span>}<label className="mini-upload">{item.image ? 'Replace' : 'Upload / Camera'}<input type="file" accept="image/*" capture="environment" onChange={(e) => onImage(item.id, e)} /></label>{item.image && <button className="text-danger" onClick={() => update(item.id, { image: undefined, imageName: undefined })}>Remove</button>}</div><div className="product-inputs"><input value={item.productName} onChange={(e) => update(item.id, { productName: e.target.value })} placeholder="Product name" /><input value={item.description} onChange={(e) => update(item.id, { description: e.target.value })} placeholder="Description" /></div><input type="number" value={item.quantity} onChange={(e) => update(item.id, { quantity: Number(e.target.value) })} /><input type="number" value={item.price} onChange={(e) => update(item.id, { price: Number(e.target.value) })} /><input type="number" value={item.gst} disabled={!settings.tax.rowLevelGst} onChange={(e) => update(item.id, { gst: Number(e.target.value) })} /><strong>{money(total)}</strong><button className="icon-button" onClick={() => remove(item.id)}>Archive</button></div>})}</div></section>
 }
 
 function DocumentsView({ documents, tab, setTab, onEdit, onDuplicate, onPdf, onExcel, onArchive }: { documents: SavedDocument[]; tab: 'quotation' | 'estimate'; setTab: (t: 'quotation' | 'estimate') => void; onEdit: (d: SavedDocument) => void; onDuplicate: (d: SavedDocument) => void; onPdf: (d: SavedDocument) => void; onExcel: (d: SavedDocument) => void; onArchive: (id: string) => void }) {
