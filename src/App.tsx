@@ -483,7 +483,7 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
 
   pdf.setFillColor(255, 255, 255); pdf.rect(0, 0, pageWidth, 297, 'F')
   if (settings.company.logoImage) {
-    try { pdf.addImage(settings.company.logoImage, 'PNG', 14, 10, 30, 18) } catch { pdf.setTextColor(...red); pdf.setFontSize(24); pdf.setFont('helvetica', 'bold'); pdf.text(settings.company.logoText || 'BSM', 14, 22) }
+    try { pdf.addImage(settings.company.logoImage, 'PNG', 14, 10, 44, 18) } catch { pdf.setTextColor(...red); pdf.setFontSize(24); pdf.setFont('helvetica', 'bold'); pdf.text(settings.company.logoText || 'BSM', 14, 22) }
   } else {
     pdf.setTextColor(...red); pdf.setFontSize(24); pdf.setFont('helvetica', 'bold'); pdf.text(settings.company.logoText || 'BSM', 14, 22)
   }
@@ -507,18 +507,15 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
   bankLines.slice(0, 6).forEach((line, i) => pdf.text(line, bankX + 4, bankY + 15 + i * 5))
 
   pdf.setFillColor(248, 249, 251); pdf.roundedRect(billX, billY, billW, billH, 3, 3, 'F')
-  pdf.setTextColor(...red); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(10); pdf.text(isEstimate ? 'Estimate For' : 'Bill To', billX + 4, billY + 8)
+  pdf.setTextColor(...red); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(10); pdf.text('Customer Details', billX + 4, billY + 8)
   pdf.setTextColor(...dark); pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8)
   const customerLines = [
-    doc.customer || doc.headerData.customer_name || '-',
-    doc.company || doc.headerData.company_name || '',
+    doc.company || doc.headerData.company_name || doc.customer || doc.headerData.customer_name || '-',
     doc.headerData.address || doc.location || '',
     `Phone: ${doc.headerData.phone || '-'}`,
     `Email: ${doc.headerData.email || '-'}`,
-    doc.headerData.gstin ? `GSTIN: ${doc.headerData.gstin}` : '',
   ].filter(Boolean)
-  customerLines.forEach((line, i) => pdf.text(String(line), billX + 4, billY + 15 + i * 5, { maxWidth: billW - 8 }))
-  if (!isEstimate) { pdf.setTextColor(...red); pdf.setFont('helvetica', 'bold'); pdf.text('Ship To', billX + 4, billY + 49); pdf.setTextColor(...dark); pdf.setFont('helvetica', 'normal'); pdf.text(doc.headerData.address || '-', billX + 4, billY + 56, { maxWidth: billW - 8 }) }
+  customerLines.forEach((line, i) => pdf.text(String(line), billX + 4, billY + 15 + i * 6, { maxWidth: billW - 8 }))
 
   const headers = isEstimate ? [['#', 'Expense / Item', 'Days', 'Cost', 'GST %', 'GST Amt.', 'Total Amount']] : [['#', 'Product', 'Picture', 'Qty', 'List Price', 'Tax %', 'Tax Amt.', 'Total Amount']]
   const body = doc.items.map((item, i) => {
