@@ -445,13 +445,100 @@
       "quotation": "BSM/QTN/{{financial_year}}/{{number}}",
       "estimate": "BSM/EST/{{financial_year}}/{{number}}",
       "financialYear": "2026-27",
-      "nextQuotation": 2,
+      "nextQuotation": 4,
       "nextEstimate": 2,
       "padding": 4,
       "resetYearly": true
     }
   },
   "documents": [
+    {
+      "id": "c3a6e415-4087-4295-9894-ffb051a26394",
+      "type": "quotation",
+      "number": "BSM/QTN/2026-27/0001",
+      "date": "2026-07-09",
+      "customer": "Smoke Quote Customer",
+      "company": "Smoke Co",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0001",
+        "quotation_date": "2026-07-09",
+        "valid_till": "",
+        "customer_name": "Smoke Quote Customer",
+        "company_name": "Smoke Co",
+        "phone": "9999999999",
+        "email": "smoke@example.com",
+        "address": "Smoke Address Delhi",
+        "gstin": "",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": ""
+      },
+      "items": [
+        {
+          "id": "d805ca8f-d2c1-4a08-894f-bd54565756c7",
+          "productName": "Smoke Conveyor Belt",
+          "description": "Smoke test product description",
+          "quantity": 1,
+          "price": 1200,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 1200,
+        "gst": 216,
+        "grand": 1416,
+        "roundOff": 0,
+        "final": 1416,
+        "words": "One Thousand Four Hundred Sixteen rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-07-09T13:26:48.953Z",
+      "updatedAt": "2026-07-09T13:26:48.953Z",
+      "pdfGeneratedAt": "2026-07-09T13:26:50.938Z"
+    },
+    {
+      "id": "a3f55737-3d3c-49b0-a47d-bbb6e4490b71",
+      "type": "quotation",
+      "number": "BSM/QTN/2026-27/0001",
+      "date": "2026-07-09",
+      "customer": "Smoke Quote Customer",
+      "company": "Smoke Co",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0001",
+        "quotation_date": "2026-07-09",
+        "valid_till": "",
+        "customer_name": "Smoke Quote Customer",
+        "company_name": "Smoke Co",
+        "phone": "9999999999",
+        "email": "smoke@example.com",
+        "address": "Smoke Address Delhi",
+        "gstin": "",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": ""
+      },
+      "items": [
+        {
+          "id": "d805ca8f-d2c1-4a08-894f-bd54565756c7",
+          "productName": "Smoke Conveyor Belt",
+          "description": "Smoke test product description",
+          "quantity": 1,
+          "price": 1200,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 1200,
+        "gst": 216,
+        "grand": 1416,
+        "roundOff": 0,
+        "final": 1416,
+        "words": "One Thousand Four Hundred Sixteen rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-07-09T13:26:48.947Z",
+      "updatedAt": "2026-07-09T13:26:48.947Z"
+    },
     {
       "id": "cf3097d4-1940-4efe-9d17-e8554f93b74b",
       "type": "estimate",
@@ -981,5 +1068,5 @@
       "pdfGeneratedAt": "2026-07-09T07:03:40.279Z"
     }
   ],
-  "updatedAt": "2026-07-09T13:26:34.172Z"
+  "updatedAt": "2026-07-09T13:26:53.544Z"
 }
