@@ -12,6 +12,7 @@ import './mobile-audit.css'
 import './estimate-flow.css'
 import './documents-saas.css'
 import './settings-auth.css'
+import './logo-upload.css'
 
 type FieldType = 'Text' | 'Number' | 'Date' | 'Dropdown' | 'Textarea' | 'Email' | 'Phone' | 'Image/File' | 'Checkbox'
 type Status = 'Draft' | 'Generated' | 'Final' | 'Archived'
@@ -226,7 +227,7 @@ function App() {
   return (
     <main className="dashboard-shell">
       <aside className="sidebar">
-        <div className="logo-block"><div className="logo">{settings.company.logoText || 'BSM'}</div><div><strong>{settings.company.companyName}</strong><span>Quote Studio</span></div></div>
+        <div className="logo-block"><div className="logo">{settings.company.logoImage ? <img src={settings.company.logoImage} alt="BSM logo" /> : (settings.company.logoText || 'BSM')}</div><div><strong>{settings.company.companyName}</strong><span>Quote Studio</span></div></div>
         <nav>{nav.map(([key, label]) => <button key={key} className={active === key ? 'active' : ''} onClick={() => setActive(key)}>{label}</button>)}</nav>
       </aside>
       <section className="workspace">
@@ -375,7 +376,13 @@ function SettingsView({ settings, setSettings }: { settings: Settings; setSettin
 
 function CompanySettings({ settings, setSettings }: { settings: Settings; setSettings: React.Dispatch<React.SetStateAction<Settings>> }) {
   const keys = ['logoText', 'companyName', 'address', 'phone', 'email', 'website', 'gstin', 'cin']
-  return <section className="panel settings-card"><p className="kicker">Company Profile Settings</p><h2>Company Profile</h2><div className="compact-form">{keys.map((k) => <label key={k}><span>{labelize(k)}</span><input value={settings.company[k] || ''} onChange={(e) => setSettings((s) => ({ ...s, company: { ...s.company, [k]: e.target.value } }))} /></label>)}</div><SaveSettingsButton /></section>
+  const onLogo = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const logoImage = await fileToDataUrl(file)
+    setSettings((s) => ({ ...s, company: { ...s.company, logoImage } }))
+  }
+  return <section className="panel settings-card"><p className="kicker">Company Profile Settings</p><h2>Company Profile</h2><div className="logo-upload-row"><div className="logo-preview">{settings.company.logoImage ? <img src={settings.company.logoImage} alt="Company logo" /> : <span>{settings.company.logoText || 'BSM'}</span>}</div><label className="logo-upload-control"><span>Upload company logo</span><input type="file" accept="image/*" onChange={onLogo} /></label>{settings.company.logoImage && <button className="ghost" onClick={() => setSettings((s) => ({ ...s, company: { ...s.company, logoImage: '' } }))}>Remove Logo</button>}</div><div className="compact-form">{keys.map((k) => <label key={k}><span>{labelize(k)}</span><input value={settings.company[k] || ''} onChange={(e) => setSettings((s) => ({ ...s, company: { ...s.company, [k]: e.target.value } }))} /></label>)}</div><SaveSettingsButton /></section>
 }
 
 function FieldSettings({ title, fields, onChange }: { title: string; fields: FieldConfig[]; onChange: (f: FieldConfig[]) => void }) {
@@ -426,7 +433,12 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
   const pdf = new jsPDF('p', 'mm', 'a4')
   const pageWidth = pdf.internal.pageSize.getWidth()
   pdf.setFillColor(215, 25, 32); pdf.rect(0, 0, pageWidth, 18, 'F')
-  pdf.setTextColor(255, 255, 255); pdf.setFontSize(18); pdf.setFont('helvetica', 'bold'); pdf.text(settings.company.logoText || 'BSM', 14, 12)
+  pdf.setTextColor(255, 255, 255); pdf.setFontSize(18); pdf.setFont('helvetica', 'bold')
+  if (settings.company.logoImage) {
+    try { pdf.addImage(settings.company.logoImage, 'PNG', 12, 3, 18, 12) } catch { pdf.text(settings.company.logoText || 'BSM', 14, 12) }
+  } else {
+    pdf.text(settings.company.logoText || 'BSM', 14, 12)
+  }
   pdf.setFontSize(10); pdf.text(settings.company.companyName, pageWidth - 14, 8, { align: 'right' }); pdf.text(settings.company.phone || '', pageWidth - 14, 13, { align: 'right' })
   pdf.setTextColor(17, 24, 39); pdf.setFontSize(20); pdf.text('QUOTATION', 14, 30)
   pdf.setFontSize(10); pdf.text(`Quotation No: ${doc.number}`, 14, 38); pdf.text(`Date: ${doc.date}`, pageWidth - 14, 38, { align: 'right' })
@@ -453,8 +465,12 @@ function downloadExcel(doc: SavedDocument, settings: Settings) {
   void settings
 }
 
+async function fileToDataUrl(file: File): Promise<string> {
+  return new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.onerror = reject; reader.readAsDataURL(file) })
+}
+
 async function compressImage(file: File): Promise<string> {
-  const dataUrl = await new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.onerror = reject; reader.readAsDataURL(file) })
+  const dataUrl = await fileToDataUrl(file)
   const img = await new Promise<HTMLImageElement>((resolve, reject) => { const image = new Image(); image.onload = () => resolve(image); image.onerror = reject; image.src = dataUrl })
   const max = 900, ratio = Math.min(1, max / Math.max(img.width, img.height))
   const canvas = document.createElement('canvas'); canvas.width = Math.round(img.width * ratio); canvas.height = Math.round(img.height * ratio)

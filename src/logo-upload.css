@@ -1,0 +1,58 @@
+.logo img,
+.logo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.logo:has(img) {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 16px 34px rgba(17, 24, 39, 0.08);
+  padding: 6px;
+}
+
+.logo-upload-row {
+  display: grid;
+  grid-template-columns: 88px minmax(220px, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  margin: 16px 0 22px;
+  padding: 16px;
+  border: 1px solid #edf0f4;
+  border-radius: 20px;
+  background: #fbfbfc;
+}
+
+.logo-preview {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #d71920;
+  font-weight: 900;
+  overflow: hidden;
+}
+
+.logo-upload-control {
+  display: grid;
+  gap: 8px;
+}
+
+.logo-upload-control input {
+  min-height: 46px;
+  padding: 10px;
+  border: 1px dashed #d1d5db;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+@media (max-width: 720px) {
+  .logo-upload-row {
+    grid-template-columns: 1fr;
+  }
+}

@@ -36,14 +36,18 @@
 
 .quote-flow .summary-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
 }
 
 .quote-flow .total-row {
   display: grid;
+  place-items: center;
   gap: 8px;
-  padding: 16px;
+  min-height: 92px;
+  padding: 18px 14px;
+  text-align: center;
   border: 1px solid #edf0f4;
   border-radius: 18px;
   background: #fbfbfc;
