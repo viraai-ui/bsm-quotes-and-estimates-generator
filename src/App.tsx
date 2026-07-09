@@ -210,6 +210,23 @@ function App() {
     downloadExcel(doc, settings)
   }
 
+  function saveEstimate(status: Status = 'Generated') {
+    const number = estimateData.estimate_number || nextNumber(settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate, settings.numbering.padding)
+    const now = new Date().toISOString()
+    const doc: SavedDocument = {
+      id: crypto.randomUUID(), type: 'estimate', number, date: estimateData.estimate_date || today(), customer: estimateData.customer_name || 'Customer', company: estimateData.company_name, location: estimateData.location, headerData: { ...estimateData, estimate_number: number }, items, totals, status, createdBy: 'Admin', createdAt: now, updatedAt: now,
+    }
+    setDocuments((docs) => [doc, ...docs])
+    setSettings((s) => ({ ...s, numbering: { ...s.numbering, nextEstimate: s.numbering.nextEstimate + 1 } }))
+    setEstimateData((d) => ({ ...d, estimate_number: nextNumber(settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate + 1, settings.numbering.padding) }))
+    return doc
+  }
+
+  function generateEstimatePdf() {
+    const doc = saveEstimate('Generated')
+    downloadQuotationPdf(doc, settings)
+  }
+
   function editDocument(doc: SavedDocument) {
     setEditingId(doc.id)
     setQuoteData(doc.headerData)
@@ -239,7 +256,7 @@ function App() {
           <SummaryCard totals={totals} settings={settings} onPdf={generatePdf} onExcel={() => generateExcel()} />
         </div>}
 
-        {active === 'estimate' && <EstimateView settings={settings} totals={totals} items={items} setItems={setItems} estimateData={estimateData} setEstimateData={setEstimateData} />}
+        {active === 'estimate' && <EstimateView settings={settings} totals={totals} items={items} setItems={setItems} estimateData={estimateData} setEstimateData={setEstimateData} onPdf={generateEstimatePdf} onExcel={() => downloadExcel(saveEstimate('Generated'), settings)} />}
         {active === 'documents' && <DocumentsView documents={documents} tab={docTab} setTab={setDocTab} onEdit={editDocument} onDuplicate={duplicateDocument} onPdf={(d) => downloadQuotationPdf(d, settings)} onExcel={(d) => downloadExcel(d, settings)} onDelete={(id) => setDocuments((docs) => docs.filter((d) => d.id !== id))} />}
         {active === 'settings' && <SettingsView settings={settings} setSettings={setSettings} />}
       </section>
@@ -319,14 +336,12 @@ function DocumentsView({ documents, tab, setTab, onEdit, onDuplicate, onPdf, onE
   </section>
 }
 
-function EstimateView({ settings, totals, items, setItems, estimateData, setEstimateData }: { settings: Settings; totals: Totals; items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; estimateData: Record<string, string>; setEstimateData: (fn: (d: Record<string, string>) => Record<string, string>) => void }) {
+function EstimateView({ settings, totals, items, setItems, estimateData, setEstimateData, onPdf, onExcel }: { settings: Settings; totals: Totals; items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; estimateData: Record<string, string>; setEstimateData: (fn: (d: Record<string, string>) => Record<string, string>) => void; onPdf: () => void; onExcel: () => void }) {
   const visibleEstimateFields = estimateFields.filter((f) => f.visible).sort((a, b) => a.sortOrder - b.sortOrder)
-  const generateEstimate = () => alert('Estimate PDF generation will use this final estimate layout in the next build step.')
-  const exportEstimate = () => alert('Estimate Excel export will use this final estimate layout in the next build step.')
   return <div className="page-grid quote-flow estimate-flow">
     <section className="panel wide"><div className="section-title"><div><h2>Step 1. Estimate details</h2></div></div><DynamicForm fields={visibleEstimateFields} data={estimateData} setData={setEstimateData} /></section>
     <LineItemsPanel items={items} setItems={setItems} settings={settings} mode="estimate" />
-    <SummaryCard totals={totals} settings={settings} onPdf={generateEstimate} onExcel={exportEstimate} />
+    <SummaryCard totals={totals} settings={settings} onPdf={onPdf} onExcel={onExcel} />
   </div>
 }
 
@@ -430,27 +445,81 @@ function Toggle({ label, value, onChange }: { label: string; value: boolean; onC
 function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
   const pdf = new jsPDF('p', 'mm', 'a4')
   const pageWidth = pdf.internal.pageSize.getWidth()
-  pdf.setFillColor(215, 25, 32); pdf.rect(0, 0, pageWidth, 18, 'F')
-  pdf.setTextColor(255, 255, 255); pdf.setFontSize(18); pdf.setFont('helvetica', 'bold')
+  const red: [number, number, number] = [215, 25, 32]
+  const dark: [number, number, number] = [17, 24, 39]
+  const muted: [number, number, number] = [107, 114, 128]
+  const isEstimate = doc.type === 'estimate'
+  const title = isEstimate ? 'Estimate' : 'Quotation'
+  const numberLabel = isEstimate ? 'Estimate No.' : 'Quotation No.'
+  const numberKey = isEstimate ? 'estimate_number' : 'quotation_number'
+
+  pdf.setFillColor(255, 255, 255); pdf.rect(0, 0, pageWidth, 297, 'F')
   if (settings.company.logoImage) {
-    try { pdf.addImage(settings.company.logoImage, 'PNG', 12, 3, 18, 12) } catch { pdf.text(settings.company.logoText || 'BSM', 14, 12) }
+    try { pdf.addImage(settings.company.logoImage, 'PNG', 14, 10, 30, 18) } catch { pdf.setTextColor(...red); pdf.setFontSize(24); pdf.setFont('helvetica', 'bold'); pdf.text(settings.company.logoText || 'BSM', 14, 22) }
   } else {
-    pdf.text(settings.company.logoText || 'BSM', 14, 12)
+    pdf.setTextColor(...red); pdf.setFontSize(24); pdf.setFont('helvetica', 'bold'); pdf.text(settings.company.logoText || 'BSM', 14, 22)
   }
-  pdf.setFontSize(10); pdf.text(settings.company.companyName, pageWidth - 14, 8, { align: 'right' }); pdf.text(settings.company.phone || '', pageWidth - 14, 13, { align: 'right' })
-  pdf.setTextColor(17, 24, 39); pdf.setFontSize(20); pdf.text('QUOTATION', 14, 30)
-  pdf.setFontSize(10); pdf.text(`Quotation No: ${doc.number}`, 14, 38); pdf.text(`Date: ${doc.date}`, pageWidth - 14, 38, { align: 'right' })
-  const customerLines = [`Customer: ${doc.headerData.customer_name || ''}`, `Company: ${doc.headerData.company_name || ''}`, `Phone: ${doc.headerData.phone || ''}`, `Email: ${doc.headerData.email || ''}`, `GSTIN: ${doc.headerData.gstin || ''}`]
-  pdf.setFillColor(248, 249, 251); pdf.roundedRect(14, 44, pageWidth - 28, 32, 3, 3, 'F')
-  customerLines.forEach((line, i) => pdf.text(line, 18, 52 + i * 5))
-  autoTable(pdf, { startY: 84, head: [['#', 'Picture', 'Product', 'Qty', 'Price', 'GST %', 'Total']], body: doc.items.map((item, i) => [String(i + 1), item.image ? 'Image attached' : '-', `${item.productName}${item.description ? `\n${item.description}` : ''}`, item.quantity, moneyPlain(item.price), item.gst, moneyPlain(item.quantity * item.price * (1 + item.gst / 100))]), styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [17, 24, 39] }, columnStyles: { 2: { cellWidth: 68 } }, didDrawCell: (data) => { if (data.section === 'body' && data.column.index === 1) { const item = doc.items[data.row.index]; if (item?.image) { try { pdf.addImage(item.image, 'JPEG', data.cell.x + 2, data.cell.y + 2, 12, 12) } catch { /* ignore invalid image */ } } } } })
-  const y = (pdf as any).lastAutoTable.finalY + 8
-  pdf.setFontSize(10); pdf.text(`Taxable Amount: ${moneyPlain(doc.totals.taxable)}`, pageWidth - 14, y, { align: 'right' }); pdf.text(`Total GST: ${moneyPlain(doc.totals.gst)}`, pageWidth - 14, y + 6, { align: 'right' }); pdf.setFont('helvetica', 'bold'); pdf.text(`Final Amount: ${moneyPlain(doc.totals.final)}`, pageWidth - 14, y + 12, { align: 'right' }); pdf.setFont('helvetica', 'normal')
-  if (settings.tax.amountInWords) pdf.text(`Amount in Words: ${doc.totals.words}`, 14, y + 22, { maxWidth: pageWidth - 28 })
-  pdf.setFontSize(9); pdf.text('Terms & Conditions', 14, y + 34); pdf.text(renderTemplate(settings.quotationTemplate.terms, doc, settings), 14, y + 40, { maxWidth: pageWidth - 28 })
-  pdf.text('Bank Details', 14, y + 62); pdf.text(settings.quotationTemplate.bankDetails, 14, y + 68, { maxWidth: 90 })
-  pdf.text(settings.quotationTemplate.signatureText, pageWidth - 14, y + 68, { align: 'right', maxWidth: 70 })
-  const pages = pdf.getNumberOfPages(); for (let i = 1; i <= pages; i++) { pdf.setPage(i); pdf.setFontSize(8); pdf.setTextColor(107, 114, 128); pdf.text(settings.quotationTemplate.footerText, pageWidth / 2, 292, { align: 'center' }); pdf.text(`Page ${i} of ${pages}`, pageWidth - 14, 292, { align: 'right' }) }
+  pdf.setFont('helvetica', 'bold'); pdf.setFontSize(11); pdf.setTextColor(...dark); pdf.text(settings.company.companyName || 'Build Scale Manufacture Pvt. Ltd.', pageWidth - 14, 12, { align: 'right' })
+  pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8); pdf.setTextColor(...muted)
+  pdf.text(settings.company.address || 'Delhi, India', pageWidth - 14, 17, { align: 'right', maxWidth: 82 })
+  pdf.text(`GSTIN: ${settings.company.gstin || '-'}`, pageWidth - 14, 27, { align: 'right' })
+  pdf.text(`Email: ${settings.company.email || '-'}`, pageWidth - 14, 32, { align: 'right' })
+  pdf.setDrawColor(230, 232, 236); pdf.line(14, 38, pageWidth - 14, 38)
+
+  pdf.setTextColor(...red); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(28); pdf.text(title, 14, 52)
+  pdf.setTextColor(...dark); pdf.setFontSize(9); pdf.text(`${numberLabel}: ${doc.number || doc.headerData[numberKey] || '-'}`, 14, 60)
+  pdf.setFont('helvetica', 'normal'); pdf.text(`${title} Date: ${doc.date || today()}`, 14, 66)
+
+  const bankX = 14, bankY = 74, bankW = 84, bankH = 42
+  const billX = 106, billY = 52, billW = pageWidth - billX - 14, billH = 64
+  pdf.setFillColor(248, 249, 251); pdf.roundedRect(bankX, bankY, bankW, bankH, 3, 3, 'F')
+  pdf.setTextColor(...red); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(10); pdf.text('Account Details', bankX + 4, bankY + 8)
+  pdf.setTextColor(...dark); pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8)
+  const bankLines = (settings.quotationTemplate.bankDetails || 'A/c Name: BSM India\nAccount No.: Update\nIFSC: Update\nBank Name: Update\nBranch: Update\nType: Current').split('\n')
+  bankLines.slice(0, 6).forEach((line, i) => pdf.text(line, bankX + 4, bankY + 15 + i * 5))
+
+  pdf.setFillColor(248, 249, 251); pdf.roundedRect(billX, billY, billW, billH, 3, 3, 'F')
+  pdf.setTextColor(...red); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(10); pdf.text(isEstimate ? 'Estimate For' : 'Bill To', billX + 4, billY + 8)
+  pdf.setTextColor(...dark); pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8)
+  const customerLines = [
+    doc.customer || doc.headerData.customer_name || '-',
+    doc.company || doc.headerData.company_name || '',
+    doc.headerData.address || doc.location || '',
+    `Phone: ${doc.headerData.phone || '-'}`,
+    `Email: ${doc.headerData.email || '-'}`,
+    doc.headerData.gstin ? `GSTIN: ${doc.headerData.gstin}` : '',
+  ].filter(Boolean)
+  customerLines.forEach((line, i) => pdf.text(String(line), billX + 4, billY + 15 + i * 5, { maxWidth: billW - 8 }))
+  if (!isEstimate) { pdf.setTextColor(...red); pdf.setFont('helvetica', 'bold'); pdf.text('Ship To', billX + 4, billY + 49); pdf.setTextColor(...dark); pdf.setFont('helvetica', 'normal'); pdf.text(doc.headerData.address || '-', billX + 4, billY + 56, { maxWidth: billW - 8 }) }
+
+  const headers = isEstimate ? [['#', 'Expense / Item', 'Days', 'Cost', 'GST %', 'GST Amt.', 'Total Amount']] : [['#', 'Product', 'Picture', 'Qty', 'List Price', 'Tax %', 'Tax Amt.', 'Total Amount']]
+  const body = doc.items.map((item, i) => {
+    const taxable = item.quantity * item.price
+    const gstAmt = settings.tax.gstEnabled ? taxable * ((settings.tax.rowLevelGst ? item.gst : settings.tax.defaultGst) / 100) : 0
+    return isEstimate
+      ? [String(i + 1), `${item.productName || 'Expense'}${item.description ? `\n${item.description}` : ''}`, item.quantity, moneyPlain(item.price), item.gst, moneyPlain(gstAmt), moneyPlain(taxable + gstAmt)]
+      : [String(i + 1), `${item.productName || 'Product'}${item.description ? `\n${item.description}` : ''}`, item.image ? 'Image' : '-', item.quantity, moneyPlain(item.price), item.gst, moneyPlain(gstAmt), moneyPlain(taxable + gstAmt)]
+  })
+  autoTable(pdf, { startY: 124, head: headers, body, styles: { fontSize: 8, cellPadding: 2.3, valign: 'middle', lineColor: [229, 231, 235], lineWidth: 0.1 }, headStyles: { fillColor: red, textColor: [255, 255, 255], fontStyle: 'bold', halign: 'center' }, alternateRowStyles: { fillColor: [252, 252, 253] }, columnStyles: isEstimate ? { 1: { cellWidth: 72 } } : { 1: { cellWidth: 48 }, 2: { cellWidth: 24, halign: 'center' } }, didDrawCell: (data) => { if (!isEstimate && data.section === 'body' && data.column.index === 2) { const item = doc.items[data.row.index]; if (item?.image) { try { pdf.addImage(item.image, 'JPEG', data.cell.x + 3, data.cell.y + 2, 16, 12) } catch { /* ignore */ } } } } })
+
+  const y = Math.min((pdf as any).lastAutoTable.finalY + 10, 228)
+  pdf.setTextColor(...dark); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(9); pdf.text('Contact Person', 14, y)
+  pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8); pdf.text(settings.company.companyName || 'BSM India', 14, y + 6); pdf.text(settings.company.email || '', 14, y + 11)
+  pdf.setFont('helvetica', 'bold'); pdf.setFontSize(9); pdf.text('Terms & Conditions', 14, y + 22)
+  pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8)
+  const terms = (isEstimate ? settings.estimateTemplate.terms : settings.quotationTemplate.terms).split('\n').filter(Boolean)
+  terms.slice(0, 5).forEach((line, i) => pdf.text(`• ${line.replace(/^\d+\.\s*/, '')}`, 14, y + 29 + i * 5, { maxWidth: 105 }))
+
+  const tx = pageWidth - 78
+  pdf.setFillColor(248, 249, 251); pdf.roundedRect(tx, y - 4, 64, 42, 3, 3, 'F')
+  const totalLines = [['Sub Total', doc.totals.taxable], ['Total GST', doc.totals.gst], ['Total Amount', doc.totals.grand]]
+  pdf.setFontSize(8); pdf.setTextColor(...dark); totalLines.forEach(([label, value], i) => { pdf.text(String(label), tx + 5, y + 4 + i * 8); pdf.text(moneyPlain(Number(value)), tx + 58, y + 4 + i * 8, { align: 'right' }) })
+  pdf.setFillColor(...red); pdf.roundedRect(tx, y + 24, 64, 12, 2, 2, 'F')
+  pdf.setTextColor(255, 255, 255); pdf.setFont('helvetica', 'bold'); pdf.text('Grand Total', tx + 5, y + 32); pdf.text(moneyPlain(doc.totals.final), tx + 58, y + 32, { align: 'right' })
+
+  pdf.setTextColor(...dark); pdf.setFontSize(8); pdf.text(settings.company.companyName || 'BSM India', pageWidth - 14, 270, { align: 'right' })
+  pdf.setFont('helvetica', 'bold'); pdf.text('Authorized Signatory', pageWidth - 14, 280, { align: 'right' })
+  const pages = pdf.getNumberOfPages(); for (let i = 1; i <= pages; i++) { pdf.setPage(i); pdf.setFontSize(8); pdf.setTextColor(...muted); pdf.text(`${title} • Page ${i} of ${pages}`, pageWidth / 2, 292, { align: 'center' }) }
   pdf.save(`${doc.number.replaceAll('/', '-')}.pdf`)
 }
 
@@ -492,7 +561,6 @@ function moneyPlain(v: number) { return new Intl.NumberFormat('en-IN', { maximum
 function nextNumber(format: string, fy: string, next: number, pad: number) { return format.replace('{{financial_year}}', fy).replace('{{number}}', String(next).padStart(pad, '0')) }
 function formatDate(v: string) { return new Date(v).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) }
 function labelize(s: string) { return s.replace(/([A-Z])/g, ' $1').replace(/^./, (m) => m.toUpperCase()) }
-function renderTemplate(t: string, doc: SavedDocument, settings: Settings) { const data = { ...doc.headerData, quotation_number: doc.number, quotation_date: doc.date, taxable_amount: money(doc.totals.taxable), total_gst: money(doc.totals.gst), grand_total: money(doc.totals.final), amount_in_words: doc.totals.words, terms_and_conditions: settings.quotationTemplate.terms, bank_details: settings.quotationTemplate.bankDetails, signature: settings.quotationTemplate.signatureText, company_logo: settings.company.logoText, company_name: settings.company.companyName }; return Object.entries(data).reduce((text, [k, v]) => text.replaceAll(`{{${k}}}`, String(v || '')), t) }
 function numberToWords(n: number): string { if (n === 0) return 'Zero'; const ones = ['', 'One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen']; const tens = ['', '', 'Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety']; const under100 = (x: number): string => x < 20 ? ones[x] : `${tens[Math.floor(x / 10)]} ${ones[x % 10]}`.trim(); const under1000 = (x: number): string => x < 100 ? under100(x) : `${ones[Math.floor(x / 100)]} Hundred ${under100(x % 100)}`.trim(); let out = ''; const crore = Math.floor(n / 10000000); n %= 10000000; const lakh = Math.floor(n / 100000); n %= 100000; const thousand = Math.floor(n / 1000); n %= 1000; if (crore) out += `${under1000(crore)} Crore `; if (lakh) out += `${under1000(lakh)} Lakh `; if (thousand) out += `${under1000(thousand)} Thousand `; if (n) out += under1000(n); return out.trim() }
 
 export default App
