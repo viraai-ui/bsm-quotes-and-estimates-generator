@@ -190,7 +190,7 @@ function App() {
       .then((cloud) => {
         if (cancelled) return
         if (cloud?.settings) setSettings(cloud.settings)
-        if (Array.isArray(cloud?.documents)) setDocuments(cloud.documents)
+        if (Array.isArray(cloud?.documents) && cloud.documents.length > 0) setDocuments(cloud.documents)
       })
       .catch(() => {})
       .finally(() => { if (!cancelled) setCloudLoaded(true) })
