@@ -1,0 +1,194 @@
+.documents-module {
+  margin-top: 0;
+}
+
+.document-card {
+  padding: 16px !important;
+  border-radius: 22px;
+}
+
+.records-list .document-card {
+  display: grid;
+  align-items: center;
+  gap: 12px;
+}
+
+.compact-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 28px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  color: #991b1b !important;
+  background: #fff1f2;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.compact-doc-actions {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 44px;
+  gap: 8px;
+  justify-content: end;
+}
+
+.compact-doc-actions button {
+  min-width: 44px;
+  min-height: 42px;
+  padding: 0;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.compact-doc-actions button[aria-label="Edit"],
+.compact-doc-actions button[aria-label="Duplicate"] {
+  font-size: 18px;
+}
+
+.compact-doc-actions .danger-action {
+  font-size: 16px;
+}
+
+.records-grid .compact-doc-actions {
+  justify-content: stretch;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-auto-flow: initial;
+  grid-auto-columns: initial;
+}
+
+.records-grid .compact-doc-actions button {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .documents-module {
+    gap: 12px !important;
+    padding: 18px !important;
+    border-radius: 26px !important;
+  }
+
+  .documents-hero {
+    gap: 12px !important;
+    padding: 0 0 12px !important;
+  }
+
+  .documents-hero h2 {
+    font-size: 28px !important;
+    line-height: 1;
+  }
+
+  .documents-hero span {
+    font-size: 14px;
+  }
+
+  .documents-hero .search {
+    min-height: 48px;
+    border-radius: 18px;
+  }
+
+  .documents-toolbar {
+    gap: 10px !important;
+  }
+
+  .documents-toolbar .tabbar {
+    width: 100%;
+    padding: 5px;
+    border-radius: 19px;
+  }
+
+  .documents-toolbar .tabbar button {
+    min-height: 52px;
+    border-radius: 15px;
+  }
+
+  .documents-toolbar .view-toggle {
+    display: none !important;
+  }
+
+  .records,
+  .records-grid,
+  .records-list {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .document-card,
+  .records-grid .document-card,
+  .records-list .document-card {
+    min-height: 0 !important;
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    grid-template-areas:
+      "main status"
+      "amount amount"
+      "actions actions"
+      "date date";
+    gap: 8px 10px !important;
+    align-items: start;
+    width: 100%;
+    padding: 14px !important;
+    border-radius: 20px !important;
+    box-shadow: 0 12px 28px rgba(17, 24, 39, 0.06) !important;
+  }
+
+  .document-card .doc-main { grid-area: main; min-width: 0; gap: 2px; }
+  .document-card .doc-main strong {
+    overflow-wrap: anywhere;
+    font-size: 14px !important;
+    line-height: 1.25;
+  }
+  .document-card .doc-main span { font-size: 12px; }
+
+  .document-card .compact-status {
+    grid-area: status;
+    justify-self: end;
+    min-height: 24px;
+    padding: 3px 9px;
+    font-size: 11px;
+  }
+
+  .document-card .doc-amount {
+    grid-area: amount;
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 14px;
+    background: #f9fafb;
+  }
+
+  .document-card .doc-amount strong {
+    font-size: 20px !important;
+    line-height: 1;
+  }
+
+  .document-card .doc-amount span {
+    font-size: 12px;
+  }
+
+  .document-card .compact-doc-actions {
+    grid-area: actions;
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+    width: 100%;
+  }
+
+  .document-card .compact-doc-actions button {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px !important;
+    border-radius: 13px !important;
+  }
+
+  .document-card small {
+    grid-area: date;
+    font-size: 11px;
+  }
+}

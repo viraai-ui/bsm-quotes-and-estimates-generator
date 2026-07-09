@@ -11,6 +11,7 @@ import './quote-refine.css'
 import './mobile-audit.css'
 import './estimate-flow.css'
 import './documents-saas.css'
+import './documents-compact.css'
 import './settings-auth.css'
 import './logo-upload.css'
 import './mobile-app-polish.css'
@@ -250,7 +251,7 @@ function App() {
         <nav>{nav.map(([key, label]) => <button key={key} className={active === key ? 'active' : ''} onClick={() => setActive(key)}>{label}</button>)}</nav>
       </aside>
       <section className="workspace">
-        <header className="topbar"><div><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div></header>
+        {active !== 'documents' && <header className="topbar"><div><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div></header>}
 
         {active === 'quotation' && <div className="page-grid quote-flow">
           <section className="panel wide"><div className="section-title"><div><h2>Step 1. Quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={quoteData} setData={setQuoteData} /></section>
@@ -334,7 +335,7 @@ function DocumentsView({ documents, tab, setTab, onEdit, onDuplicate, onPdf, onE
       <div className="tabbar"><button className={tab === 'quotation' ? 'active' : ''} onClick={() => setTab('quotation')}>Quotations</button><button className={tab === 'estimate' ? 'active' : ''} onClick={() => setTab('estimate')}>Estimates</button></div>
       <div className="view-toggle"><button className={view === 'list' ? 'active' : ''} onClick={() => setView('list')}>List</button><button className={view === 'grid' ? 'active' : ''} onClick={() => setView('grid')}>Grid</button></div>
     </div>
-    <div className={`records ${view === 'grid' ? 'records-grid' : 'records-list'}`}>{docs.length === 0 && <div className="empty">No generated {tab}s yet. Complete the form and click Generate PDF.</div>}{docs.map((doc) => <article key={doc.id} className="record-card document-card"><div className="doc-main"><strong>{doc.number}</strong><span>{doc.customer} {doc.company ? `• ${doc.company}` : ''}</span></div><div className="doc-amount"><strong>{money(doc.totals.final)}</strong><span>{doc.date}</span></div><span className="status">{doc.status}</span><div className="mini-actions"><button onClick={() => confirmAction('edit this document', () => onEdit(doc))}>Edit</button><button onClick={() => confirmAction('duplicate this document', () => onDuplicate(doc))}>Duplicate</button><button onClick={() => onPdf(doc)}>PDF</button><button onClick={() => onExcel(doc)}>Excel</button><button className="danger-action" onClick={() => confirmAction('delete this document', () => onDelete(doc.id))}>Delete</button></div><small>Generated {formatDate(doc.updatedAt)}</small></article>)}</div>
+    <div className={`records ${view === 'grid' ? 'records-grid' : 'records-list'}`}>{docs.length === 0 && <div className="empty">No generated {tab}s yet. Complete the form and click Generate PDF.</div>}{docs.map((doc) => <article key={doc.id} className="record-card document-card"><div className="doc-main"><strong>{doc.number}</strong><span>{doc.customer} {doc.company ? `• ${doc.company}` : ''}</span></div><div className="doc-amount"><strong>{money(doc.totals.final)}</strong><span>{doc.date}</span></div><span className="status compact-status">{doc.status}</span><div className="mini-actions compact-doc-actions"><button title="Edit" aria-label="Edit" onClick={() => confirmAction('edit this document', () => onEdit(doc))}>✎</button><button title="Duplicate" aria-label="Duplicate" onClick={() => confirmAction('duplicate this document', () => onDuplicate(doc))}>⧉</button><button title="PDF" aria-label="PDF" onClick={() => onPdf(doc)}>PDF</button><button title="Excel" aria-label="Excel" onClick={() => onExcel(doc)}>XLS</button><button title="Delete" aria-label="Delete" className="danger-action" onClick={() => confirmAction('delete this document', () => onDelete(doc.id))}>🗑</button></div><small>Generated {formatDate(doc.updatedAt)}</small></article>)}</div>
   </section>
 }
 
