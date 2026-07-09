@@ -1,0 +1,77 @@
+.edit-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(17, 24, 39, 0.52);
+  backdrop-filter: blur(10px);
+}
+
+.edit-modal-card {
+  width: min(1120px, 100%);
+  max-height: 92dvh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #f6f7f9;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.28);
+}
+
+.edit-modal-head,
+.edit-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px;
+  background: #ffffff;
+  border-bottom: 1px solid #e8eaef;
+}
+
+.edit-modal-head h2 { margin: 0; }
+.edit-modal-head span { color: #6b7280; font-weight: 800; }
+
+.edit-modal-scroll {
+  display: grid;
+  gap: 14px;
+  overflow: auto;
+  padding: 16px;
+}
+
+.edit-modal-scroll .line-panel {
+  box-shadow: 0 12px 34px rgba(17, 24, 39, 0.06);
+}
+
+.edit-modal-actions {
+  justify-content: flex-end;
+  border-top: 1px solid #e8eaef;
+  border-bottom: 0;
+}
+
+.edit-modal-actions button {
+  min-width: 170px;
+  min-height: 50px;
+}
+
+@media (max-width: 720px) {
+  .edit-modal-backdrop { padding: 0; place-items: stretch; }
+  .edit-modal-card {
+    width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+  .edit-modal-head,
+  .edit-modal-actions {
+    padding: 14px;
+  }
+  .edit-modal-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .edit-modal-actions button { width: 100%; }
+  .edit-modal-scroll { padding: 12px; }
+}

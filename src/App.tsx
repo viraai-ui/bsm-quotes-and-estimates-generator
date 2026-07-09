@@ -16,6 +16,8 @@ import './settings-auth.css'
 import './logo-upload.css'
 import './mobile-app-polish.css'
 import './mobile-summary-fix.css'
+import './edit-modal.css'
+import { DEFAULT_BSM_LOGO } from './assets/bsmLogoData'
 
 type FieldType = 'Text' | 'Number' | 'Date' | 'Dropdown' | 'Textarea' | 'Email' | 'Phone' | 'Image/File' | 'Checkbox'
 type Status = 'Draft' | 'Generated' | 'Final' | 'Archived'
@@ -147,7 +149,7 @@ function field(key: string, label: string, type: FieldType, mandatory = false, d
 
 const defaultSettings: Settings = {
   company: {
-    logoText: 'BSM', companyName: 'BSM India', address: 'Delhi, India', phone: '+91 XXXXX XXXXX', email: 'info@bsmindia.com', website: 'www.bsmindia.com', gstin: 'GSTIN to be updated', cin: '',
+    logoText: 'BSM', logoImage: DEFAULT_BSM_LOGO, companyName: 'BSM India', address: 'Delhi, India', phone: '+91 XXXXX XXXXX', email: 'info@bsmindia.com', website: 'www.bsmindia.com', gstin: 'GSTIN to be updated', cin: '',
   },
   security: { settingsPassword: '1231' },
   quotationFields,
@@ -175,7 +177,6 @@ function App() {
   const [documents, setDocuments] = usePersistentState<SavedDocument[]>(STORAGE_DOCS, [])
   const [cloudLoaded, setCloudLoaded] = useState(false)
   const cloudSaveTimer = useRef<number | null>(null)
-  const [editingId, setEditingId] = useState<string | null>(null)
   const [quoteData, setQuoteData] = useState<Record<string, string>>(() => makeDefaults(defaultSettings.quotationFields))
   const [estimateData, setEstimateData] = useState<Record<string, string>>(() => ({ ...makeDefaults(defaultSettings.estimateFields), estimate_number: nextNumber(defaultSettings.numbering.estimate, defaultSettings.numbering.financialYear, defaultSettings.numbering.nextEstimate, defaultSettings.numbering.padding), estimate_date: today() }))
   const [items, setItems] = useState<QuoteItem[]>([newItem(defaultSettings.tax.defaultGst)])
@@ -189,7 +190,7 @@ function App() {
       .then((r) => r.ok ? r.json() : Promise.reject(new Error('Cloud state unavailable')))
       .then((cloud) => {
         if (cancelled) return
-        if (cloud?.settings) setSettings(cloud.settings)
+        if (cloud?.settings) setSettings({ ...defaultSettings, ...cloud.settings, company: { ...defaultSettings.company, ...cloud.settings.company, logoImage: cloud.settings.company?.logoImage || DEFAULT_BSM_LOGO } })
         if (Array.isArray(cloud?.documents) && cloud.documents.length > 0) setDocuments(cloud.documents)
       })
       .catch(() => {})
@@ -220,10 +221,10 @@ function App() {
     const number = quoteData.quotation_number || nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding)
     const now = new Date().toISOString()
     const doc: SavedDocument = {
-      id: editingId || crypto.randomUUID(), type: 'quotation', number, date: quoteData.quotation_date || today(), customer: quoteData.customer_name || 'Customer', company: quoteData.company_name, headerData: { ...quoteData, quotation_number: number }, items, totals, status, createdBy: quoteData.salesperson_name || 'Admin', createdAt: now, updatedAt: now,
+      id: crypto.randomUUID(), type: 'quotation', number, date: quoteData.quotation_date || today(), customer: quoteData.customer_name || 'Customer', company: quoteData.company_name, headerData: { ...quoteData, quotation_number: number }, items, totals, status, createdBy: quoteData.salesperson_name || 'Admin', createdAt: now, updatedAt: now,
     }
-    setDocuments((docs) => editingId ? docs.map((d) => d.id === editingId ? { ...doc, createdAt: d.createdAt, updatedAt: now } : d) : [doc, ...docs])
-    if (!editingId) setSettings((s) => ({ ...s, numbering: { ...s.numbering, nextQuotation: s.numbering.nextQuotation + 1 } }))
+    setDocuments((docs) => [doc, ...docs])
+    setSettings((s) => ({ ...s, numbering: { ...s.numbering, nextQuotation: s.numbering.nextQuotation + 1 } }))
     setQuoteData((d) => ({ ...d, quotation_number: nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation + 1, settings.numbering.padding) }))
     return doc
   }
@@ -255,24 +256,24 @@ function App() {
     downloadQuotationPdf(doc, settings)
   }
 
-  function editDocument(doc: SavedDocument) {
-    setEditingId(doc.id)
-    setQuoteData(doc.headerData)
-    setItems(doc.items.length ? doc.items : [newItem(settings.tax.defaultGst)])
-    setActive(doc.type === 'quotation' ? 'quotation' : 'estimate')
+  function duplicateDocument(doc: SavedDocument) {
+    const isEstimate = doc.type === 'estimate'
+    const number = isEstimate
+      ? nextNumber(settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate, settings.numbering.padding)
+      : nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding)
+    const copy: SavedDocument = { ...doc, id: crypto.randomUUID(), number, headerData: { ...doc.headerData, [isEstimate ? 'estimate_number' : 'quotation_number']: number }, items: doc.items.map((i) => ({ ...i, id: crypto.randomUUID() })), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    setDocuments((docs) => [copy, ...docs])
+    setSettings((s) => ({ ...s, numbering: isEstimate ? { ...s.numbering, nextEstimate: s.numbering.nextEstimate + 1 } : { ...s.numbering, nextQuotation: s.numbering.nextQuotation + 1 } }))
   }
 
-  function duplicateDocument(doc: SavedDocument) {
-    setEditingId(null)
-    setQuoteData({ ...doc.headerData, quotation_number: nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation + 1, settings.numbering.padding) })
-    setItems(doc.items.map((i) => ({ ...i, id: crypto.randomUUID() })))
-    setActive('quotation')
+  function updateDocument(doc: SavedDocument) {
+    setDocuments((docs) => docs.map((d) => d.id === doc.id ? { ...doc, updatedAt: new Date().toISOString() } : d))
   }
 
   return (
     <main className="dashboard-shell">
       <aside className="sidebar">
-        <div className="logo-block"><div className="logo">{settings.company.logoImage ? <img src={settings.company.logoImage} alt="BSM logo" /> : (settings.company.logoText || 'BSM')}</div><div><strong>{settings.company.companyName}</strong><span>Quote Studio</span></div></div>
+        <div className="logo-block"><div className="logo">{(settings.company.logoImage || DEFAULT_BSM_LOGO) ? <img src={settings.company.logoImage || DEFAULT_BSM_LOGO} alt="BSM logo" /> : (settings.company.logoText || 'BSM')}</div><div><strong>{settings.company.companyName}</strong><span>Quote Studio</span></div></div>
         <nav>{nav.map(([key, label]) => <button key={key} className={active === key ? 'active' : ''} onClick={() => setActive(key)}>{label}</button>)}</nav>
       </aside>
       <section className="workspace">
@@ -285,7 +286,7 @@ function App() {
         </div>}
 
         {active === 'estimate' && <EstimateView settings={settings} totals={totals} items={items} setItems={setItems} estimateData={estimateData} setEstimateData={setEstimateData} onPdf={generateEstimatePdf} onExcel={() => downloadExcel(saveEstimate('Generated'), settings)} />}
-        {active === 'documents' && <DocumentsView documents={documents} tab={docTab} setTab={setDocTab} onEdit={editDocument} onDuplicate={duplicateDocument} onPdf={(d) => downloadQuotationPdf(d, settings)} onExcel={(d) => downloadExcel(d, settings)} onDelete={(id) => setDocuments((docs) => docs.filter((d) => d.id !== id))} />}
+        {active === 'documents' && <DocumentsView documents={documents} tab={docTab} setTab={setDocTab} settings={settings} onSave={updateDocument} onDuplicate={duplicateDocument} onPdf={(d) => downloadQuotationPdf(d, settings)} onExcel={(d) => downloadExcel(d, settings)} onDelete={(id) => setDocuments((docs) => docs.filter((d) => d.id !== id))} />}
         {active === 'settings' && <SettingsView settings={settings} setSettings={setSettings} />}
       </section>
     </main>
@@ -346,11 +347,38 @@ function LineItemsPanel({ items, setItems, settings, mode = 'quotation' }: { ite
   </section>
 }
 
-function DocumentsView({ documents, tab, setTab, onEdit, onDuplicate, onPdf, onExcel, onDelete }: { documents: SavedDocument[]; tab: 'quotation' | 'estimate'; setTab: (t: 'quotation' | 'estimate') => void; onEdit: (d: SavedDocument) => void; onDuplicate: (d: SavedDocument) => void; onPdf: (d: SavedDocument) => void; onExcel: (d: SavedDocument) => void; onDelete: (id: string) => void }) {
+function DocumentsView({ documents, tab, setTab, settings, onSave, onDuplicate, onPdf, onExcel, onDelete }: { documents: SavedDocument[]; tab: 'quotation' | 'estimate'; setTab: (t: 'quotation' | 'estimate') => void; settings: Settings; onSave: (d: SavedDocument) => void; onDuplicate: (d: SavedDocument) => void; onPdf: (d: SavedDocument) => void; onExcel: (d: SavedDocument) => void; onDelete: (id: string) => void }) {
   const [search, setSearch] = useState('')
   const [view, setView] = useState<'list' | 'grid'>('list')
+  const [editing, setEditing] = useState<SavedDocument | null>(null)
+  const [editData, setEditData] = useState<Record<string, string>>({})
+  const [editItems, setEditItems] = useState<QuoteItem[]>([])
   const docs = documents.filter((d) => d.type === tab && d.status !== 'Draft' && JSON.stringify(d).toLowerCase().includes(search.toLowerCase()))
   const confirmAction = (label: string, action: () => void) => { if (window.confirm(`Are you sure you want to ${label}?`)) action() }
+  const openEdit = (doc: SavedDocument) => { setEditing(doc); setEditData({ ...doc.headerData }); setEditItems(doc.items.map((i) => ({ ...i }))) }
+  const editTotals = useMemo(() => computeTotals(editItems, settings.tax), [editItems, settings.tax])
+  const saveEdit = (download = false) => {
+    if (!editing) return
+    const isEstimate = editing.type === 'estimate'
+    const numberKey = isEstimate ? 'estimate_number' : 'quotation_number'
+    const saved: SavedDocument = {
+      ...editing,
+      number: editData[numberKey] || editing.number,
+      date: editData[isEstimate ? 'estimate_date' : 'quotation_date'] || editing.date,
+      customer: editData.customer_name || editing.customer,
+      company: editData.company_name || editing.company,
+      location: editData.location || editing.location,
+      headerData: { ...editData, [numberKey]: editData[numberKey] || editing.number },
+      items: editItems,
+      totals: editTotals,
+      updatedAt: new Date().toISOString(),
+      status: 'Generated',
+    }
+    onSave(saved)
+    if (download) onPdf(saved)
+    setEditing(null)
+  }
+
   return <section className="panel documents-module">
     <div className="documents-hero">
       <div><h2>Documents</h2><span>{docs.length} {tab === 'quotation' ? 'quotations' : 'estimates'} generated</span></div>
@@ -360,8 +388,25 @@ function DocumentsView({ documents, tab, setTab, onEdit, onDuplicate, onPdf, onE
       <div className="tabbar"><button className={tab === 'quotation' ? 'active' : ''} onClick={() => setTab('quotation')}>Quotations</button><button className={tab === 'estimate' ? 'active' : ''} onClick={() => setTab('estimate')}>Estimates</button></div>
       <div className="view-toggle"><button className={view === 'list' ? 'active' : ''} onClick={() => setView('list')}>List</button><button className={view === 'grid' ? 'active' : ''} onClick={() => setView('grid')}>Grid</button></div>
     </div>
-    <div className={`records ${view === 'grid' ? 'records-grid' : 'records-list'}`}>{docs.length === 0 && <div className="empty">No generated {tab}s yet. Complete the form and click Generate PDF.</div>}{docs.map((doc) => <article key={doc.id} className="record-card document-card"><div className="doc-main"><strong>{doc.number}</strong><span>{doc.customer} {doc.company ? `• ${doc.company}` : ''}</span></div><div className="doc-amount"><strong>{money(doc.totals.final)}</strong><span>{doc.date}</span></div><span className="status compact-status">{doc.status}</span><div className="mini-actions compact-doc-actions"><button title="Edit" aria-label="Edit" onClick={() => confirmAction('edit this document', () => onEdit(doc))}>✎</button><button title="Duplicate" aria-label="Duplicate" onClick={() => confirmAction('duplicate this document', () => onDuplicate(doc))}>⧉</button><button title="PDF" aria-label="PDF" onClick={() => onPdf(doc)}>PDF</button><button title="Excel" aria-label="Excel" onClick={() => onExcel(doc)}>XLS</button><button title="Delete" aria-label="Delete" className="danger-action" onClick={() => confirmAction('delete this document', () => onDelete(doc.id))}>🗑</button></div><small>Generated {formatDate(doc.updatedAt)}</small></article>)}</div>
+    <div className={`records ${view === 'grid' ? 'records-grid' : 'records-list'}`}>{docs.length === 0 && <div className="empty">No generated {tab}s yet. Complete the form and click Generate PDF.</div>}{docs.map((doc) => <article key={doc.id} className="record-card document-card"><div className="doc-main"><strong>{doc.number}</strong><span>{doc.customer} {doc.company ? `• ${doc.company}` : ''}</span></div><div className="doc-amount"><strong>{money(doc.totals.final)}</strong><span>{doc.date}</span></div><span className="status compact-status">{doc.status}</span><div className="mini-actions compact-doc-actions"><button title="Edit" aria-label="Edit" onClick={() => openEdit(doc)}>✎</button><button title="Duplicate" aria-label="Duplicate" onClick={() => confirmAction('duplicate this document', () => onDuplicate(doc))}>⧉</button><button title="PDF" aria-label="PDF" onClick={() => onPdf(doc)}>PDF</button><button title="Excel" aria-label="Excel" onClick={() => onExcel(doc)}>XLS</button><button title="Delete" aria-label="Delete" className="danger-action" onClick={() => confirmAction('delete this document', () => onDelete(doc.id))}>🗑</button></div><small>Generated {formatDate(doc.updatedAt)}</small></article>)}</div>
+    {editing && <DocumentEditModal doc={editing} data={editData} setData={setEditData} items={editItems} setItems={setEditItems} settings={settings} totals={editTotals} onClose={() => setEditing(null)} onSave={() => saveEdit(false)} onPdf={() => saveEdit(true)} />}
   </section>
+}
+
+function DocumentEditModal({ doc, data, setData, items, setItems, settings, totals, onClose, onSave, onPdf }: { doc: SavedDocument; data: Record<string, string>; setData: React.Dispatch<React.SetStateAction<Record<string, string>>>; items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; settings: Settings; totals: Totals; onClose: () => void; onSave: () => void; onPdf: () => void }) {
+  const isEstimate = doc.type === 'estimate'
+  const fields = (isEstimate ? settings.estimateFields : settings.quotationFields).filter((f) => f.visible && f.key !== 'notes' && f.key !== 'salesperson_name').sort((a, b) => a.sortOrder - b.sortOrder)
+  return <div className="edit-modal-backdrop" role="dialog" aria-modal="true">
+    <div className="edit-modal-card">
+      <div className="edit-modal-head"><div><h2>Edit {isEstimate ? 'Estimate' : 'Quotation'}</h2><span>{doc.number}</span></div><button className="ghost" onClick={onClose}>Close</button></div>
+      <div className="edit-modal-scroll">
+        <section className="panel"><h2>Details</h2><DynamicForm fields={fields} data={data} setData={setData} /></section>
+        <LineItemsPanel items={items} setItems={setItems} settings={settings} mode={isEstimate ? 'estimate' : 'quotation'} />
+        <section className="panel summary-card final-step"><h2>{money(totals.final)}</h2><div className="summary-grid"><div className="total-row"><span>Taxable Amount</span><strong>{money(totals.taxable)}</strong></div><div className="total-row"><span>Total GST</span><strong>{settings.tax.gstEnabled ? money(totals.gst) : 'Disabled'}</strong></div><div className="total-row grand"><span>Final Amount</span><strong>{money(totals.final)}</strong></div></div></section>
+      </div>
+      <div className="edit-modal-actions"><button className="ghost" onClick={onSave}>Save Changes</button><button className="primary" onClick={onPdf}>Save & Generate PDF</button></div>
+    </div>
+  </div>
 }
 
 function EstimateView({ settings, totals, items, setItems, estimateData, setEstimateData, onPdf, onExcel }: { settings: Settings; totals: Totals; items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; estimateData: Record<string, string>; setEstimateData: (fn: (d: Record<string, string>) => Record<string, string>) => void; onPdf: () => void; onExcel: () => void }) {
@@ -424,7 +469,7 @@ function CompanySettings({ settings, setSettings }: { settings: Settings; setSet
     const logoImage = await fileToDataUrl(file)
     setSettings((s) => ({ ...s, company: { ...s.company, logoImage } }))
   }
-  return <section className="panel settings-card"><h2>Company Profile</h2><div className="logo-upload-row"><div className="logo-preview">{settings.company.logoImage ? <img src={settings.company.logoImage} alt="Company logo" /> : <span>{settings.company.logoText || 'BSM'}</span>}</div><label className="logo-upload-control"><span>Upload company logo</span><input type="file" accept="image/*" onChange={onLogo} /></label>{settings.company.logoImage && <button className="ghost" onClick={() => setSettings((s) => ({ ...s, company: { ...s.company, logoImage: '' } }))}>Remove Logo</button>}</div><div className="compact-form">{keys.map((k) => <label key={k}><span>{labelize(k)}</span><input value={settings.company[k] || ''} onChange={(e) => setSettings((s) => ({ ...s, company: { ...s.company, [k]: e.target.value } }))} /></label>)}</div><SaveSettingsButton /></section>
+  return <section className="panel settings-card"><h2>Company Profile</h2><div className="logo-upload-row"><div className="logo-preview">{(settings.company.logoImage || DEFAULT_BSM_LOGO) ? <img src={settings.company.logoImage || DEFAULT_BSM_LOGO} alt="Company logo" /> : <span>{settings.company.logoText || 'BSM'}</span>}</div><label className="logo-upload-control"><span>Upload company logo</span><input type="file" accept="image/*" onChange={onLogo} /></label>{settings.company.logoImage && settings.company.logoImage !== DEFAULT_BSM_LOGO && <button className="ghost" onClick={() => setSettings((s) => ({ ...s, company: { ...s.company, logoImage: DEFAULT_BSM_LOGO } }))}>Reset Logo</button>}</div><div className="compact-form">{keys.map((k) => <label key={k}><span>{labelize(k)}</span><input value={settings.company[k] || ''} onChange={(e) => setSettings((s) => ({ ...s, company: { ...s.company, [k]: e.target.value } }))} /></label>)}</div><SaveSettingsButton /></section>
 }
 
 function FieldSettings({ title, fields, onChange }: { title: string; fields: FieldConfig[]; onChange: (f: FieldConfig[]) => void }) {
@@ -482,14 +527,16 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
   const numberKey = isEstimate ? 'estimate_number' : 'quotation_number'
 
   pdf.setFillColor(255, 255, 255); pdf.rect(0, 0, pageWidth, 297, 'F')
-  if (settings.company.logoImage) {
+  const logoImage = settings.company.logoImage || DEFAULT_BSM_LOGO
+  if (logoImage) {
     try {
-      const props = pdf.getImageProperties(settings.company.logoImage)
+      const props = pdf.getImageProperties(logoImage)
       const maxW = 54, maxH = 18
       const ratio = Math.min(maxW / props.width, maxH / props.height)
       const logoW = props.width * ratio
       const logoH = props.height * ratio
-      pdf.addImage(settings.company.logoImage, 'PNG', 14, 10, logoW, logoH)
+      const logoFormat = logoImage.startsWith('data:image/jpeg') || logoImage.startsWith('data:image/jpg') ? 'JPEG' : 'PNG'
+      pdf.addImage(logoImage, logoFormat, 14, 10, logoW, logoH)
     } catch { pdf.setTextColor(...red); pdf.setFontSize(24); pdf.setFont('helvetica', 'bold'); pdf.text(settings.company.logoText || 'BSM', 14, 22) }
   } else {
     pdf.setTextColor(...red); pdf.setFontSize(24); pdf.setFont('helvetica', 'bold'); pdf.text(settings.company.logoText || 'BSM', 14, 22)
