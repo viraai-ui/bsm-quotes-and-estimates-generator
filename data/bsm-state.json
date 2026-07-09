@@ -439,7 +439,7 @@
       "roundOff": false,
       "amountInWords": true,
       "discountEnabled": false,
-      "extraChargesEnabled": true
+      "extraChargesEnabled": false
     },
     "numbering": {
       "quotation": "BSM/QTN/{{financial_year}}/{{number}}",
@@ -981,5 +981,5 @@
       "pdfGeneratedAt": "2026-07-09T07:03:40.279Z"
     }
   ],
-  "updatedAt": "2026-07-09T10:34:17.041Z"
+  "updatedAt": "2026-07-09T10:34:21.581Z"
 }
