@@ -1,0 +1,34 @@
+.settings-lock {
+  max-width: 560px;
+  margin: 72px auto;
+}
+.lock-card {
+  display: grid;
+  gap: 14px;
+  padding: 28px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #ffffff, #fbfbfc);
+  border: 1px solid #edf0f4;
+  box-shadow: 0 24px 70px rgba(17, 24, 39, 0.08);
+}
+.lock-card h2 { margin: 0; font-size: 30px; letter-spacing: -0.04em; }
+.lock-card p { margin: 0; color: #6b7280; font-weight: 700; }
+.lock-card input {
+  min-height: 52px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 0 16px;
+  font: inherit;
+}
+.settings-save-row {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 18px;
+  margin-top: 18px;
+  border-top: 1px solid #eef0f4;
+}
+.settings-save-row .primary { min-width: 150px; }
+@media (max-width: 640px) {
+  .settings-lock { margin: 24px 0; }
+  .settings-save-row .primary { width: 100%; }
+}

@@ -11,6 +11,7 @@ import './quote-refine.css'
 import './mobile-audit.css'
 import './estimate-flow.css'
 import './documents-saas.css'
+import './settings-auth.css'
 
 type FieldType = 'Text' | 'Number' | 'Date' | 'Dropdown' | 'Textarea' | 'Email' | 'Phone' | 'Image/File' | 'Checkbox'
 type Status = 'Draft' | 'Generated' | 'Final' | 'Archived'
@@ -51,6 +52,7 @@ type TaxSettings = {
 
 type Settings = {
   company: Record<string, string>
+  security: { settingsPassword: string }
   quotationFields: FieldConfig[]
   quotationLineFields: FieldConfig[]
   estimateFields: FieldConfig[]
@@ -143,6 +145,7 @@ const defaultSettings: Settings = {
   company: {
     logoText: 'BSM', companyName: 'BSM India', address: 'Delhi, India', phone: '+91 XXXXX XXXXX', email: 'info@bsmindia.com', website: 'www.bsmindia.com', gstin: 'GSTIN to be updated', cin: '',
   },
+  security: { settingsPassword: '1231' },
   quotationFields,
   quotationLineFields: lineFields,
   estimateFields,
@@ -328,18 +331,26 @@ function EstimateView({ settings, totals, items, setItems, estimateData, setEsti
 
 function SettingsView({ settings, setSettings }: { settings: Settings; setSettings: React.Dispatch<React.SetStateAction<Settings>> }) {
   const [section, setSection] = useState('company')
+  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem('bsm_settings_unlocked') === 'yes')
+  const [password, setPassword] = useState('')
+  const settingsPassword = settings.security?.settingsPassword || '1231'
   const sections = [
     ['company', 'Company Profile', 'Logo, contact and GST details'],
     ['quote-fields', 'Quotation Fields', 'Header form configuration'],
     ['quote-items', 'Line Items', 'Product table columns'],
     ['quote-template', 'Quotation Template', 'PDF letter editor'],
     ['estimate-fields', 'Estimate Fields', 'Estimate form configuration'],
-
     ['estimate-template', 'Estimate Template', 'Estimate PDF editor'],
     ['tax', 'Tax & Calculation', 'GST and amount in words'],
     ['numbering', 'Numbering', 'Document formats'],
     ['bank', 'Bank & Signature', 'Payment and sign-off'],
+    ['security', 'Security', 'Settings password'],
   ]
+  const unlock = () => {
+    if (password === settingsPassword) { sessionStorage.setItem('bsm_settings_unlocked', 'yes'); setUnlocked(true); setPassword('') }
+    else window.alert('Incorrect settings password')
+  }
+  if (!unlocked) return <section className="panel settings-lock"><div className="lock-card"><p className="kicker">Protected area</p><h2>Settings locked</h2><p>Enter the settings password to continue.</p><input type="password" value={password} placeholder="Password" onChange={(e) => setPassword(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') unlock() }} /><button className="primary full" onClick={unlock}>Unlock Settings</button></div></section>
   return <div className="settings-saas">
     <aside className="settings-menu">
       <p className="kicker">Admin console</p>
@@ -347,57 +358,64 @@ function SettingsView({ settings, setSettings }: { settings: Settings; setSettin
       <div className="settings-menu-list">{sections.map(([key, label, desc]) => <button key={key} className={section === key ? 'active' : ''} onClick={() => setSection(key)}><strong>{label}</strong><span>{desc}</span></button>)}</div>
     </aside>
     <section className="settings-content">
-      <div className="settings-content-head"><div><p className="kicker">Backend configuration</p><h2>{sections.find(([key]) => key === section)?.[1]}</h2></div><span className="pill">Auto-saved locally</span></div>
+      <div className="settings-content-head"><div><p className="kicker">Backend configuration</p><h2>{sections.find(([key]) => key === section)?.[1]}</h2></div><span className="pill">Manual save enabled</span></div>
       {section === 'company' && <CompanySettings settings={settings} setSettings={setSettings} />}
       {section === 'quote-fields' && <FieldSettings title="Quotation Field Settings" fields={settings.quotationFields} onChange={(quotationFields) => setSettings((s) => ({ ...s, quotationFields }))} />}
       {section === 'quote-items' && <FieldSettings title="Quotation Line Item Settings" fields={settings.quotationLineFields} onChange={(quotationLineFields) => setSettings((s) => ({ ...s, quotationLineFields }))} />}
       {section === 'quote-template' && <TemplateEditor title="Quotation Template Editor" template={settings.quotationTemplate} onChange={(quotationTemplate) => setSettings((s) => ({ ...s, quotationTemplate }))} />}
       {section === 'estimate-fields' && <FieldSettings title="Estimate Field Settings" fields={settings.estimateFields} onChange={(estimateFields) => setSettings((s) => ({ ...s, estimateFields }))} />}
-      {section === 'estimate-categories' && <EstimateCategorySettings settings={settings} setSettings={setSettings} />}
       {section === 'estimate-template' && <TemplateEditor title="Estimate Template Editor" template={settings.estimateTemplate} onChange={(estimateTemplate) => setSettings((s) => ({ ...s, estimateTemplate }))} />}
       {section === 'tax' && <TaxSettingsPanel settings={settings} setSettings={setSettings} />}
       {section === 'numbering' && <NumberingSettings settings={settings} setSettings={setSettings} />}
       {section === 'bank' && <BankSignatureSettings settings={settings} setSettings={setSettings} />}
+      {section === 'security' && <SecuritySettings settings={settings} setSettings={setSettings} />}
     </section>
   </div>
 }
 
 function CompanySettings({ settings, setSettings }: { settings: Settings; setSettings: React.Dispatch<React.SetStateAction<Settings>> }) {
   const keys = ['logoText', 'companyName', 'address', 'phone', 'email', 'website', 'gstin', 'cin']
-  return <section className="panel settings-card"><p className="kicker">Company Profile Settings</p><h2>Company Profile</h2><div className="compact-form">{keys.map((k) => <label key={k}><span>{labelize(k)}</span><input value={settings.company[k] || ''} onChange={(e) => setSettings((s) => ({ ...s, company: { ...s.company, [k]: e.target.value } }))} /></label>)}</div></section>
+  return <section className="panel settings-card"><p className="kicker">Company Profile Settings</p><h2>Company Profile</h2><div className="compact-form">{keys.map((k) => <label key={k}><span>{labelize(k)}</span><input value={settings.company[k] || ''} onChange={(e) => setSettings((s) => ({ ...s, company: { ...s.company, [k]: e.target.value } }))} /></label>)}</div><SaveSettingsButton /></section>
 }
 
 function FieldSettings({ title, fields, onChange }: { title: string; fields: FieldConfig[]; onChange: (f: FieldConfig[]) => void }) {
   const update = (id: string, patch: Partial<FieldConfig>) => onChange(fields.map((f) => f.id === id ? { ...f, ...patch } : f))
   const add = () => onChange([...fields, { ...field(`custom_${Date.now()}`, 'New Custom Field', 'Text'), id: crypto.randomUUID(), sortOrder: fields.length + 1 }])
-  return <section className="panel settings-card field-settings-panel"><div className="section-title"><div><p className="kicker">Admin configurable</p><h2>{title}</h2></div><button className="ghost" onClick={add}>+ Add field</button></div><div className="field-settings-table"><div className="field-settings-head"><span>Field</span><span>Type</span><span>Order</span><span>Visibility</span></div>{fields.map((f) => <article key={f.id} className={`field-config-row ${!f.visible ? 'muted-row' : ''}`}><input className="field-label-input" value={f.label} onChange={(e) => update(f.id, { label: e.target.value })} /><select value={f.type} onChange={(e) => update(f.id, { type: e.target.value as FieldType })}>{['Text','Number','Date','Dropdown','Textarea','Email','Phone','Image/File','Checkbox'].map((t) => <option key={t}>{t}</option>)}</select><input className="order-input" type="number" value={f.sortOrder} onChange={(e) => update(f.id, { sortOrder: Number(e.target.value) })} /><div className="settings-switches"><Toggle label="Visible" value={f.visible} onChange={(visible) => update(f.id, { visible })} /><Toggle label="Required" value={f.mandatory} onChange={(mandatory) => update(f.id, { mandatory })} /><Toggle label="PDF" value={f.showPdf} onChange={(showPdf) => update(f.id, { showPdf })} /><Toggle label="Excel" value={f.showExcel} onChange={(showExcel) => update(f.id, { showExcel })} /></div></article>)}</div></section>
+  return <section className="panel settings-card field-settings-panel"><div className="section-title"><div><p className="kicker">Admin configurable</p><h2>{title}</h2></div><button className="ghost" onClick={add}>+ Add field</button></div><div className="field-settings-table"><div className="field-settings-head"><span>Field</span><span>Type</span><span>Order</span><span>Visibility</span></div>{fields.map((f) => <article key={f.id} className={`field-config-row ${!f.visible ? 'muted-row' : ''}`}><input className="field-label-input" value={f.label} onChange={(e) => update(f.id, { label: e.target.value })} /><select value={f.type} onChange={(e) => update(f.id, { type: e.target.value as FieldType })}>{['Text','Number','Date','Dropdown','Textarea','Email','Phone','Image/File','Checkbox'].map((t) => <option key={t}>{t}</option>)}</select><input className="order-input" type="number" value={f.sortOrder} onChange={(e) => update(f.id, { sortOrder: Number(e.target.value) })} /><div className="settings-switches"><Toggle label="Visible" value={f.visible} onChange={(visible) => update(f.id, { visible })} /><Toggle label="Required" value={f.mandatory} onChange={(mandatory) => update(f.id, { mandatory })} /><Toggle label="PDF" value={f.showPdf} onChange={(showPdf) => update(f.id, { showPdf })} /><Toggle label="Excel" value={f.showExcel} onChange={(showExcel) => update(f.id, { showExcel })} /></div></article>)}</div><SaveSettingsButton /></section>
 }
 
 function TemplateEditor({ title, template, onChange }: { title: string; template: TemplateConfig; onChange: (t: TemplateConfig) => void }) {
   const placeholders = ['{{quotation_number}}','{{quotation_date}}','{{valid_till}}','{{customer_name}}','{{company_name}}','{{quotation_items_table}}','{{taxable_amount}}','{{total_gst}}','{{grand_total}}','{{amount_in_words}}','{{terms_and_conditions}}','{{bank_details}}','{{signature}}','{{company_logo}}']
   const update = (key: keyof TemplateConfig, value: string) => onChange({ ...template, [key]: value })
-  return <section className="panel settings-card template-editor"><p className="kicker">Editable PDF letter format</p><h2>{title}</h2><div className="placeholder-strip">{placeholders.map((p) => <code key={p}>{p}</code>)}</div>{(['headerText','bodyText','terms','bankDetails','signatureText','footerText'] as (keyof TemplateConfig)[]).map((key) => <label key={key}><span>{labelize(key)}</span><textarea value={template[key]} onChange={(e) => update(key, e.target.value)} /></label>)}</section>
+  return <section className="panel settings-card template-editor"><p className="kicker">Editable PDF letter format</p><h2>{title}</h2><div className="placeholder-strip">{placeholders.map((p) => <code key={p}>{p}</code>)}</div>{(['headerText','bodyText','terms','bankDetails','signatureText','footerText'] as (keyof TemplateConfig)[]).map((key) => <label key={key}><span>{labelize(key)}</span><textarea value={template[key]} onChange={(e) => update(key, e.target.value)} /></label>)}<SaveSettingsButton /></section>
 }
 
 function TaxSettingsPanel({ settings, setSettings }: { settings: Settings; setSettings: React.Dispatch<React.SetStateAction<Settings>> }) {
   const tax = settings.tax
   const update = (patch: Partial<TaxSettings>) => setSettings((s) => ({ ...s, tax: { ...s.tax, ...patch } }))
-  return <section className="panel settings-card"><p className="kicker">Tax & Calculation Settings</p><h2>Simple GST only</h2><div className="config-list"><Toggle label="Enable GST" value={tax.gstEnabled} onChange={(v) => update({ gstEnabled: v })} /><label><span>Default GST %</span><input type="number" value={tax.defaultGst} onChange={(e) => update({ defaultGst: Number(e.target.value) })} /></label><Toggle label="Allow row-level GST" value={tax.rowLevelGst} onChange={(v) => update({ rowLevelGst: v })} /><Toggle label="Show amount in words" value={tax.amountInWords} onChange={(v) => update({ amountInWords: v })} /><Toggle label="Enable discount" value={tax.discountEnabled} onChange={(v) => update({ discountEnabled: v })} /><Toggle label="Enable extra charges" value={tax.extraChargesEnabled} onChange={(v) => update({ extraChargesEnabled: v })} /></div><p className="helper">CGST, SGST and IGST are intentionally not added in Phase 1.</p></section>
+  return <section className="panel settings-card"><p className="kicker">Tax & Calculation Settings</p><h2>Simple GST only</h2><div className="config-list"><Toggle label="Enable GST" value={tax.gstEnabled} onChange={(v) => update({ gstEnabled: v })} /><label><span>Default GST %</span><input type="number" value={tax.defaultGst} onChange={(e) => update({ defaultGst: Number(e.target.value) })} /></label><Toggle label="Allow row-level GST" value={tax.rowLevelGst} onChange={(v) => update({ rowLevelGst: v })} /><Toggle label="Show amount in words" value={tax.amountInWords} onChange={(v) => update({ amountInWords: v })} /><Toggle label="Enable discount" value={tax.discountEnabled} onChange={(v) => update({ discountEnabled: v })} /><Toggle label="Enable extra charges" value={tax.extraChargesEnabled} onChange={(v) => update({ extraChargesEnabled: v })} /></div><p className="helper">CGST, SGST and IGST are intentionally not added in Phase 1.</p><SaveSettingsButton /></section>
 }
 
 function NumberingSettings({ settings, setSettings }: { settings: Settings; setSettings: React.Dispatch<React.SetStateAction<Settings>> }) {
   const n = settings.numbering
   const update = (patch: Partial<typeof n>) => setSettings((s) => ({ ...s, numbering: { ...s.numbering, ...patch } }))
-  return <section className="panel settings-card"><p className="kicker">Numbering Settings</p><h2>Document numbering</h2><div className="compact-form"><label><span>Quotation format</span><input value={n.quotation} onChange={(e) => update({ quotation: e.target.value })} /></label><label><span>Estimate format</span><input value={n.estimate} onChange={(e) => update({ estimate: e.target.value })} /></label><label><span>Financial year</span><input value={n.financialYear} onChange={(e) => update({ financialYear: e.target.value })} /></label><label><span>Number padding</span><input type="number" value={n.padding} onChange={(e) => update({ padding: Number(e.target.value) })} /></label><Toggle label="Reset yearly" value={n.resetYearly} onChange={(v) => update({ resetYearly: v })} /></div></section>
+  return <section className="panel settings-card"><p className="kicker">Numbering Settings</p><h2>Document numbering</h2><div className="compact-form"><label><span>Quotation format</span><input value={n.quotation} onChange={(e) => update({ quotation: e.target.value })} /></label><label><span>Estimate format</span><input value={n.estimate} onChange={(e) => update({ estimate: e.target.value })} /></label><label><span>Financial year</span><input value={n.financialYear} onChange={(e) => update({ financialYear: e.target.value })} /></label><label><span>Number padding</span><input type="number" value={n.padding} onChange={(e) => update({ padding: Number(e.target.value) })} /></label><Toggle label="Reset yearly" value={n.resetYearly} onChange={(v) => update({ resetYearly: v })} /></div><SaveSettingsButton /></section>
 }
 
 function BankSignatureSettings({ settings, setSettings }: { settings: Settings; setSettings: React.Dispatch<React.SetStateAction<Settings>> }) {
-  return <section className="panel settings-card"><p className="kicker">Bank + Signature / Stamp Upload</p><h2>PDF placeholders</h2><label><span>Bank details</span><textarea value={settings.quotationTemplate.bankDetails} onChange={(e) => setSettings((s) => ({ ...s, quotationTemplate: { ...s.quotationTemplate, bankDetails: e.target.value } }))} /></label><label><span>Signature / Stamp text</span><textarea value={settings.quotationTemplate.signatureText} onChange={(e) => setSettings((s) => ({ ...s, quotationTemplate: { ...s.quotationTemplate, signatureText: e.target.value } }))} /></label><p className="helper">Image upload for signature/stamp is reserved in structure; PDF currently uses editable signature text placeholder.</p></section>
+  return <section className="panel settings-card"><p className="kicker">Bank + Signature / Stamp Upload</p><h2>PDF placeholders</h2><label><span>Bank details</span><textarea value={settings.quotationTemplate.bankDetails} onChange={(e) => setSettings((s) => ({ ...s, quotationTemplate: { ...s.quotationTemplate, bankDetails: e.target.value } }))} /></label><label><span>Signature / Stamp text</span><textarea value={settings.quotationTemplate.signatureText} onChange={(e) => setSettings((s) => ({ ...s, quotationTemplate: { ...s.quotationTemplate, signatureText: e.target.value } }))} /></label><p className="helper">Image upload for signature/stamp is reserved in structure; PDF currently uses editable signature text placeholder.</p><SaveSettingsButton /></section>
 }
 
-function EstimateCategorySettings({ settings, setSettings }: { settings: Settings; setSettings: React.Dispatch<React.SetStateAction<Settings>> }) {
-  const update = (id: string, patch: Partial<EstimateCategory>) => setSettings((s) => ({ ...s, estimateCategories: s.estimateCategories.map((c) => c.id === id ? { ...c, ...patch } : c) }))
-  return <section className="panel settings-card"><div className="section-title"><div><p className="kicker">Estimate Category Settings</p><h2>Categories</h2></div><button className="ghost" onClick={() => setSettings((s) => ({ ...s, estimateCategories: [...s.estimateCategories, { id: crypto.randomUUID(), name: 'New Category', visible: true, gst: s.tax.defaultGst, fields: ['Quantity', 'Rate'], formula: 'Quantity × Rate' }] }))}>+ Add category</button></div><div className="field-list">{settings.estimateCategories.map((c) => <article key={c.id}><div className="settings-row-main"><input value={c.name} onChange={(e) => update(c.id, { name: e.target.value })} /><input value={c.formula} onChange={(e) => update(c.id, { formula: e.target.value })} /><input type="number" value={c.gst} onChange={(e) => update(c.id, { gst: Number(e.target.value) })} /></div><Toggle label="Visible" value={c.visible} onChange={(visible) => update(c.id, { visible })} /></article>)}</div></section>
+
+function SecuritySettings({ settings, setSettings }: { settings: Settings; setSettings: React.Dispatch<React.SetStateAction<Settings>> }) {
+  const [newPassword, setNewPassword] = useState(settings.security?.settingsPassword || '1231')
+  const save = () => { setSettings((s) => ({ ...s, security: { settingsPassword: newPassword || '1231' } })); window.alert('Settings password saved') }
+  return <section className="panel settings-card"><p className="kicker">Settings Password</p><h2>Security</h2><label><span>Settings password</span><input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} /></label><div className="settings-save-row"><button className="primary" onClick={save}>Save Security Settings</button></div></section>
+}
+
+function SaveSettingsButton() {
+  const [saved, setSaved] = useState(false)
+  return <div className="settings-save-row"><button className="primary" onClick={() => { setSaved(true); window.setTimeout(() => setSaved(false), 1800) }}>{saved ? 'Saved ✓' : 'Save Settings'}</button></div>
 }
 
 function Toggle({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
