@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
@@ -173,6 +173,8 @@ function App() {
   const [active, setActive] = useState('quotation')
   const [settings, setSettings] = usePersistentState<Settings>(STORAGE_SETTINGS, defaultSettings)
   const [documents, setDocuments] = usePersistentState<SavedDocument[]>(STORAGE_DOCS, [])
+  const [cloudLoaded, setCloudLoaded] = useState(false)
+  const cloudSaveTimer = useRef<number | null>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [quoteData, setQuoteData] = useState<Record<string, string>>(() => makeDefaults(defaultSettings.quotationFields))
   const [estimateData, setEstimateData] = useState<Record<string, string>>(() => ({ ...makeDefaults(defaultSettings.estimateFields), estimate_number: nextNumber(defaultSettings.numbering.estimate, defaultSettings.numbering.financialYear, defaultSettings.numbering.nextEstimate, defaultSettings.numbering.padding), estimate_date: today() }))
@@ -180,6 +182,29 @@ function App() {
   const [docTab, setDocTab] = useState<'quotation' | 'estimate'>('quotation')
   const totals = useMemo(() => computeTotals(items, settings.tax), [items, settings.tax])
   const visibleQuoteFields = settings.quotationFields.filter((f) => f.visible && f.key !== 'notes' && f.key !== 'salesperson_name').sort((a, b) => a.sortOrder - b.sortOrder)
+
+  useEffect(() => {
+    let cancelled = false
+    fetch('/api/state', { cache: 'no-store' })
+      .then((r) => r.ok ? r.json() : Promise.reject(new Error('Cloud state unavailable')))
+      .then((cloud) => {
+        if (cancelled) return
+        if (cloud?.settings) setSettings(cloud.settings)
+        if (Array.isArray(cloud?.documents)) setDocuments(cloud.documents)
+      })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setCloudLoaded(true) })
+    return () => { cancelled = true }
+  }, [setSettings, setDocuments])
+
+  useEffect(() => {
+    if (!cloudLoaded) return
+    if (cloudSaveTimer.current) window.clearTimeout(cloudSaveTimer.current)
+    cloudSaveTimer.current = window.setTimeout(() => {
+      fetch('/api/state', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ settings, documents }) }).catch(() => {})
+    }, 700)
+    return () => { if (cloudSaveTimer.current) window.clearTimeout(cloudSaveTimer.current) }
+  }, [settings, documents, cloudLoaded])
 
   useEffect(() => {
     setQuoteData((current) => ({ ...makeDefaults(settings.quotationFields), ...current }))
