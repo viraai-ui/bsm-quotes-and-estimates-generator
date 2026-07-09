@@ -446,12 +446,54 @@
       "estimate": "BSM/EST/{{financial_year}}/{{number}}",
       "financialYear": "2026-27",
       "nextQuotation": 4,
-      "nextEstimate": 2,
+      "nextEstimate": 3,
       "padding": 4,
       "resetYearly": true
     }
   },
   "documents": [
+    {
+      "id": "2c674c05-2bd5-4927-94e0-420c127ebb0e",
+      "type": "estimate",
+      "number": "BSM/EST/2026-27/0001",
+      "date": "2026-07-09",
+      "customer": "Smoke Estimate Customer",
+      "company": "Smoke Estimate Co",
+      "location": "",
+      "headerData": {
+        "estimate_number": "BSM/EST/2026-27/0001",
+        "estimate_date": "2026-07-09",
+        "customer_name": "Smoke Estimate Customer",
+        "company_name": "Smoke Estimate Co",
+        "phone": "8888888888",
+        "email": "",
+        "address": "",
+        "location": "",
+        "duration_days": ""
+      },
+      "items": [
+        {
+          "id": "11af8e3f-b182-48f3-8048-31ea2ad99bca",
+          "productName": "Smoke Hotel",
+          "description": "",
+          "quantity": 1,
+          "price": 2000,
+          "gst": 0
+        }
+      ],
+      "totals": {
+        "taxable": 2000,
+        "gst": 0,
+        "grand": 2000,
+        "roundOff": 0,
+        "final": 2000,
+        "words": "Two Thousand rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Admin",
+      "createdAt": "2026-07-09T13:27:55.629Z",
+      "updatedAt": "2026-07-09T13:27:55.629Z"
+    },
     {
       "id": "c3a6e415-4087-4295-9894-ffb051a26394",
       "type": "quotation",
@@ -1068,5 +1110,5 @@
       "pdfGeneratedAt": "2026-07-09T07:03:40.279Z"
     }
   ],
-  "updatedAt": "2026-07-09T13:26:53.544Z"
+  "updatedAt": "2026-07-09T13:27:58.277Z"
 }
