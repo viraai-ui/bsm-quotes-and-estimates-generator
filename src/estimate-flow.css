@@ -1,0 +1,18 @@
+.estimate-flow .final-step { grid-column: 1 / -1; }
+
+.estimate-lines .line-head,
+.estimate-lines .line-row {
+  min-width: 860px;
+  grid-template-columns: minmax(320px, 1fr) 110px 140px 100px 150px 88px;
+}
+
+.estimate-lines .product-inputs.stacked input::placeholder {
+  color: #6b7280;
+}
+
+@media (max-width: 820px) {
+  .estimate-lines .line-row {
+    min-width: 0;
+    grid-template-columns: 1fr;
+  }
+}

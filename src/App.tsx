@@ -9,6 +9,7 @@ import './settings-saas.css'
 import './quote-flow.css'
 import './quote-refine.css'
 import './mobile-audit.css'
+import './estimate-flow.css'
 
 type FieldType = 'Text' | 'Number' | 'Date' | 'Dropdown' | 'Textarea' | 'Email' | 'Phone' | 'Image/File' | 'Checkbox'
 type Status = 'Draft' | 'Generated' | 'Final' | 'Archived'
@@ -124,10 +125,13 @@ const lineFields: FieldConfig[] = [
 const estimateFields: FieldConfig[] = [
   field('estimate_number', 'Estimate Number', 'Text', true, 'BSM/EST/2026-27/0001'),
   field('estimate_date', 'Estimate Date', 'Date', true),
-  field('prepared_for', 'Prepared For / Customer / Project Name', 'Text', true),
+  field('customer_name', 'Customer Name', 'Text', true),
+  field('company_name', 'Company Name', 'Text'),
+  field('phone', 'Phone Number', 'Phone'),
+  field('email', 'Email', 'Email'),
+  field('address', 'Address', 'Textarea'),
   field('location', 'Location', 'Text'),
-  field('prepared_by', 'Prepared By', 'Text', true, 'BSM India'),
-  field('notes', 'Notes', 'Textarea'),
+  field('duration_days', 'Duration (Days)', 'Number'),
 ].map((f, index) => ({ ...f, sortOrder: index + 1 }))
 
 function field(key: string, label: string, type: FieldType, mandatory = false, defaultValue = '', options?: string[]): FieldConfig {
@@ -141,13 +145,7 @@ const defaultSettings: Settings = {
   quotationFields,
   quotationLineFields: lineFields,
   estimateFields,
-  estimateCategories: [
-    { id: 'food', name: 'Food Expenses', visible: true, gst: 18, fields: ['Number of people', 'Number of days', 'Cost per person per day', 'GST %'], formula: 'People × Days × Cost per person' },
-    { id: 'hotel', name: 'Hotel Expenses', visible: true, gst: 18, fields: ['Number of rooms', 'Number of nights', 'Cost per room per night', 'GST %'], formula: 'Rooms × Nights × Cost per room' },
-    { id: 'transport', name: 'Transportation Expenses', visible: true, gst: 18, fields: ['Mode', 'From', 'To', 'Trips/Tickets', 'Rate', 'GST %'], formula: 'Trips × Rate' },
-    { id: 'wage', name: 'Employee Per-Day Wage', visible: true, gst: 0, fields: ['Employees', 'Days', 'Per-day wage', 'GST %'], formula: 'Employees × Days × Wage' },
-    { id: 'misc', name: 'Miscellaneous Expenses', visible: true, gst: 18, fields: ['Description', 'Quantity', 'Rate', 'GST %'], formula: 'Quantity × Rate' },
-  ],
+  estimateCategories: [],
   quotationTemplate: {
     headerText: 'Quotation from {{company_name}}',
     bodyText: 'Dear {{customer_name}},\nPlease find below our quotation {{quotation_number}} dated {{quotation_date}}.\n\n{{quotation_items_table}}',
@@ -159,7 +157,7 @@ const defaultSettings: Settings = {
   estimateTemplate: {
     headerText: 'Estimate from {{company_name}}', bodyText: '{{estimate_items_table}}\n{{category_wise_summary}}', terms: 'Internal/customer estimate. Values may change after final confirmation.', bankDetails: '', footerText: 'BSM India', signatureText: 'Prepared by BSM India',
   },
-  tax: { gstEnabled: true, defaultGst: 18, rowLevelGst: true, roundOff: true, amountInWords: true, discountEnabled: false, extraChargesEnabled: false },
+  tax: { gstEnabled: true, defaultGst: 18, rowLevelGst: true, roundOff: false, amountInWords: true, discountEnabled: false, extraChargesEnabled: false },
   numbering: { quotation: 'BSM/QTN/{{financial_year}}/{{number}}', estimate: 'BSM/EST/{{financial_year}}/{{number}}', financialYear: '2026-27', nextQuotation: 1, nextEstimate: 1, padding: 4, resetYearly: true },
 }
 
@@ -169,6 +167,7 @@ function App() {
   const [documents, setDocuments] = usePersistentState<SavedDocument[]>(STORAGE_DOCS, [])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [quoteData, setQuoteData] = useState<Record<string, string>>(() => makeDefaults(defaultSettings.quotationFields))
+  const [estimateData, setEstimateData] = useState<Record<string, string>>(() => ({ ...makeDefaults(defaultSettings.estimateFields), estimate_number: nextNumber(defaultSettings.numbering.estimate, defaultSettings.numbering.financialYear, defaultSettings.numbering.nextEstimate, defaultSettings.numbering.padding), estimate_date: today() }))
   const [items, setItems] = useState<QuoteItem[]>([newItem(defaultSettings.tax.defaultGst)])
   const [docTab, setDocTab] = useState<'quotation' | 'estimate'>('quotation')
   const totals = useMemo(() => computeTotals(items, settings.tax), [items, settings.tax])
@@ -177,6 +176,10 @@ function App() {
   useEffect(() => {
     setQuoteData((current) => ({ ...makeDefaults(settings.quotationFields), ...current }))
   }, [settings.quotationFields])
+
+  useEffect(() => {
+    setEstimateData((current) => ({ ...makeDefaults(settings.estimateFields), estimate_number: nextNumber(settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate, settings.numbering.padding), estimate_date: today(), ...current }))
+  }, [settings.estimateFields, settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate, settings.numbering.padding])
 
   const nav = [['quotation', 'Create Quotation'], ['estimate', 'Create Estimate'], ['documents', 'Created Documents'], ['settings', 'Settings']]
 
@@ -222,7 +225,7 @@ function App() {
         <nav>{nav.map(([key, label]) => <button key={key} className={active === key ? 'active' : ''} onClick={() => setActive(key)}>{label}</button>)}</nav>
       </aside>
       <section className="workspace">
-        <header className="topbar"><div><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div>{active !== 'quotation' && <div className="header-actions"><button className="ghost" onClick={() => saveQuotation('Draft')}>Save Draft</button><button className="primary" onClick={generatePdf}>Generate PDF</button></div>}</header>
+        <header className="topbar"><div><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div>{!['quotation', 'estimate'].includes(active) && <div className="header-actions"><button className="ghost" onClick={() => saveQuotation('Draft')}>Save Draft</button><button className="primary" onClick={generatePdf}>Generate PDF</button></div>}</header>
 
         {active === 'quotation' && <div className="page-grid quote-flow">
           <section className="panel wide"><div className="section-title"><div><h2>Step 1. Quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={quoteData} setData={setQuoteData} /></section>
@@ -230,7 +233,7 @@ function App() {
           <SummaryCard totals={totals} settings={settings} onPdf={generatePdf} onExcel={() => generateExcel()} />
         </div>}
 
-        {active === 'estimate' && <EstimateView settings={settings} totals={totals} items={items} setItems={setItems} />}
+        {active === 'estimate' && <EstimateView settings={settings} totals={totals} items={items} setItems={setItems} estimateData={estimateData} setEstimateData={setEstimateData} />}
         {active === 'documents' && <DocumentsView documents={documents} tab={docTab} setTab={setDocTab} onEdit={editDocument} onDuplicate={duplicateDocument} onPdf={(d) => downloadQuotationPdf(d, settings)} onExcel={(d) => downloadExcel(d, settings)} onArchive={(id) => setDocuments((docs) => docs.map((d) => d.id === id ? { ...d, status: 'Archived' } : d))} />}
         {active === 'settings' && <SettingsView settings={settings} setSettings={setSettings} />}
       </section>
@@ -246,6 +249,13 @@ function DynamicForm({ fields, data, setData }: { fields: FieldConfig[]; data: R
     const renderField = (field: FieldConfig) => <FormField key={field.id} field={field} data={data} setData={setData} />
     return <div className="quotation-form-layout"><div className="quotation-form-stack">{leftKeys.map((key) => fields.find((field) => field.key === key)).filter(Boolean).map((field) => renderField(field as FieldConfig))}</div><div className="quotation-form-stack compact-side">{rightKeys.map((key) => fields.find((field) => field.key === key)).filter(Boolean).map((field) => renderField(field as FieldConfig))}</div></div>
   }
+  const estimateLayout = fields.some((field) => field.key === 'estimate_number')
+  if (estimateLayout) {
+    const leftKeys = ['customer_name', 'company_name', 'phone', 'email', 'address']
+    const rightKeys = ['estimate_number', 'estimate_date', 'location', 'duration_days']
+    const renderField = (field: FieldConfig) => <FormField key={field.id} field={field} data={data} setData={setData} />
+    return <div className="quotation-form-layout estimate-form-layout"><div className="quotation-form-stack">{leftKeys.map((key) => fields.find((field) => field.key === key)).filter(Boolean).map((field) => renderField(field as FieldConfig))}</div><div className="quotation-form-stack compact-side">{rightKeys.map((key) => fields.find((field) => field.key === key)).filter(Boolean).map((field) => renderField(field as FieldConfig))}</div></div>
+  }
   return <div className="form-grid">{fields.map((field) => <FormField key={field.id} field={field} data={data} setData={setData} />)}</div>
 }
 
@@ -257,17 +267,32 @@ function SummaryCard({ totals, settings, onPdf, onExcel }: { totals: Totals; set
   return <section className="panel summary-card final-step"><div className="section-title"><div><h2>Step 3. Review & generate</h2></div></div><h2>{money(totals.final)}</h2><div className="summary-grid"><div className="total-row"><span>Taxable Amount</span><strong>{money(totals.taxable)}</strong></div><div className="total-row"><span>Total GST</span><strong>{settings.tax.gstEnabled ? money(totals.gst) : 'Disabled'}</strong></div><div className="total-row"><span>Grand Total</span><strong>{money(totals.grand)}</strong></div><div className="total-row grand"><span>Final Amount</span><strong>{money(totals.final)}</strong></div></div>{settings.tax.amountInWords && <p className="amount-words">{totals.words}</p>}<div className="stack-actions"><button className="ghost full" onClick={onExcel}>Download Excel</button><button className="primary full" onClick={onPdf}>Generate PDF</button></div></section>
 }
 
-function LineItemsPanel({ items, setItems, settings }: { items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; settings: Settings }) {
+function LineItemsPanel({ items, setItems, settings, mode = 'quotation' }: { items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; settings: Settings; mode?: 'quotation' | 'estimate' }) {
   const addItem = () => setItems((rows) => [...rows, newItem(settings.tax.defaultGst)])
   const update = (id: string, patch: Partial<QuoteItem>) => setItems((rows) => rows.map((r) => r.id === id ? { ...r, ...patch } : r))
   const remove = (id: string) => setItems((rows) => rows.filter((r) => r.id !== id))
+  const isEstimate = mode === 'estimate'
   async function onImage(id: string, e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
     const image = await compressImage(file)
     update(id, { image, imageName: file.name })
   }
-  return <section className="panel line-panel wide"><div className="section-title"><div><h2>Step 2. Product line items</h2></div></div><div className="line-table"><div className="line-head"><span>Picture</span><span>Product</span><span>Qty</span><span>Price</span><span>GST %</span><span>Total</span><span></span></div>{items.map((item) => { const taxable = item.quantity * item.price; const total = taxable + (settings.tax.gstEnabled ? taxable * ((settings.tax.rowLevelGst ? item.gst : settings.tax.defaultGst) / 100) : 0); return <div className="line-row" key={item.id}><div className="image-cell">{item.image ? <img src={item.image} alt={item.productName || 'Product'} /> : <span>No image</span>}<label className="mini-upload">{item.image ? 'Replace' : 'Upload / Camera'}<input type="file" accept="image/*" capture="environment" onChange={(e) => onImage(item.id, e)} /></label>{item.image && <button className="text-danger" onClick={() => update(item.id, { image: undefined, imageName: undefined })}>Remove</button>}</div><div className="product-inputs stacked"><input value={item.productName} onChange={(e) => update(item.id, { productName: e.target.value })} placeholder="Product name" /><textarea value={item.description} onChange={(e) => update(item.id, { description: e.target.value })} placeholder="Description" /></div><input type="number" value={item.quantity} onChange={(e) => update(item.id, { quantity: Number(e.target.value) })} /><input type="number" value={item.price} onChange={(e) => update(item.id, { price: Number(e.target.value) })} /><input type="number" value={item.gst} disabled={!settings.tax.rowLevelGst} onChange={(e) => update(item.id, { gst: Number(e.target.value) })} /><strong>{money(total)}</strong><button className="icon-button delete-row" aria-label="Delete row" title="Delete row" onClick={() => remove(item.id)}>🗑</button></div>})}</div><div className="line-footer-actions"><button className="ghost" onClick={addItem}>+ Add item</button></div></section>
+  return <section className="panel line-panel wide">
+    <div className="section-title"><div><h2>Step 2. {isEstimate ? 'Estimate line items' : 'Product line items'}</h2></div></div>
+    <div className={`line-table ${isEstimate ? 'estimate-lines' : ''}`}>
+      <div className="line-head">{!isEstimate && <span>Picture</span>}<span>{isEstimate ? 'Expense / Item' : 'Product'}</span><span>{isEstimate ? 'Days' : 'Qty'}</span><span>{isEstimate ? 'Cost' : 'Price'}</span><span>GST %</span><span>Total</span><span></span></div>
+      {items.map((item) => { const taxable = item.quantity * item.price; const total = taxable + (settings.tax.gstEnabled ? taxable * ((settings.tax.rowLevelGst ? item.gst : settings.tax.defaultGst) / 100) : 0); return <div className="line-row" key={item.id}>
+        {!isEstimate && <div className="image-cell">{item.image ? <img src={item.image} alt={item.productName || 'Product'} /> : <span>No image</span>}<label className="mini-upload">{item.image ? 'Replace' : 'Upload / Camera'}<input type="file" accept="image/*" capture="environment" onChange={(e) => onImage(item.id, e)} /></label>{item.image && <button className="text-danger" onClick={() => update(item.id, { image: undefined, imageName: undefined })}>Remove</button>}</div>}
+        <div className="product-inputs stacked"><input value={item.productName} onChange={(e) => update(item.id, { productName: e.target.value })} placeholder={isEstimate ? 'Expense / item name' : 'Product name'} /><textarea value={item.description} onChange={(e) => update(item.id, { description: e.target.value })} placeholder="Description" /></div>
+        <input type="number" value={item.quantity} onChange={(e) => update(item.id, { quantity: Number(e.target.value) })} />
+        <input type="number" value={item.price} onChange={(e) => update(item.id, { price: Number(e.target.value) })} />
+        <input type="number" value={item.gst} disabled={!settings.tax.rowLevelGst} onChange={(e) => update(item.id, { gst: Number(e.target.value) })} />
+        <strong>{money(total)}</strong><button className="icon-button delete-row" aria-label="Delete row" title="Delete row" onClick={() => remove(item.id)}>🗑</button>
+      </div>})}
+    </div>
+    <div className="line-footer-actions"><button className="ghost" onClick={addItem}>+ Add item</button></div>
+  </section>
 }
 
 function DocumentsView({ documents, tab, setTab, onEdit, onDuplicate, onPdf, onExcel, onArchive }: { documents: SavedDocument[]; tab: 'quotation' | 'estimate'; setTab: (t: 'quotation' | 'estimate') => void; onEdit: (d: SavedDocument) => void; onDuplicate: (d: SavedDocument) => void; onPdf: (d: SavedDocument) => void; onExcel: (d: SavedDocument) => void; onArchive: (id: string) => void }) {
@@ -276,8 +301,15 @@ function DocumentsView({ documents, tab, setTab, onEdit, onDuplicate, onPdf, onE
   return <section className="panel"><div className="section-title"><div><p className="kicker">Saved database records</p><h2>Created Documents</h2></div><input className="search" placeholder="Search number, customer, project, status..." value={search} onChange={(e) => setSearch(e.target.value)} /></div><div className="tabbar"><button className={tab === 'quotation' ? 'active' : ''} onClick={() => setTab('quotation')}>Created Quotations</button><button className={tab === 'estimate' ? 'active' : ''} onClick={() => setTab('estimate')}>Created Estimates</button></div><div className="records">{docs.length === 0 && <div className="empty">No saved {tab}s yet. Generate one from Create Quotation.</div>}{docs.map((doc) => <article key={doc.id} className="record-card"><div><strong>{doc.number}</strong><span>{doc.customer} {doc.company ? `• ${doc.company}` : ''}</span></div><div><strong>{money(doc.totals.final)}</strong><span>{doc.date}</span></div><span className="status">{doc.status}</span><div className="mini-actions"><button onClick={() => onEdit(doc)}>Edit</button><button onClick={() => onDuplicate(doc)}>Duplicate</button><button onClick={() => onPdf(doc)}>PDF</button><button onClick={() => onExcel(doc)}>Excel</button><button onClick={() => onArchive(doc.id)}>Archive</button></div><small>Created by {doc.createdBy} • Created {formatDate(doc.createdAt)} • Edited {formatDate(doc.updatedAt)}</small></article>)}</div></section>
 }
 
-function EstimateView({ settings, totals, items, setItems }: { settings: Settings; totals: Totals; items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>> }) {
-  return <div className="page-grid"><section className="panel wide"><div className="section-title"><div><p className="kicker">Phase 1 foundation</p><h2>Estimate header + categories</h2></div><span className="pill">Same PDF/Excel structure</span></div><DynamicForm fields={settings.estimateFields.filter((f) => f.visible)} data={{}} setData={() => {}} /><div className="estimate-layout">{settings.estimateCategories.filter((c) => c.visible).map((category) => <article className="category-card" key={category.id}><strong>{category.name}</strong><small>{category.formula}</small><small>Fields: {category.fields.join(', ')}</small></article>)}</div></section><SummaryCard totals={totals} settings={settings} onPdf={() => alert('Estimate PDF engine is structured for Phase 1 next step.')} onExcel={() => alert('Estimate Excel engine is structured for Phase 1 next step.')} /><LineItemsPanel items={items} setItems={setItems} settings={settings} /></div>
+function EstimateView({ settings, totals, items, setItems, estimateData, setEstimateData }: { settings: Settings; totals: Totals; items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; estimateData: Record<string, string>; setEstimateData: (fn: (d: Record<string, string>) => Record<string, string>) => void }) {
+  const visibleEstimateFields = estimateFields.filter((f) => f.visible).sort((a, b) => a.sortOrder - b.sortOrder)
+  const generateEstimate = () => alert('Estimate PDF generation will use this final estimate layout in the next build step.')
+  const exportEstimate = () => alert('Estimate Excel export will use this final estimate layout in the next build step.')
+  return <div className="page-grid quote-flow estimate-flow">
+    <section className="panel wide"><div className="section-title"><div><h2>Step 1. Estimate details</h2></div></div><DynamicForm fields={visibleEstimateFields} data={estimateData} setData={setEstimateData} /></section>
+    <LineItemsPanel items={items} setItems={setItems} settings={settings} mode="estimate" />
+    <SummaryCard totals={totals} settings={settings} onPdf={generateEstimate} onExcel={exportEstimate} />
+  </div>
 }
 
 function SettingsView({ settings, setSettings }: { settings: Settings; setSettings: React.Dispatch<React.SetStateAction<Settings>> }) {
@@ -288,9 +320,9 @@ function SettingsView({ settings, setSettings }: { settings: Settings; setSettin
     ['quote-items', 'Line Items', 'Product table columns'],
     ['quote-template', 'Quotation Template', 'PDF letter editor'],
     ['estimate-fields', 'Estimate Fields', 'Estimate form configuration'],
-    ['estimate-categories', 'Estimate Categories', 'Expense category builder'],
+
     ['estimate-template', 'Estimate Template', 'Estimate PDF editor'],
-    ['tax', 'Tax & Calculation', 'GST, round off and words'],
+    ['tax', 'Tax & Calculation', 'GST and amount in words'],
     ['numbering', 'Numbering', 'Document formats'],
     ['bank', 'Bank & Signature', 'Payment and sign-off'],
   ]
@@ -336,7 +368,7 @@ function TemplateEditor({ title, template, onChange }: { title: string; template
 function TaxSettingsPanel({ settings, setSettings }: { settings: Settings; setSettings: React.Dispatch<React.SetStateAction<Settings>> }) {
   const tax = settings.tax
   const update = (patch: Partial<TaxSettings>) => setSettings((s) => ({ ...s, tax: { ...s.tax, ...patch } }))
-  return <section className="panel settings-card"><p className="kicker">Tax & Calculation Settings</p><h2>Simple GST only</h2><div className="config-list"><Toggle label="Enable GST" value={tax.gstEnabled} onChange={(v) => update({ gstEnabled: v })} /><label><span>Default GST %</span><input type="number" value={tax.defaultGst} onChange={(e) => update({ defaultGst: Number(e.target.value) })} /></label><Toggle label="Allow row-level GST" value={tax.rowLevelGst} onChange={(v) => update({ rowLevelGst: v })} /><Toggle label="Enable round off" value={tax.roundOff} onChange={(v) => update({ roundOff: v })} /><Toggle label="Show amount in words" value={tax.amountInWords} onChange={(v) => update({ amountInWords: v })} /><Toggle label="Enable discount" value={tax.discountEnabled} onChange={(v) => update({ discountEnabled: v })} /><Toggle label="Enable extra charges" value={tax.extraChargesEnabled} onChange={(v) => update({ extraChargesEnabled: v })} /></div><p className="helper">CGST, SGST and IGST are intentionally not added in Phase 1.</p></section>
+  return <section className="panel settings-card"><p className="kicker">Tax & Calculation Settings</p><h2>Simple GST only</h2><div className="config-list"><Toggle label="Enable GST" value={tax.gstEnabled} onChange={(v) => update({ gstEnabled: v })} /><label><span>Default GST %</span><input type="number" value={tax.defaultGst} onChange={(e) => update({ defaultGst: Number(e.target.value) })} /></label><Toggle label="Allow row-level GST" value={tax.rowLevelGst} onChange={(v) => update({ rowLevelGst: v })} /><Toggle label="Show amount in words" value={tax.amountInWords} onChange={(v) => update({ amountInWords: v })} /><Toggle label="Enable discount" value={tax.discountEnabled} onChange={(v) => update({ discountEnabled: v })} /><Toggle label="Enable extra charges" value={tax.extraChargesEnabled} onChange={(v) => update({ extraChargesEnabled: v })} /></div><p className="helper">CGST, SGST and IGST are intentionally not added in Phase 1.</p></section>
 }
 
 function NumberingSettings({ settings, setSettings }: { settings: Settings; setSettings: React.Dispatch<React.SetStateAction<Settings>> }) {
@@ -406,7 +438,7 @@ function usePersistentState<T>(key: string, initial: T) {
 
 function makeDefaults(fields: FieldConfig[]) { return Object.fromEntries(fields.map((f) => [f.key, f.key.includes('date') ? today() : f.defaultValue || ''])) }
 function newItem(gst: number): QuoteItem { return { id: crypto.randomUUID(), productName: '', description: '', quantity: 1, price: 0, gst } }
-function computeTotals(items: QuoteItem[], tax: TaxSettings): Totals { const taxable = items.reduce((s, i) => s + i.quantity * i.price, 0); const gst = tax.gstEnabled ? items.reduce((s, i) => s + i.quantity * i.price * ((tax.rowLevelGst ? i.gst : tax.defaultGst) / 100), 0) : 0; const grand = taxable + gst; const final = tax.roundOff ? Math.round(grand) : grand; return { taxable, gst, grand, roundOff: final - grand, final, words: `${numberToWords(Math.round(final))} rupees only` } }
+function computeTotals(items: QuoteItem[], tax: TaxSettings): Totals { const taxable = items.reduce((s, i) => s + i.quantity * i.price, 0); const gst = tax.gstEnabled ? items.reduce((s, i) => s + i.quantity * i.price * ((tax.rowLevelGst ? i.gst : tax.defaultGst) / 100), 0) : 0; const grand = taxable + gst; const final = grand; return { taxable, gst, grand, roundOff: 0, final, words: `${numberToWords(Math.round(final))} rupees only` } }
 function today() { return new Date().toISOString().slice(0, 10) }
 function inputType(t: FieldType) { return t === 'Date' ? 'date' : t === 'Email' ? 'email' : t === 'Number' ? 'number' : t === 'Phone' ? 'tel' : 'text' }
 function money(v: number) { return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(v || 0) }
