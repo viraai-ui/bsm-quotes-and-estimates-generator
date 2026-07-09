@@ -445,12 +445,86 @@
       "estimate": "BSM/EST/{{financial_year}}/{{number}}",
       "financialYear": "2026-27",
       "nextQuotation": 2,
-      "nextEstimate": 1,
+      "nextEstimate": 2,
       "padding": 4,
       "resetYearly": true
     }
   },
   "documents": [
+    {
+      "id": "cf3097d4-1940-4efe-9d17-e8554f93b74b",
+      "type": "estimate",
+      "number": "BSM/EST/2026-27/0001",
+      "date": "2026-07-09",
+      "customer": "Ainesh Sikdar",
+      "company": "19.26",
+      "location": "Haridwar",
+      "headerData": {
+        "estimate_number": "BSM/EST/2026-27/0001",
+        "estimate_date": "2026-07-09",
+        "customer_name": "Ainesh Sikdar",
+        "company_name": "19.26",
+        "phone": "09999432966",
+        "email": "Aineshsikdar96@gmail.com",
+        "address": "42, Karuna Kunj, Sector 3, Dwarka, new delhi\nNear Aakash Hospital",
+        "location": "Haridwar",
+        "duration_days": "3"
+      },
+      "items": [
+        {
+          "id": "642cc400-4954-4de4-af84-1f77e429c878",
+          "productName": "Technician (per day wage)",
+          "description": "2500 per day",
+          "quantity": 3,
+          "price": 2500,
+          "gst": 0
+        },
+        {
+          "id": "60d37fb3-fa7c-445e-ba04-9162e53b8208",
+          "productName": "Food Expenses",
+          "description": "500 Per day",
+          "quantity": 3,
+          "price": 500,
+          "gst": 0
+        },
+        {
+          "id": "aab25f46-3fdc-4362-9087-5b7c664b3970",
+          "productName": "Hotel Expenses",
+          "description": "1500 Per day",
+          "quantity": 3,
+          "price": 1500,
+          "gst": 0
+        },
+        {
+          "id": "5795bc65-37fd-4049-ae01-ddbfd79fc436",
+          "productName": "Bus stand (Up & Down)",
+          "description": "",
+          "quantity": 2,
+          "price": 2000,
+          "gst": 0
+        },
+        {
+          "id": "905cc3c6-4270-474e-8818-f330e3acb8d1",
+          "productName": "Bus ticket (up and down)",
+          "description": "",
+          "quantity": 2,
+          "price": 1198,
+          "gst": 0
+        }
+      ],
+      "totals": {
+        "taxable": 19896,
+        "gst": 0,
+        "grand": 19896,
+        "roundOff": 0,
+        "final": 19896,
+        "words": "Nineteen Thousand Eight Hundred Ninety Six rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Admin",
+      "createdAt": "2026-07-09T09:09:24.160Z",
+      "updatedAt": "2026-07-09T09:09:24.160Z"
+    },
     {
       "id": "c8fc4b86-42ca-4d15-b916-7a11a5fd748b",
       "type": "quotation",
@@ -906,5 +980,5 @@
       "pdfGeneratedAt": "2026-07-09T07:03:40.279Z"
     }
   ],
-  "updatedAt": "2026-07-09T09:07:55.624Z"
+  "updatedAt": "2026-07-09T09:09:24.972Z"
 }
