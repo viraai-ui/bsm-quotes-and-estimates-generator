@@ -1,0 +1,63 @@
+/* Quotation form and line-item layout refinements */
+.quotation-form-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.85fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.quotation-form-stack {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.quotation-form-stack .span-2,
+.quotation-form-stack label:has(textarea) {
+  grid-column: 1 / -1;
+}
+
+.quotation-form-stack.compact-side {
+  grid-template-columns: 1fr;
+  padding: 18px;
+  border: 1px solid #edf0f4;
+  border-radius: 22px;
+  background: #fbfbfc;
+}
+
+.product-inputs.stacked {
+  grid-template-columns: 1fr;
+}
+
+.product-inputs.stacked textarea {
+  min-height: 64px;
+}
+
+.line-footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.line-footer-actions button {
+  min-width: 150px;
+}
+
+.delete-row {
+  width: 44px;
+  min-width: 44px;
+  color: #b91c1c;
+  background: #fff1f2;
+  font-size: 17px;
+}
+
+@media (max-width: 980px) {
+  .quotation-form-layout,
+  .quotation-form-stack {
+    grid-template-columns: 1fr;
+  }
+
+  .quotation-form-stack.compact-side {
+    padding: 14px;
+  }
+}
