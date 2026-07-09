@@ -8,7 +8,7 @@
       "phone": "+91 9310423242",
       "email": "info@bsmindia.com",
       "website": "www.bsmindia.com",
-      "gstin": "GSTIN to be updated",
+      "gstin": "07",
       "cin": ""
     },
     "security": {
@@ -981,5 +981,5 @@
       "pdfGeneratedAt": "2026-07-09T07:03:40.279Z"
     }
   ],
-  "updatedAt": "2026-07-09T10:30:25.262Z"
+  "updatedAt": "2026-07-09T10:30:28.824Z"
 }
