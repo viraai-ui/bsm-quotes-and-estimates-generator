@@ -20,18 +20,18 @@
   .dashboard-shell {
     display: block;
     min-height: 100vh;
-    padding-top: 100px;
-    background: linear-gradient(180deg, #ffffff 0, #f7f8fb 96px, var(--m-bg) 100%);
+    padding-top: 98px;
+    background: linear-gradient(180deg, #f8fafc 0, #f4f6f9 104px, var(--m-bg) 100%);
     font-size: 13px;
     overflow-x: hidden;
   }
 
   .mobile-menu-button {
     position: fixed;
-    top: 10px;
-    right: 14px;
+    top: calc(env(safe-area-inset-top, 0px) + 12px);
+    right: 16px;
     left: auto;
-    z-index: 165;
+    z-index: 190;
     display: grid;
     place-items: center;
     width: 42px;
@@ -39,12 +39,12 @@
     height: 42px;
     min-height: 42px;
     padding: 0;
-    border: 1px solid rgba(226, 232, 240, 0.95);
-    border-radius: 14px;
-    color: #111827;
-    background: #ffffff;
-    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.10);
-    font-size: 19px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 16px;
+    color: #0f172a;
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.10), inset 0 1px 0 rgba(255,255,255,0.9);
+    font-size: 20px;
     line-height: 1;
   }
 
@@ -71,18 +71,20 @@
   .sidebar {
     position: fixed;
     top: 0;
-    left: 0;
+    right: 0;
+    left: auto;
     z-index: 170;
-    width: min(304px, 82vw);
+    width: min(312px, 84vw);
     height: 100dvh;
-    padding: 14px 12px;
-    border-radius: 0 22px 22px 0;
-    border-right: 1px solid #e5e7eb;
+    padding: calc(env(safe-area-inset-top, 0px) + 16px) 14px 16px;
+    border-radius: 24px 0 0 24px;
+    border-right: 0;
+    border-left: 1px solid #e5e7eb;
     background: #ffffff;
     color: #111827;
-    box-shadow: 26px 0 80px rgba(15, 23, 42, 0.28);
-    transform: translateX(-106%);
-    transition: transform 190ms ease;
+    box-shadow: -26px 0 80px rgba(15, 23, 42, 0.28);
+    transform: translateX(106%);
+    transition: transform 210ms cubic-bezier(.2,.8,.2,1);
     overflow-y: auto;
     opacity: 1;
   }
@@ -143,20 +145,30 @@
 
   .topbar {
     position: fixed;
-    top: 0;
+    top: env(safe-area-inset-top, 0px);
     left: 0;
     right: 0;
     z-index: 145;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 64px;
+    min-height: 68px;
     margin: 0;
-    padding: 8px 68px;
-    border-bottom: 1px solid rgba(226, 232, 240, 0.92);
-    background: rgba(255, 255, 255, 0.97);
-    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
-    backdrop-filter: blur(14px);
+    padding: 10px 72px;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.84);
+    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96));
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.075);
+    backdrop-filter: blur(18px) saturate(1.2);
+  }
+
+  .topbar::after {
+    content: '';
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(15,23,42,0.08), transparent);
   }
 
   .desktop-page-title {
@@ -178,13 +190,13 @@
     top: 50%;
     transform: translateY(-50%);
     display: grid;
-    place-items: center;
-    width: 42px;
-    height: 42px;
-    min-width: 42px;
-    border-radius: 13px;
+    place-items: center start;
+    width: 70px;
+    height: 38px;
+    min-width: 70px;
+    border-radius: 0;
     background: transparent;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: none;
   }
 
@@ -192,24 +204,35 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    padding: 2px;
+    padding: 0;
+  }
+
+  .mobile-brand-logo span {
+    font-size: 24px;
+    line-height: 1;
+    font-weight: 950;
+    letter-spacing: -0.09em;
+    color: #d71920 !important;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.7);
   }
 
   .mobile-brand-bar strong {
     display: block;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.05;
-    letter-spacing: -0.02em;
-    color: #111827;
+    letter-spacing: -0.025em;
+    color: #0f172a;
+    font-weight: 850;
   }
 
   .mobile-brand-bar span {
     display: block;
-    margin-top: 3px;
+    margin-top: 4px;
     font-size: 11px;
     line-height: 1;
-    color: #6b7280;
-    font-weight: 700;
+    color: #64748b;
+    font-weight: 750;
   }
 
   .mobile-page-title {
