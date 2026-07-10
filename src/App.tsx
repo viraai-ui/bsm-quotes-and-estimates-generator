@@ -292,8 +292,11 @@ function App() {
       <section className="workspace">
         <header className="topbar">
           <div className="mobile-brand-bar">
-            <div className="mobile-brand-logo"><span>BSM</span></div>
-            <div><strong>{settings.company.companyName}</strong><span>Quote Studio</span></div>
+            <strong>{settings.company.companyName}</strong>
+            <div className="mobile-subbrand">
+              <span className="mobile-brand-logo">{(settings.company.logoImage || DEFAULT_BSM_LOGO) ? <img src={settings.company.logoImage || DEFAULT_BSM_LOGO} alt="BSM logo" /> : (settings.company.logoText || 'BSM')}</span>
+              <span>Quote Studio</span>
+            </div>
           </div>
           <div className="desktop-page-title"><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div>
         </header>

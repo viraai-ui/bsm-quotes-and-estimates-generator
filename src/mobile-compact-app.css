@@ -176,28 +176,21 @@
   }
 
   .mobile-brand-bar {
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
+    display: grid !important;
+    place-items: center;
     width: 100%;
     min-width: 0;
     text-align: center;
   }
 
   .mobile-brand-logo {
-    position: absolute;
-    left: 18px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: grid;
-    place-items: center start;
-    width: 70px;
-    height: 38px;
-    min-width: 70px;
-    border-radius: 0;
-    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 28px;
+    min-width: 56px;
     overflow: visible;
-    box-shadow: none;
   }
 
   .mobile-brand-logo img {
@@ -208,13 +201,12 @@
   }
 
   .mobile-brand-logo span {
-    font-size: 24px;
+    font-size: 18px;
     line-height: 1;
     font-weight: 950;
-    letter-spacing: -0.09em;
+    letter-spacing: -0.08em;
     color: #d71920 !important;
     text-transform: uppercase;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.7);
   }
 
   .mobile-brand-bar strong {
@@ -226,13 +218,20 @@
     font-weight: 850;
   }
 
-  .mobile-brand-bar span {
-    display: block;
+  .mobile-subbrand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
     margin-top: 4px;
+    color: #64748b;
     font-size: 11px;
     line-height: 1;
-    color: #64748b;
     font-weight: 750;
+  }
+
+  .mobile-subbrand > span:last-child {
+    display: inline-block;
   }
 
   .mobile-page-title {
