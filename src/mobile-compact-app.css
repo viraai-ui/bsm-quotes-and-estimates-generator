@@ -692,6 +692,86 @@
     box-shadow: none !important;
   }
 
+  .summary-card.final-step {
+    display: grid;
+    gap: 12px;
+    padding: 14px !important;
+    border-radius: 22px !important;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  }
+
+  .summary-card.final-step .section-title {
+    margin-bottom: 0;
+  }
+
+  .summary-card.final-step .summary-grid {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 8px !important;
+  }
+
+  .summary-card.final-step .total-row {
+    min-height: 44px !important;
+    padding: 10px 12px !important;
+    border-radius: 15px !important;
+    border: 1px solid #edf1f6;
+    background: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  .summary-card.final-step .total-row span {
+    font-size: 12px !important;
+    font-weight: 800;
+    color: #64748b;
+  }
+
+  .summary-card.final-step .total-row strong {
+    font-size: 14px !important;
+    font-weight: 900;
+    color: #0f172a;
+  }
+
+  .summary-card.final-step .total-row.grand {
+    min-height: 54px !important;
+    color: #ffffff;
+    background: linear-gradient(135deg, #0f172a, #111827) !important;
+    border: 0 !important;
+    box-shadow: 0 14px 24px rgba(15, 23, 42, 0.16) !important;
+  }
+
+  .summary-card.final-step .total-row.grand span,
+  .summary-card.final-step .total-row.grand strong {
+    color: #ffffff !important;
+  }
+
+  .summary-card.final-step .total-row.grand strong {
+    font-size: 21px !important;
+    letter-spacing: -0.03em;
+  }
+
+  .summary-card.final-step .amount-words {
+    margin: -2px 2px 0 !important;
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+    color: #475569;
+    font-weight: 800;
+  }
+
+  .summary-card.final-step .stack-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding-top: 0 !important;
+  }
+
+  .summary-card.final-step .stack-actions .ghost,
+  .summary-card.final-step .stack-actions .primary {
+    min-height: 48px !important;
+    border-radius: 15px !important;
+    font-size: 14px !important;
+    font-weight: 900;
+  }
+
   .edit-modal-card {
     font-size: 13px;
   }
