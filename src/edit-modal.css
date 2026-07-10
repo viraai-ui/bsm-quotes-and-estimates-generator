@@ -218,3 +218,392 @@
     display: block;
   }
 }
+
+/* Mobile Documents edit modal rebuild */
+@media (max-width: 820px) {
+  body:has(.edit-modal-backdrop) {
+    overflow: hidden !important;
+  }
+
+  .edit-modal-backdrop {
+    z-index: 1000 !important;
+    inset: 0 !important;
+    display: block !important;
+    padding: 0 !important;
+    background: rgba(15, 23, 42, 0.62) !important;
+    backdrop-filter: blur(8px) !important;
+  }
+
+  .edit-modal-card {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    display: grid !important;
+    grid-template-rows: auto minmax(0, 1fr) auto !important;
+    overflow: hidden !important;
+    border-radius: 0 !important;
+    background: #f4f6f9 !important;
+    box-shadow: none !important;
+  }
+
+  .edit-modal-head {
+    position: relative !important;
+    z-index: 3 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    min-height: 64px !important;
+    padding: calc(env(safe-area-inset-top, 0px) + 12px) 16px 12px !important;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.92) !important;
+    background: rgba(255,255,255,0.98) !important;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08) !important;
+  }
+
+  .edit-modal-head h2 {
+    margin: 0 0 2px !important;
+    font-size: 18px !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.04em !important;
+  }
+
+  .edit-modal-head span {
+    display: block !important;
+    max-width: 210px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: 11px !important;
+  }
+
+  .edit-modal-head .ghost {
+    width: auto !important;
+    min-width: 76px !important;
+    min-height: 42px !important;
+    padding: 0 14px !important;
+    border-radius: 14px !important;
+    font-size: 13px !important;
+  }
+
+  .edit-modal-scroll {
+    display: block !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 12px 12px 150px !important;
+    background: #f4f6f9 !important;
+  }
+
+  .edit-modal-scroll *,
+  .edit-modal-scroll *::before,
+  .edit-modal-scroll *::after {
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .edit-modal-scroll .panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 14px !important;
+    padding: 16px !important;
+    border-radius: 24px !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08) !important;
+  }
+
+  .edit-modal-scroll .panel h2,
+  .edit-modal-scroll .section-title h2 {
+    margin: 0 0 12px !important;
+    font-size: 18px !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.04em !important;
+  }
+
+  .edit-modal-scroll .quotation-form-layout,
+  .edit-modal-scroll .estimate-form-layout,
+  .edit-modal-scroll .quotation-form-stack,
+  .edit-modal-scroll .quotation-form-stack.compact-side,
+  .edit-modal-scroll .form-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  .edit-modal-scroll label {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .edit-modal-scroll label > span {
+    display: block !important;
+    margin: 0 0 6px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    color: #4b5563 !important;
+    font-size: 10px !important;
+    line-height: 1.1 !important;
+    font-weight: 950 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+  }
+
+  .edit-modal-scroll input,
+  .edit-modal-scroll textarea,
+  .edit-modal-scroll select {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 48px !important;
+    padding: 0 14px !important;
+    border-radius: 17px !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+  }
+
+  .edit-modal-scroll textarea {
+    min-height: 88px !important;
+    padding: 12px 14px !important;
+  }
+
+  .edit-modal-scroll .line-panel {
+    padding: 14px !important;
+  }
+
+  .edit-modal-scroll .line-panel > div,
+  .edit-modal-scroll .line-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .edit-modal-scroll .line-head {
+    display: none !important;
+  }
+
+  .edit-modal-scroll .line-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 12px !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    background: #fbfcfe !important;
+    border: 1px solid #eef1f5 !important;
+  }
+
+  .edit-modal-scroll .line-row .image-cell {
+    display: grid !important;
+    grid-template-columns: 96px minmax(0, 1fr) !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    width: 100% !important;
+    min-height: 96px !important;
+    padding: 10px !important;
+    border-radius: 18px !important;
+    background: #f7f9fc !important;
+    overflow: hidden !important;
+  }
+
+  .edit-modal-scroll .line-row .image-cell > span,
+  .edit-modal-scroll .line-row .image-cell > img {
+    grid-row: 1 / span 2 !important;
+    width: 96px !important;
+    height: 96px !important;
+    border-radius: 16px !important;
+    object-fit: cover !important;
+  }
+
+  .edit-modal-scroll .mini-upload {
+    align-self: center !important;
+    min-height: 48px !important;
+    display: grid !important;
+    place-items: center !important;
+    border-radius: 16px !important;
+    background: #ffffff !important;
+    text-align: center !important;
+  }
+
+  .edit-modal-scroll .text-danger {
+    min-height: 40px !important;
+    border-radius: 14px !important;
+  }
+
+  .edit-modal-scroll .product-inputs,
+  .edit-modal-scroll .product-inputs.stacked {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  .edit-modal-scroll .mobile-line-field {
+    display: grid !important;
+    grid-template-rows: auto 44px !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+
+  .edit-modal-scroll .line-row:not(.estimate-lines .line-row) .mobile-line-field,
+  .edit-modal-scroll .line-row > .mobile-line-field {
+    max-width: 100% !important;
+  }
+
+  .edit-modal-scroll .estimate-lines .line-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-template-areas:
+      "product product product"
+      "days cost gst"
+      "total total total" !important;
+    column-gap: 8px !important;
+    row-gap: 10px !important;
+  }
+
+  .edit-modal-scroll .estimate-lines .product-inputs { grid-area: product !important; }
+  .edit-modal-scroll .estimate-lines .field-days { grid-area: days !important; }
+  .edit-modal-scroll .estimate-lines .field-cost { grid-area: cost !important; }
+  .edit-modal-scroll .estimate-lines .field-gst { grid-area: gst !important; }
+  .edit-modal-scroll .estimate-lines .mobile-total-chip { grid-area: total !important; }
+
+  .edit-modal-scroll .mobile-line-field input {
+    height: 44px !important;
+    min-height: 44px !important;
+    padding: 0 8px !important;
+    text-align: center !important;
+    font-size: 14px !important;
+  }
+
+  .edit-modal-scroll .mobile-total-chip {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    min-height: 48px !important;
+    height: auto !important;
+    padding: 10px 14px !important;
+    border-radius: 17px !important;
+    background: #0f172a !important;
+  }
+
+  .edit-modal-scroll .mobile-total-chip span,
+  .edit-modal-scroll .mobile-total-chip strong {
+    color: #ffffff !important;
+    white-space: nowrap !important;
+  }
+
+  .edit-modal-scroll .delete-row {
+    display: none !important;
+  }
+
+  .edit-modal-scroll .line-footer-actions {
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 10px !important;
+    padding-top: 10px !important;
+  }
+
+  .edit-modal-scroll .line-footer-actions .ghost {
+    flex: 1 1 auto !important;
+    min-height: 48px !important;
+    border-radius: 999px !important;
+  }
+
+  .edit-modal-scroll .line-footer-actions .mobile-footer-delete {
+    display: grid !important;
+    place-items: center !important;
+    width: 48px !important;
+    min-width: 48px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    padding: 0 !important;
+  }
+
+  .edit-modal-scroll .summary-card.final-step {
+    display: grid !important;
+    gap: 10px !important;
+    padding: 16px !important;
+  }
+
+  .edit-modal-scroll .summary-card.final-step > h2 {
+    display: block !important;
+    margin: 0 !important;
+    padding: 22px 12px !important;
+    border-radius: 24px !important;
+    background: #0f172a !important;
+    color: #ffffff !important;
+    text-align: center !important;
+    font-size: 34px !important;
+    line-height: 1 !important;
+  }
+
+  .edit-modal-scroll .summary-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .edit-modal-scroll .total-row {
+    min-height: 48px !important;
+    padding: 10px 14px !important;
+    border-radius: 16px !important;
+  }
+
+  .edit-modal-actions {
+    position: relative !important;
+    z-index: 4 !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    padding: 12px 16px calc(14px + env(safe-area-inset-bottom)) !important;
+    border-top: 1px solid rgba(226, 232, 240, 0.96) !important;
+    background: rgba(255,255,255,0.98) !important;
+    box-shadow: 0 -10px 28px rgba(15, 23, 42, 0.08) !important;
+  }
+
+  .edit-modal-actions button {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 50px !important;
+    border-radius: 17px !important;
+    font-size: 14px !important;
+    font-weight: 950 !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .edit-modal-scroll .estimate-lines .line-row {
+    column-gap: 6px !important;
+  }
+
+  .edit-modal-scroll .estimate-lines .mobile-line-field input {
+    padding: 0 4px !important;
+    font-size: 13px !important;
+  }
+
+  .edit-modal-scroll .line-row .image-cell {
+    grid-template-columns: 82px minmax(0, 1fr) !important;
+  }
+
+  .edit-modal-scroll .line-row .image-cell > span,
+  .edit-modal-scroll .line-row .image-cell > img {
+    width: 82px !important;
+    height: 82px !important;
+  }
+}
