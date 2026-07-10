@@ -289,7 +289,7 @@ function App() {
         <div className="logo-block"><div className="logo">{(settings.company.logoImage || DEFAULT_BSM_LOGO) ? <img src={settings.company.logoImage || DEFAULT_BSM_LOGO} alt="BSM logo" /> : (settings.company.logoText || 'BSM')}</div><div><strong>{settings.company.companyName}</strong><span>Quote Studio</span></div></div>
         <nav>{nav.map(([key, label, icon]) => <button key={key} className={`${active === key ? 'active' : ''} ${key === 'settings' ? 'settings-nav' : ''}`} onClick={() => { setActive(key); setMobileMenuOpen(false) }}><span className="nav-icon" aria-hidden="true">{icon}</span><span>{label}</span></button>)}</nav>
       </aside>
-      <section className="workspace">
+      <section className={`workspace active-${active}`}>
         <header className="topbar">
           <div className="mobile-brand-bar">
             <span className="mobile-brand-logo">{(settings.company.logoImage || DEFAULT_BSM_LOGO) ? <img src={settings.company.logoImage || DEFAULT_BSM_LOGO} alt="BSM logo" /> : (settings.company.logoText || 'BSM')}</span>
