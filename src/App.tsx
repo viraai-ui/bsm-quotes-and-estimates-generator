@@ -226,7 +226,7 @@ function App() {
     }))
   }, [settings.estimateFields, settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate, settings.numbering.padding])
 
-  const nav = [['quotation', 'Create Quotation'], ['estimate', 'Create Estimate'], ['documents', 'Documents'], ['settings', 'Settings']]
+  const nav = [['quotation', 'Create Quotation', '🧾'], ['estimate', 'Create Estimate', '🧮'], ['documents', 'Documents', '📄'], ['settings', 'Settings', '⚙️']]
 
   function saveQuotation(status: Status = 'Generated') {
     const number = nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding)
@@ -287,7 +287,7 @@ function App() {
       <button className="mobile-menu-backdrop" aria-label="Close menu" onClick={() => setMobileMenuOpen(false)} />
       <aside className="sidebar">
         <div className="logo-block"><div className="logo">{(settings.company.logoImage || DEFAULT_BSM_LOGO) ? <img src={settings.company.logoImage || DEFAULT_BSM_LOGO} alt="BSM logo" /> : (settings.company.logoText || 'BSM')}</div><div><strong>{settings.company.companyName}</strong><span>Quote Studio</span></div></div>
-        <nav>{nav.map(([key, label]) => <button key={key} className={active === key ? 'active' : ''} onClick={() => { setActive(key); setMobileMenuOpen(false) }}>{label}</button>)}</nav>
+        <nav>{nav.map(([key, label, icon]) => <button key={key} className={`${active === key ? 'active' : ''} ${key === 'settings' ? 'settings-nav' : ''}`} onClick={() => { setActive(key); setMobileMenuOpen(false) }}><span className="nav-icon" aria-hidden="true">{icon}</span><span>{label}</span></button>)}</nav>
       </aside>
       <section className="workspace">
         <header className="topbar">
