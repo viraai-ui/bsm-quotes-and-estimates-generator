@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&display=swap');
 
 .mobile-brand-bar,
-.mobile-page-title {
+.mobile-page-title,
+.mobile-footer-delete {
   display: none;
 }
 
@@ -587,10 +588,10 @@
   .quote-flow .line-row:not(.estimate-lines .line-row) {
     position: relative;
     display: grid !important;
-    grid-template-columns: 58px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: 58px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
     grid-template-areas:
-      "image product product product product"
-      "qty price gst total delete";
+      "image product product product"
+      "qty price gst total";
     align-items: stretch;
     gap: 8px !important;
     padding: 10px !important;
@@ -680,16 +681,37 @@
   }
 
   .quote-flow .line-row:not(.estimate-lines .line-row) > .delete-row {
-    grid-area: delete;
-    width: 100%;
-    min-width: 0 !important;
-    min-height: 50px !important;
+    display: none !important;
+  }
+
+  .quote-flow .line-footer-actions {
+    display: flex !important;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
+  }
+
+  .quote-flow .line-footer-actions .ghost {
+    min-height: 52px !important;
+    padding: 0 24px !important;
+    border-radius: 999px !important;
+    font-weight: 900;
+  }
+
+  .quote-flow .line-footer-actions .mobile-footer-delete {
+    display: grid !important;
+    place-items: center;
+    width: 52px;
+    min-width: 52px !important;
+    height: 52px;
+    min-height: 52px !important;
     padding: 0 !important;
-    border-radius: 13px !important;
+    border-radius: 999px !important;
     color: #dc2626;
     background: #fff1f2 !important;
     border: 1px solid #ffe4e6 !important;
-    box-shadow: none !important;
+    box-shadow: 0 12px 22px rgba(225, 29, 72, 0.12) !important;
   }
 
   .summary-card.final-step {
