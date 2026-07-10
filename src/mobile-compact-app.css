@@ -716,12 +716,12 @@
 
   .estimate-flow .estimate-lines .line-row {
     display: grid !important;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 64px;
     grid-template-areas:
       "product product product product"
       "days cost gst total";
     align-items: stretch;
-    gap: 8px !important;
+    gap: 6px !important;
     padding: 10px !important;
     border-radius: 16px !important;
   }
@@ -742,7 +742,21 @@
   }
 
   .estimate-flow .estimate-lines .line-row > .mobile-line-field {
+    display: grid !important;
+    grid-template-rows: 14px 38px;
+    gap: 4px;
     min-width: 0;
+  }
+
+  .estimate-flow .estimate-lines .line-row > .mobile-line-field > span {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+    font-size: 9px !important;
+    line-height: 1 !important;
+    letter-spacing: 0.04em;
   }
 
   .estimate-flow .estimate-lines .line-row > .mobile-line-field:nth-of-type(1) { grid-area: days; }
@@ -750,15 +764,18 @@
   .estimate-flow .estimate-lines .line-row > .mobile-line-field:nth-of-type(3) { grid-area: gst; }
 
   .estimate-flow .estimate-lines .line-row > .mobile-line-field input {
-    min-height: 36px !important;
-    padding: 7px 6px !important;
+    min-height: 38px !important;
+    height: 38px !important;
+    padding: 6px 4px !important;
     text-align: center;
+    font-size: 13px !important;
   }
 
   .estimate-flow .estimate-lines .line-row > .mobile-total-chip {
     grid-area: total;
-    min-height: 50px !important;
-    padding: 7px 6px !important;
+    min-height: 56px !important;
+    height: 56px;
+    padding: 7px 5px !important;
     text-align: center;
   }
 
