@@ -226,7 +226,7 @@ function App() {
     }))
   }, [settings.estimateFields, settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate, settings.numbering.padding])
 
-  const nav = [['quotation', 'Create Quotation', '🧾'], ['estimate', 'Create Estimate', '🧮'], ['documents', 'Documents', '📄'], ['settings', 'Settings', '⚙️']]
+  const nav = [['quotation', 'Create Quotation', '🧾'], ['estimate', 'Create Estimate', '🧾'], ['documents', 'Documents', '📄'], ['settings', 'Settings', '⚙️']]
 
   function saveQuotation(status: Status = 'Generated') {
     const number = nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding)
