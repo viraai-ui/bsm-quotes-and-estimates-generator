@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&display=swap');
+
 .mobile-brand-bar,
 .mobile-page-title {
   display: none;
@@ -191,9 +193,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: flex-start;
-    width: 96px;
-    height: 46px;
-    min-width: 96px;
+    width: 67px;
+    height: 32px;
+    min-width: 67px;
     overflow: visible;
   }
 
@@ -215,6 +217,7 @@
 
   .mobile-brand-bar strong {
     display: block;
+    font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 20px;
     line-height: 1;
     letter-spacing: -0.045em;
