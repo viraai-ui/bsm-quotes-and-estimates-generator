@@ -16,6 +16,7 @@ import './settings-auth.css'
 import './logo-upload.css'
 import './mobile-app-polish.css'
 import './mobile-summary-fix.css'
+import './mobile-compact-app.css'
 import './edit-modal.css'
 import { DEFAULT_BSM_LOGO } from './assets/bsmLogoData'
 
@@ -173,6 +174,7 @@ const defaultSettings: Settings = {
 
 function App() {
   const [active, setActive] = useState('quotation')
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [settings, setSettings] = usePersistentState<Settings>(STORAGE_SETTINGS, defaultSettings)
   const [documents, setDocuments] = usePersistentState<SavedDocument[]>(STORAGE_DOCS, [])
   const [cloudLoaded, setCloudLoaded] = useState(false)
@@ -280,10 +282,12 @@ function App() {
   }
 
   return (
-    <main className="dashboard-shell">
+    <main className={`dashboard-shell ${mobileMenuOpen ? 'menu-open' : ''}`}>
+      <button className="mobile-menu-button" aria-label="Open menu" onClick={() => setMobileMenuOpen(true)}>☰</button>
+      <button className="mobile-menu-backdrop" aria-label="Close menu" onClick={() => setMobileMenuOpen(false)} />
       <aside className="sidebar">
         <div className="logo-block"><div className="logo">{(settings.company.logoImage || DEFAULT_BSM_LOGO) ? <img src={settings.company.logoImage || DEFAULT_BSM_LOGO} alt="BSM logo" /> : (settings.company.logoText || 'BSM')}</div><div><strong>{settings.company.companyName}</strong><span>Quote Studio</span></div></div>
-        <nav>{nav.map(([key, label]) => <button key={key} className={active === key ? 'active' : ''} onClick={() => setActive(key)}>{label}</button>)}</nav>
+        <nav>{nav.map(([key, label]) => <button key={key} className={active === key ? 'active' : ''} onClick={() => { setActive(key); setMobileMenuOpen(false) }}>{label}</button>)}</nav>
       </aside>
       <section className="workspace">
         {active !== 'documents' && <header className="topbar"><div><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div></header>}
