@@ -184,12 +184,16 @@
   }
 
   .mobile-brand-logo {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 56px;
-    height: 28px;
-    min-width: 56px;
+    justify-content: flex-start;
+    width: 96px;
+    height: 46px;
+    min-width: 96px;
     overflow: visible;
   }
 
@@ -201,7 +205,7 @@
   }
 
   .mobile-brand-logo span {
-    font-size: 18px;
+    font-size: 22px;
     line-height: 1;
     font-weight: 950;
     letter-spacing: -0.08em;
@@ -211,23 +215,15 @@
 
   .mobile-brand-bar strong {
     display: block;
-    font-size: 15px;
-    line-height: 1.05;
-    letter-spacing: -0.025em;
+    font-size: 20px;
+    line-height: 1;
+    letter-spacing: -0.045em;
     color: #0f172a;
-    font-weight: 850;
+    font-weight: 900;
   }
 
   .mobile-subbrand {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    margin-top: 4px;
-    color: #64748b;
-    font-size: 11px;
-    line-height: 1;
-    font-weight: 750;
+    display: none;
   }
 
   .mobile-subbrand > span:last-child {
