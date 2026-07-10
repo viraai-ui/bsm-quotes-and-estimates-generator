@@ -364,7 +364,7 @@ function LineItemsPanel({ items, setItems, settings, mode = 'quotation' }: { ite
         <div className="mobile-total-chip"><span>Total</span><strong>{money(total)}</strong></div><button className="icon-button delete-row" aria-label="Delete row" title="Delete row" onClick={() => remove(item.id)}>🗑</button>
       </div>})}
     </div>
-    <div className="line-footer-actions"><button className="ghost" onClick={addItem}>+ Add item</button><button className="icon-button mobile-footer-delete" aria-label="Delete last item" title="Delete last item" onClick={() => items.length > 1 ? remove(items[items.length - 1].id) : setItems([newItem(settings.tax.defaultGst)])}>🗑</button></div>
+    <div className="line-footer-actions"><button className="ghost" onClick={addItem}>{isEstimate ? '+ Add expense' : '+ Add item'}</button><button className="icon-button mobile-footer-delete" aria-label="Delete last item" title="Delete last item" onClick={() => items.length > 1 ? remove(items[items.length - 1].id) : setItems([newItem(settings.tax.defaultGst)])}>🗑</button></div>
   </section>
 }
 
