@@ -15,16 +15,17 @@
   .dashboard-shell {
     display: block;
     min-height: 100vh;
-    padding-top: 52px;
-    background: linear-gradient(180deg, #ffffff 0, #f7f8fb 92px, var(--m-bg) 100%);
+    padding-top: 64px;
+    background: linear-gradient(180deg, #ffffff 0, #f7f8fb 96px, var(--m-bg) 100%);
     font-size: 13px;
+    overflow-x: hidden;
   }
 
   .mobile-menu-button {
     position: fixed;
     top: 10px;
-    left: 10px;
-    z-index: 130;
+    left: 12px;
+    z-index: 165;
     display: grid;
     place-items: center;
     width: 42px;
@@ -32,23 +33,29 @@
     height: 42px;
     min-height: 42px;
     padding: 0;
-    border: 1px solid rgba(229, 231, 235, 0.9);
-    border-radius: 15px;
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    border-radius: 14px;
     color: #111827;
-    background: rgba(255, 255, 255, 0.94);
-    box-shadow: 0 12px 28px rgba(17, 24, 39, 0.12);
-    backdrop-filter: blur(14px);
-    font-size: 18px;
+    background: #ffffff;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+    font-size: 19px;
+    line-height: 1;
+  }
+
+  .menu-open .mobile-menu-button {
+    opacity: 0;
+    pointer-events: none;
   }
 
   .mobile-menu-backdrop {
     position: fixed;
     inset: 0;
-    z-index: 108;
+    z-index: 150;
     display: none;
     min-height: 100vh;
     border-radius: 0;
-    background: rgba(17, 24, 39, 0.34);
+    background: rgba(15, 23, 42, 0.46);
+    backdrop-filter: blur(5px);
   }
 
   .menu-open .mobile-menu-backdrop {
@@ -59,17 +66,19 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 120;
-    width: min(286px, 84vw);
+    z-index: 170;
+    width: min(304px, 82vw);
     height: 100dvh;
-    padding: 16px 14px;
-    border-radius: 0 24px 24px 0;
-    border-right: 1px solid rgba(229, 231, 235, 0.94);
-    background: rgba(255, 255, 255, 0.98);
-    box-shadow: 24px 0 70px rgba(17, 24, 39, 0.22);
+    padding: 14px 12px;
+    border-radius: 0 22px 22px 0;
+    border-right: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #111827;
+    box-shadow: 26px 0 80px rgba(15, 23, 42, 0.28);
     transform: translateX(-106%);
-    transition: transform 180ms ease;
+    transition: transform 190ms ease;
     overflow-y: auto;
+    opacity: 1;
   }
 
   .menu-open .sidebar {
@@ -127,15 +136,25 @@
   }
 
   .topbar {
-    margin: 0 0 8px;
-    padding: 0 4px 4px 54px;
-    min-height: 40px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 145;
+    min-height: 62px;
+    margin: 0;
+    padding: 10px 12px 10px 66px;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.92);
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+    backdrop-filter: blur(14px);
   }
 
   .topbar h1 {
-    font-size: 18px;
-    line-height: 1.15;
-    letter-spacing: -0.04em;
+    font-size: 17px !important;
+    line-height: 1.12;
+    letter-spacing: -0.035em;
+    color: #111827;
   }
 
   .page-grid,
@@ -393,6 +412,60 @@
   .field-card {
     border-radius: 16px !important;
     padding: 10px !important;
+  }
+
+  .documents-shell,
+  .documents-list,
+  .documents-grid {
+    min-width: 0 !important;
+  }
+
+  .doc-card,
+  .panel,
+  .summary-card,
+  .settings-card,
+  .field-card {
+    overflow: hidden;
+  }
+
+  .panel p,
+  .doc-card p,
+  .settings-card p,
+  .summary-card p,
+  .amount-words,
+  .documents-shell,
+  .settings-shell {
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+  }
+
+  .panel strong,
+  .doc-card strong,
+  .settings-card strong,
+  .total-row strong {
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+  }
+
+  .sidebar * {
+    opacity: 1 !important;
+    text-shadow: none !important;
+  }
+
+  .sidebar button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 44px;
+    min-height: 44px;
+    color: #374151;
+    background: #f5f6f8;
+    font-weight: 750;
+  }
+
+  .sidebar button.active {
+    color: #ffffff !important;
   }
 
   .edit-modal-card {
