@@ -401,13 +401,12 @@ function DocumentsView({ documents, tab, setTab, settings, onSave, onDuplicate, 
   }
 
   return <section className="panel documents-module">
-    <div className="documents-hero">
-      <div><h2>Documents</h2><span>{docs.length} {tab === 'quotation' ? 'quotations' : 'estimates'} generated</span></div>
-      <input className="search" placeholder="Search number, customer, project, status..." value={search} onChange={(e) => setSearch(e.target.value)} />
-    </div>
     <div className="documents-toolbar">
       <div className="tabbar"><button className={tab === 'quotation' ? 'active' : ''} onClick={() => setTab('quotation')}>Quotations</button><button className={tab === 'estimate' ? 'active' : ''} onClick={() => setTab('estimate')}>Estimates</button></div>
       <div className="view-toggle"><button className={view === 'list' ? 'active' : ''} onClick={() => setView('list')}>List</button><button className={view === 'grid' ? 'active' : ''} onClick={() => setView('grid')}>Grid</button></div>
+    </div>
+    <div className="documents-hero documents-search-only">
+      <input className="search" placeholder="Search number, customer, project, status..." value={search} onChange={(e) => setSearch(e.target.value)} />
     </div>
     <div className={`records ${view === 'grid' ? 'records-grid' : 'records-list'}`}>{docs.length === 0 && <div className="empty">No generated {tab}s yet. Complete the form and click Generate PDF.</div>}{docs.map((doc) => <article key={doc.id} className="record-card document-card"><div className="doc-main"><strong>{doc.number}</strong><span>{doc.customer} {doc.company ? `• ${doc.company}` : ''}</span></div><div className="doc-amount"><strong>{money(doc.totals.final)}</strong><span>{doc.date}</span></div><span className="status compact-status">{doc.status}</span><div className="mini-actions compact-doc-actions"><button title="Edit" aria-label="Edit" onClick={() => openEdit(doc)}>✎</button><button title="Duplicate" aria-label="Duplicate" onClick={() => confirmAction('duplicate this document', () => onDuplicate(doc))}>⧉</button><button title="PDF" aria-label="PDF" onClick={() => onPdf(doc)}>PDF</button><button title="Excel" aria-label="Excel" onClick={() => onExcel(doc)}>XLS</button><button title="Delete" aria-label="Delete" className="danger-action" onClick={() => confirmAction('delete this document', () => onDelete(doc.id))}>🗑</button></div><small>Generated {formatDate(doc.updatedAt)}</small></article>)}</div>
     {editing && <DocumentEditModal doc={editing} data={editData} setData={setEditData} items={editItems} setItems={setEditItems} settings={settings} totals={editTotals} onClose={() => setEditing(null)} onSave={() => saveEdit(false)} onPdf={() => saveEdit(true)} />}
