@@ -290,7 +290,14 @@ function App() {
         <nav>{nav.map(([key, label]) => <button key={key} className={active === key ? 'active' : ''} onClick={() => { setActive(key); setMobileMenuOpen(false) }}>{label}</button>)}</nav>
       </aside>
       <section className="workspace">
-        <header className="topbar"><div><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div></header>
+        <header className="topbar">
+          <div className="mobile-brand-bar">
+            <div className="mobile-brand-logo">{(settings.company.logoImage || DEFAULT_BSM_LOGO) ? <img src={settings.company.logoImage || DEFAULT_BSM_LOGO} alt="BSM logo" /> : (settings.company.logoText || 'BSM')}</div>
+            <div><strong>{settings.company.companyName}</strong><span>Quote Studio</span></div>
+          </div>
+          <div className="desktop-page-title"><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div>
+        </header>
+        <div className="mobile-page-title"><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div>
 
         {active === 'quotation' && <div className="page-grid quote-flow">
           <section className="panel wide"><div className="section-title"><div><h2>Step 1. Quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={quoteData} setData={setQuoteData} /></section>
