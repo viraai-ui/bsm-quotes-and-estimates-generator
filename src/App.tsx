@@ -104,6 +104,18 @@ type EstimateCategory = { id: string; name: string; visible: boolean; gst: numbe
 
 const STORAGE_SETTINGS = 'bsm_quote_settings_v1'
 const STORAGE_DOCS = 'bsm_quote_docs_v1'
+const ZOHO_WIDGET_SDK_URL = 'https://live.zwidgets.com/js-sdk/1.2/ZohoEmbededAppSDK.min.js'
+
+declare global {
+  interface Window {
+    ZOHO?: {
+      embeddedApp?: {
+        on?: (eventName: string, callback: (data: unknown) => void) => void
+        init?: () => Promise<unknown> | unknown
+      }
+    }
+  }
+}
 
 const quotationFields: FieldConfig[] = [
   field('quotation_number', 'Quotation Number', 'Text', true, 'BSM/QTN/2026-27/0001'),
@@ -172,7 +184,51 @@ const defaultSettings: Settings = {
   numbering: { quotation: 'BSM/QTN/{{financial_year}}/{{number}}', estimate: 'BSM/EST/{{financial_year}}/{{number}}', financialYear: '2026-27', nextQuotation: 1, nextEstimate: 1, padding: 4, resetYearly: true },
 }
 
+function useZohoWidgetBoot(enabled: boolean) {
+  useEffect(() => {
+    if (!enabled) return undefined
+
+    document.documentElement.dataset.zohoWidgetRoute = 'true'
+
+    let cancelled = false
+    const bootZohoSdk = () => {
+      if (cancelled || !window.ZOHO?.embeddedApp) return
+      try {
+        window.ZOHO.embeddedApp.on?.('PageLoad', (data: unknown) => {
+          console.info('Zoho CRM Widget context:', data)
+        })
+        Promise.resolve(window.ZOHO.embeddedApp.init?.()).catch((error: unknown) => {
+          console.warn('Zoho CRM Widget SDK init failed; continuing in standalone mode.', error)
+        })
+      } catch (error) {
+        console.warn('Zoho CRM Widget SDK unavailable; continuing in standalone mode.', error)
+      }
+    }
+
+    const existing = document.querySelector<HTMLScriptElement>(`script[src="${ZOHO_WIDGET_SDK_URL}"]`)
+    if (existing) {
+      if (window.ZOHO?.embeddedApp) bootZohoSdk()
+      else existing.addEventListener('load', bootZohoSdk, { once: true })
+      return () => { cancelled = true }
+    }
+
+    const script = document.createElement('script')
+    script.src = ZOHO_WIDGET_SDK_URL
+    script.async = true
+    script.onload = bootZohoSdk
+    script.onerror = () => {
+      console.warn('Zoho CRM Widget SDK could not be loaded; continuing in standalone mode.')
+    }
+    document.head.appendChild(script)
+
+    return () => { cancelled = true }
+  }, [enabled])
+}
+
 function App() {
+  const isZohoWidgetRoute = window.location.pathname === '/crm-widget'
+  useZohoWidgetBoot(isZohoWidgetRoute)
+
   const [active, setActive] = useState('quotation')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [settings, setSettings] = usePersistentState<Settings>(STORAGE_SETTINGS, defaultSettings)

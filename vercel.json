@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/crm-widget",
+      "destination": "/"
+    },
+    {
+      "source": "/crm-widget/:path*",
+      "destination": "/"
+    }
+  ]
+}
