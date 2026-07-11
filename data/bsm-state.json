@@ -446,12 +446,54 @@
       "estimate": "BSM/EST/{{financial_year}}/{{number}}",
       "financialYear": "2026-27",
       "nextQuotation": 4,
-      "nextEstimate": 4,
+      "nextEstimate": 5,
       "padding": 4,
       "resetYearly": true
     }
   },
   "documents": [
+    {
+      "id": "319a5743-07fb-433a-a950-b8b46559b181",
+      "type": "estimate",
+      "number": "BSM/EST/2026-27/0004",
+      "date": "2026-07-11",
+      "customer": "Customer",
+      "company": "",
+      "location": "",
+      "headerData": {
+        "estimate_number": "BSM/EST/2026-27/0004",
+        "estimate_date": "2026-07-11",
+        "customer_name": "",
+        "company_name": "",
+        "phone": "",
+        "email": "",
+        "address": "",
+        "location": "",
+        "duration_days": ""
+      },
+      "items": [
+        {
+          "id": "1a301bb7-6338-49d1-91be-a454c8c76ba0",
+          "productName": "",
+          "description": "",
+          "quantity": 1,
+          "price": 0,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 0,
+        "gst": 0,
+        "grand": 0,
+        "roundOff": 0,
+        "final": 0,
+        "words": "Zero rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Admin",
+      "createdAt": "2026-07-11T09:41:06.456Z",
+      "updatedAt": "2026-07-11T09:41:06.456Z"
+    },
     {
       "id": "2f8133b8-a311-470d-aab5-b936e6cead23",
       "type": "quotation",
@@ -853,5 +895,5 @@
       "pdfGeneratedAt": "2026-07-09T07:03:40.279Z"
     }
   ],
-  "updatedAt": "2026-07-11T09:40:35.556Z"
+  "updatedAt": "2026-07-11T09:41:10.811Z"
 }
