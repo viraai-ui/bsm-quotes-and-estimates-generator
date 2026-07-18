@@ -569,74 +569,6 @@
       "updatedAt": "2026-07-10T05:07:41.900Z"
     },
     {
-      "id": "c8fc4b86-42ca-4d15-b916-7a11a5fd748b",
-      "type": "quotation",
-      "number": "BSM/QTN/2026-27/0002",
-      "date": "2026-07-09",
-      "customer": "Ainesh Sikdar",
-      "company": "19.26",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0002",
-        "quotation_date": "2026-07-09",
-        "valid_till": "2026-07-10",
-        "customer_name": "Ainesh Sikdar",
-        "company_name": "19.26",
-        "phone": "09999432966",
-        "email": "Aineshsikdar96@gmail.com",
-        "address": "42, Karuna Kunj, Sector 3, Dwarka, new delhi\nNear Aakash Hospital",
-        "gstin": "",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": ""
-      },
-      "items": [
-        {
-          "id": "048c0481-de4c-4e9f-a6af-dfcaa66dc939",
-          "productName": "TTL 2800",
-          "description": "810",
-          "quantity": 10,
-          "price": 200,
-          "gst": 0
-        },
-        {
-          "id": "9c9aeb5f-e5f5-4c7b-853f-4852b3a6a39b",
-          "productName": "Bibbon winder",
-          "description": "9910",
-          "quantity": 1,
-          "price": 150,
-          "gst": 0
-        },
-        {
-          "id": "7767c2fe-f776-4aeb-b6f7-f7826952fc25",
-          "productName": "needle DBX40",
-          "description": "",
-          "quantity": 5,
-          "price": 145,
-          "gst": 0
-        },
-        {
-          "id": "7aa7f0a5-6088-418b-a63a-1ffa74399122",
-          "productName": "Needle Clamp",
-          "description": "",
-          "quantity": 2,
-          "price": 250,
-          "gst": 0
-        }
-      ],
-      "totals": {
-        "taxable": 3375,
-        "gst": 0,
-        "grand": 3375,
-        "roundOff": 0,
-        "final": 3375,
-        "words": "Three Thousand Three Hundred Seventy Five rupees only"
-      },
-      "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
-      "createdAt": "2026-07-09T09:07:54.820Z",
-      "updatedAt": "2026-07-09T09:07:54.820Z",
-      "pdfGeneratedAt": "2026-07-09T09:07:54.837Z"
-    },
-    {
       "id": "4db74077-4008-49ae-975e-42633d906827",
       "type": "estimate",
       "number": "BSM/EST/2026-27/0002",
@@ -851,5 +783,5 @@
       "pdfGeneratedAt": "2026-07-09T07:03:40.279Z"
     }
   ],
-  "updatedAt": "2026-07-18T12:27:03.955Z"
+  "updatedAt": "2026-07-18T12:27:05.807Z"
 }
