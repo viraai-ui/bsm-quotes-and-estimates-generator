@@ -721,67 +721,7 @@
       "createdBy": "Admin",
       "createdAt": "2026-07-09T08:47:44.530Z",
       "updatedAt": "2026-07-09T08:47:44.530Z"
-    },
-    {
-      "id": "13902460-c1dc-4005-80af-a04b5fc7dfd3",
-      "type": "quotation",
-      "number": "BSM/QTN/2026-27/0001",
-      "date": "2026-07-09",
-      "customer": "Ainesh Sikdar",
-      "company": "Build Scale Manufacture India",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0001",
-        "quotation_date": "2026-07-09",
-        "valid_till": "",
-        "customer_name": "Ainesh Sikdar",
-        "company_name": "Build Scale Manufacture India",
-        "phone": "9910844505",
-        "email": "ainesh@bsmindia.com",
-        "address": "",
-        "gstin": "",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": ""
-      },
-      "items": [
-        {
-          "id": "799d1547-2f37-4734-8624-0c6e6b1362b6",
-          "productName": "TTL 810",
-          "description": "",
-          "quantity": 25,
-          "price": 50,
-          "gst": 0
-        },
-        {
-          "id": "eb024fe2-c43d-42f1-9d1a-1cc762c682d7",
-          "productName": "Bobbin 810",
-          "description": "",
-          "quantity": 9,
-          "price": 100,
-          "gst": 0
-        },
-        {
-          "id": "cbc4c0fb-9a34-4613-ae20-ec58ec8ea6b7",
-          "productName": "Needle DBX40",
-          "description": "",
-          "quantity": 3,
-          "price": 502,
-          "gst": 18
-        }
-      ],
-      "totals": {
-        "taxable": 3656,
-        "gst": 271.08,
-        "grand": 3927.08,
-        "roundOff": -0.07999999999992724,
-        "final": 3927,
-        "words": "Three Thousand Nine Hundred Twenty Seven rupees only"
-      },
-      "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
-      "createdAt": "2026-07-09T07:03:40.232Z",
-      "updatedAt": "2026-07-09T07:03:40.232Z",
-      "pdfGeneratedAt": "2026-07-09T07:03:40.279Z"
     }
   ],
-  "updatedAt": "2026-07-18T12:27:05.807Z"
+  "updatedAt": "2026-07-18T12:27:08.021Z"
 }
