@@ -453,50 +453,6 @@
   },
   "documents": [
     {
-      "id": "ac1c1521-63c3-44e4-aebf-dc490ae1be73",
-      "type": "quotation",
-      "number": "BSM/QTN/2026-27/0004",
-      "date": "2026-07-18",
-      "customer": "Customer",
-      "company": "",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0004",
-        "quotation_date": "2026-07-18",
-        "valid_till": "",
-        "customer_name": "",
-        "company_name": "",
-        "phone": "",
-        "email": "",
-        "address": "",
-        "gstin": "",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": ""
-      },
-      "items": [
-        {
-          "id": "b97df58f-5214-42a6-a5e9-05a433976c2f",
-          "productName": "",
-          "description": "",
-          "quantity": 1,
-          "price": 0,
-          "gst": 18
-        }
-      ],
-      "totals": {
-        "taxable": 0,
-        "gst": 0,
-        "grand": 0,
-        "roundOff": 0,
-        "final": 0,
-        "words": "Zero rupees only"
-      },
-      "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
-      "createdAt": "2026-07-18T12:26:33.704Z",
-      "updatedAt": "2026-07-18T12:26:33.704Z",
-      "pdfGeneratedAt": "2026-07-18T12:26:40.090Z"
-    },
-    {
       "id": "319a5743-07fb-433a-a950-b8b46559b181",
       "type": "estimate",
       "number": "BSM/EST/2026-27/0004",
@@ -939,5 +895,5 @@
       "pdfGeneratedAt": "2026-07-09T07:03:40.279Z"
     }
   ],
-  "updatedAt": "2026-07-18T12:26:41.973Z"
+  "updatedAt": "2026-07-18T12:27:01.732Z"
 }
