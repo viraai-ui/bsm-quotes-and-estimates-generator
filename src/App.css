@@ -3,11 +3,22 @@
 }
 
 .dashboard-shell {
+  --dash-bg: #f7f3ec;
+  --dash-surface: rgba(255, 252, 247, 0.94);
+  --dash-surface-solid: #fffdfa;
+  --dash-border: rgba(46, 39, 30, 0.08);
+  --dash-ink: #171512;
+  --dash-muted: #766f65;
+  --dash-soft: #f1ebe2;
+  --dash-red: #d71920;
+
   min-height: 100vh;
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);
-  background: #f6f7f9;
-  color: #111827;
+  background:
+    radial-gradient(circle at top left, rgba(215, 25, 32, 0.055), transparent 34rem),
+    linear-gradient(180deg, #fbf7ef 0%, var(--dash-bg) 100%);
+  color: var(--dash-ink);
 }
 
 .sidebar {
@@ -15,8 +26,9 @@
   top: 0;
   height: 100vh;
   padding: 28px 18px;
-  background: #ffffff;
-  border-right: 1px solid #e5e7eb;
+  background: rgba(255, 252, 247, 0.92);
+  border-right: 1px solid var(--dash-border);
+  backdrop-filter: blur(18px);
 }
 
 .logo-block {
@@ -59,21 +71,22 @@ button {
   min-height: 46px;
   border: 0;
   border-radius: 14px;
-  font-weight: 750;
+  font-weight: 550;
   cursor: pointer;
 }
 
 .sidebar button {
   width: 100%;
   padding: 0 14px;
-  color: #4b5563;
+  color: #5f574e;
   text-align: left;
   background: transparent;
 }
 
 .sidebar button.active {
-  color: #111827;
-  background: #f3f4f6;
+  color: var(--dash-ink);
+  font-weight: 600;
+  background: var(--dash-soft);
   box-shadow: inset 4px 0 0 #d71920;
 }
 
@@ -94,18 +107,20 @@ button {
 .eyebrow,
 .kicker {
   margin: 0 0 8px;
-  color: #d71920;
+  color: var(--dash-red);
   font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.13em;
+  font-weight: 600;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
 }
 
 h1,
-h2 {
+h2,
+h3 {
   margin: 0;
-  color: #111827;
-  letter-spacing: -0.04em;
+  color: var(--dash-ink);
+  letter-spacing: -0.035em;
+  font-weight: 720;
 }
 
 h1 {
@@ -115,6 +130,8 @@ h1 {
 
 h2 {
   font-size: 22px;
+  line-height: 1.18;
+  font-weight: 700;
 }
 
 .header-actions,
@@ -157,10 +174,12 @@ h2 {
 
 .panel {
   padding: 24px;
-  border: 1px solid #e8eaef;
+  border: 1px solid var(--dash-border);
   border-radius: 28px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 22px 70px rgba(17, 24, 39, 0.06);
+  background: var(--dash-surface);
+  box-shadow:
+    0 24px 70px rgba(38, 31, 24, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
 }
 
 .wide {
@@ -189,7 +208,7 @@ h2 {
   color: #991b1b;
   background: #fff1f2;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 500;
   white-space: nowrap;
 }
 
@@ -206,9 +225,9 @@ label {
 
 label span,
 .muted {
-  color: #6b7280;
+  color: var(--dash-muted);
   font-size: 13px;
-  font-weight: 750;
+  font-weight: 400;
 }
 
 .span-2 {
@@ -225,9 +244,10 @@ select,
   border: 1px solid #dfe3ea;
   border-radius: 14px;
   color: #111827;
-  background: #ffffff;
+  background: #fffdfa;
   outline: none;
   font: inherit;
+  font-weight: 400;
 }
 
 select {
@@ -291,9 +311,9 @@ textarea:focus {
 }
 
 .line-head {
-  color: #6b7280;
+  color: var(--dash-muted);
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -320,7 +340,7 @@ textarea:focus {
   color: #6b7280;
   background: #ffffff;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 500;
 }
 
 .upload-box input {
@@ -383,8 +403,9 @@ textarea:focus {
 .mini-actions button {
   min-height: 38px;
   padding: 0 12px;
-  color: #111827;
-  background: #f3f4f6;
+  color: var(--dash-ink);
+  font-weight: 600;
+  background: var(--dash-soft);
 }
 
 .settings-card {
@@ -407,7 +428,7 @@ textarea:focus {
   padding: 5px 8px;
   border-radius: 999px;
   background: #f3f4f6;
-  color: #4b5563;
+  color: #5f574e;
   font-weight: 750;
 }
 
@@ -510,7 +531,7 @@ textarea:focus {
   color: #9ca3af;
   background: #f3f4f6;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 500;
 }
 
 .mini-upload {
@@ -522,7 +543,7 @@ textarea:focus {
   background: #ffffff;
   border: 1px solid #e5e7eb;
   font-size: 11px;
-  font-weight: 850;
+  font-weight: 550;
   cursor: pointer;
 }
 
@@ -574,7 +595,7 @@ textarea:focus {
 
 .tabbar button {
   padding: 0 16px;
-  color: #4b5563;
+  color: #5f574e;
   background: #f3f4f6;
 }
 
@@ -620,9 +641,9 @@ textarea:focus {
   grid-template-columns: none;
   align-items: center;
   gap: 7px;
-  color: #4b5563;
+  color: #5f574e;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 500;
 }
 
 .toggle input {
@@ -666,4 +687,44 @@ textarea:focus {
     grid-template-columns: 1fr;
     grid-column: span 1;
   }
+}
+
+
+/* Premium hierarchy pass: headings bold, supporting copy soft */
+.helper,
+.amount-words,
+.record-card span,
+.record-card small,
+.field-list span,
+.category-card small,
+.config-list button span,
+.empty,
+.total-row span,
+.image-cell > span,
+.toggles span,
+.toggle,
+.upload-box,
+.mini-upload {
+  font-weight: 400;
+}
+
+.line-row,
+.record-card,
+.field-list article,
+.config-list button,
+.category-card {
+  border-color: var(--dash-border);
+  background: var(--dash-surface-solid);
+}
+
+.total-row strong,
+.mobile-total-chip strong,
+.doc-main strong,
+.doc-amount strong {
+  font-weight: 650;
+}
+
+.grand strong,
+.summary-card h2 {
+  font-weight: 750;
 }

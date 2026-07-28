@@ -39,7 +39,7 @@
 .settings-menu-list button strong,
 .settings-menu-list button span { display: block; }
 .settings-menu-list button strong { font-size: 14px; }
-.settings-menu-list button span { color: #6b7280; font-size: 12px; font-weight: 650; }
+.settings-menu-list button span { color: #6b7280; font-size: 12px; font-weight: 400; }
 .settings-menu-list button.active { color: #ffffff; background: #111827; box-shadow: 0 14px 28px rgba(17, 24, 39, 0.16); }
 .settings-menu-list button.active span { color: #d1d5db; }
 
@@ -79,7 +79,7 @@
   padding: 0 14px 4px;
   color: #6b7280;
   font-size: 11px;
-  font-weight: 900;
+  font-weight: 500;
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
@@ -133,7 +133,22 @@
   .settings-content-head { display: grid; padding: 16px; border-radius: 22px; }
   .field-settings-head { display: none; }
   .field-config-row { grid-template-columns: 1fr !important; gap: 10px; padding: 12px; }
-  .field-config-row::before { content: 'Field configuration'; color: #d71920; font-size: 10px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
+  .field-config-row::before { content: 'Field configuration'; color: #d71920; font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
   .settings-switches { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .settings-switches .toggle { justify-content: flex-start; border-radius: 12px; }
+}
+
+
+.settings-menu-list button strong {
+  font-weight: 600;
+}
+
+.settings-menu-list button span,
+.field-settings-head {
+  color: var(--dash-muted);
+  font-weight: 400;
+}
+
+.field-config-row::before {
+  font-weight: 600;
 }

@@ -1890,3 +1890,55 @@
     font-size: 13px !important;
   }
 }
+
+
+/* Final mobile hierarchy cleanup: only section titles stay bold */
+@media (max-width: 720px) {
+  .dashboard-shell {
+    background:
+      radial-gradient(circle at top left, rgba(215, 25, 32, 0.05), transparent 24rem),
+      linear-gradient(180deg, #fbf7ef 0%, #f7f3ec 100%) !important;
+  }
+
+  .mobile-page-title h1,
+  h1,
+  h2,
+  .section-title h2,
+  .settings-panel h2,
+  .documents-shell h2,
+  .summary-card > h2 {
+    font-weight: 700 !important;
+  }
+
+  label span,
+  .quotation-form-stack label > span,
+  .compact-form label > span,
+  .form-grid label > span,
+  .mobile-line-field > span,
+  .mobile-total-chip > span,
+  .amount-words,
+  .helper,
+  .document-card span,
+  .document-card small,
+  .settings-menu-list button span,
+  .field-settings-head,
+  .line-head {
+    font-weight: 400 !important;
+  }
+
+  button,
+  .sidebar button,
+  .tabbar button,
+  .view-toggle button,
+  .pill,
+  .status {
+    font-weight: 550 !important;
+  }
+
+  .mobile-total-chip strong,
+  .total-row strong,
+  .doc-main strong,
+  .doc-amount strong {
+    font-weight: 650 !important;
+  }
+}

@@ -27,7 +27,7 @@
 .document-card span,
 .document-card small {
   color: #6b7280;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .documents-toolbar {
@@ -54,7 +54,7 @@
   border-radius: 12px;
   background: transparent;
   color: #6b7280;
-  font-weight: 900;
+  font-weight: 500;
 }
 
 .view-toggle button.active {
@@ -123,4 +123,22 @@
   .documents-toolbar { align-items: stretch; }
   .view-toggle, .documents-toolbar .tabbar { width: 100%; }
   .view-toggle button, .documents-toolbar .tabbar button { flex: 1; }
+}
+
+
+.documents-hero span,
+.document-card span,
+.document-card small {
+  color: var(--dash-muted);
+  font-weight: 400;
+}
+
+.view-toggle button {
+  font-weight: 500;
+}
+
+.view-toggle button.active,
+.doc-main strong,
+.doc-amount strong {
+  font-weight: 650;
 }
