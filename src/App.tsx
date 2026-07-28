@@ -416,7 +416,7 @@ function LineItemsPanel({ items, setItems, settings, mode = 'quotation' }: { ite
   async function onImage(id: string, e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
-    const image = await compressImage(file)
+    const image = await fileToDataUrl(file)
     update(id, { image, imageName: file.name })
   }
   return <section className="panel line-panel wide">
@@ -686,6 +686,9 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
     columnStyles: isEstimate ? { 1: { cellWidth: 72, fontStyle: 'bold' } } : { 1: { cellWidth: 48, fontStyle: 'bold' }, 2: { cellWidth: 24, halign: 'center' } },
     didParseCell: (data) => {
       if (data.section === 'body' && data.column.index === 1) data.cell.styles.fontStyle = 'bold'
+      if (!isEstimate && data.section === 'body' && data.column.index === 2 && doc.items[data.row.index]?.image) {
+        data.cell.styles.minCellHeight = 22
+      }
     },
     didDrawCell: (data) => {
       if (data.section === 'body' && data.column.index === 1) {
@@ -708,7 +711,7 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
       }
       if (!isEstimate && data.section === 'body' && data.column.index === 2) {
         const item = doc.items[data.row.index]
-        if (item?.image) { try { pdf.addImage(item.image, 'JPEG', data.cell.x + 3, data.cell.y + 2, 16, 12) } catch { /* ignore */ } }
+        if (item?.image) drawContainedPdfImage(pdf, item.image, data.cell.x + 2, data.cell.y + 2, data.cell.width - 4, data.cell.height - 4)
       }
     }
   })
@@ -756,13 +759,17 @@ async function fileToDataUrl(file: File): Promise<string> {
   return new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.onerror = reject; reader.readAsDataURL(file) })
 }
 
-async function compressImage(file: File): Promise<string> {
-  const dataUrl = await fileToDataUrl(file)
-  const img = await new Promise<HTMLImageElement>((resolve, reject) => { const image = new Image(); image.onload = () => resolve(image); image.onerror = reject; image.src = dataUrl })
-  const max = 900, ratio = Math.min(1, max / Math.max(img.width, img.height))
-  const canvas = document.createElement('canvas'); canvas.width = Math.round(img.width * ratio); canvas.height = Math.round(img.height * ratio)
-  canvas.getContext('2d')?.drawImage(img, 0, 0, canvas.width, canvas.height)
-  return canvas.toDataURL('image/jpeg', 0.78)
+function drawContainedPdfImage(pdf: jsPDF, image: string, boxX: number, boxY: number, boxW: number, boxH: number) {
+  try {
+    const props = pdf.getImageProperties(image)
+    const ratio = Math.min(boxW / props.width, boxH / props.height)
+    const imageW = props.width * ratio
+    const imageH = props.height * ratio
+    const imageX = boxX + (boxW - imageW) / 2
+    const imageY = boxY + (boxH - imageH) / 2
+    const format = image.startsWith('data:image/png') ? 'PNG' : 'JPEG'
+    pdf.addImage(image, format, imageX, imageY, imageW, imageH)
+  } catch { /* ignore broken images */ }
 }
 
 function usePersistentState<T>(key: string, initial: T) {
