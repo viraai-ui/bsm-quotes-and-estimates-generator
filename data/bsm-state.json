@@ -529,48 +529,6 @@
       "updatedAt": "2026-07-28T10:39:30.388Z"
     },
     {
-      "id": "319a5743-07fb-433a-a950-b8b46559b181",
-      "type": "estimate",
-      "number": "BSM/EST/2026-27/0004",
-      "date": "2026-07-11",
-      "customer": "Customer",
-      "company": "",
-      "location": "",
-      "headerData": {
-        "estimate_number": "BSM/EST/2026-27/0004",
-        "estimate_date": "2026-07-11",
-        "customer_name": "",
-        "company_name": "",
-        "phone": "",
-        "email": "",
-        "address": "",
-        "location": "",
-        "duration_days": ""
-      },
-      "items": [
-        {
-          "id": "1a301bb7-6338-49d1-91be-a454c8c76ba0",
-          "productName": "",
-          "description": "",
-          "quantity": 1,
-          "price": 0,
-          "gst": 18
-        }
-      ],
-      "totals": {
-        "taxable": 0,
-        "gst": 0,
-        "grand": 0,
-        "roundOff": 0,
-        "final": 0,
-        "words": "Zero rupees only"
-      },
-      "status": "Generated",
-      "createdBy": "Admin",
-      "createdAt": "2026-07-11T09:41:06.456Z",
-      "updatedAt": "2026-07-11T09:41:06.456Z"
-    },
-    {
       "id": "cf3097d4-1940-4efe-9d17-e8554f93b74b",
       "type": "estimate",
       "number": "BSM/EST/2026-27/0003",
@@ -799,5 +757,5 @@
       "updatedAt": "2026-07-09T08:47:44.530Z"
     }
   ],
-  "updatedAt": "2026-07-28T12:00:39.833Z"
+  "updatedAt": "2026-07-28T12:00:42.843Z"
 }
