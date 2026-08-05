@@ -243,6 +243,7 @@ function App() {
 
   const [active, setActive] = useState('quotation')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [pdfBusy, setPdfBusy] = useState<string | null>(null)
   const [settings, setSettings] = usePersistentState<Settings>(STORAGE_SETTINGS, defaultSettings)
   const [documents, setDocuments] = usePersistentState<SavedDocument[]>(STORAGE_DOCS, [])
   const [cloudLoaded, setCloudLoaded] = useState(false)
@@ -308,10 +309,24 @@ function App() {
     return doc
   }
 
+  async function runPdfDownload(label: string, createDoc: () => SavedDocument) {
+    if (pdfBusy) return
+    setPdfBusy(label)
+    await waitForPaint()
+    try {
+      const doc = createDoc()
+      downloadQuotationPdf(doc, settings)
+      setDocuments((docs) => docs.map((d) => d.id === doc.id ? { ...d, pdfGeneratedAt: new Date().toISOString(), status: 'Generated' } : d))
+    } catch (error) {
+      console.error('PDF download failed', error)
+      window.alert('PDF could not be generated. Please try again.')
+    } finally {
+      window.setTimeout(() => setPdfBusy(null), 500)
+    }
+  }
+
   function generatePdf() {
-    const doc = saveQuotation('Generated')
-    downloadQuotationPdf(doc, settings)
-    setDocuments((docs) => docs.map((d) => d.id === doc.id ? { ...d, pdfGeneratedAt: new Date().toISOString(), status: 'Generated' } : d))
+    void runPdfDownload('Generating PDF…', () => saveQuotation('Generated'))
   }
 
   function generateExcel(doc = saveQuotation('Generated')) {
@@ -331,8 +346,7 @@ function App() {
   }
 
   function generateEstimatePdf() {
-    const doc = saveEstimate('Generated')
-    downloadQuotationPdf(doc, settings)
+    void runPdfDownload('Generating PDF…', () => saveEstimate('Generated'))
   }
 
   function duplicateDocument(doc: SavedDocument) {
@@ -370,11 +384,11 @@ function App() {
         {active === 'quotation' && <div className="page-grid quote-flow">
           <section className="panel wide"><div className="section-title"><div><h2>Step 1. Quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={quoteData} setData={setQuoteData} /></section>
           <LineItemsPanel items={items} setItems={setItems} settings={settings} />
-          <SummaryCard totals={totals} settings={settings} onPdf={generatePdf} onExcel={() => generateExcel()} />
+          <SummaryCard totals={totals} settings={settings} onPdf={generatePdf} onExcel={() => generateExcel()} pdfBusy={pdfBusy} />
         </div>}
 
-        {active === 'estimate' && <EstimateView settings={settings} totals={totals} items={items} setItems={setItems} estimateData={estimateData} setEstimateData={setEstimateData} onPdf={generateEstimatePdf} onExcel={() => downloadExcel(saveEstimate('Generated'), settings)} />}
-        {active === 'documents' && <DocumentsView documents={documents} tab={docTab} setTab={setDocTab} settings={settings} onSave={updateDocument} onDuplicate={duplicateDocument} onPdf={(d) => downloadQuotationPdf(d, settings)} onExcel={(d) => downloadExcel(d, settings)} onDelete={(id) => setDocuments((docs) => docs.filter((d) => d.id !== id))} />}
+        {active === 'estimate' && <EstimateView settings={settings} totals={totals} items={items} setItems={setItems} estimateData={estimateData} setEstimateData={setEstimateData} onPdf={generateEstimatePdf} onExcel={() => downloadExcel(saveEstimate('Generated'), settings)} pdfBusy={pdfBusy} />}
+        {active === 'documents' && <DocumentsView documents={documents} tab={docTab} setTab={setDocTab} settings={settings} onSave={updateDocument} onDuplicate={duplicateDocument} onPdf={(d) => void runPdfDownload('Preparing PDF…', () => d)} onExcel={(d) => downloadExcel(d, settings)} onDelete={(id) => setDocuments((docs) => docs.filter((d) => d.id !== id))} pdfBusy={pdfBusy} />}
         {active === 'settings' && <SettingsView settings={settings} setSettings={setSettings} />}
       </section>
     </main>
@@ -404,8 +418,12 @@ function FormField({ field, data, setData }: { field: FieldConfig; data: Record<
   return <label className={`${field.type === 'Textarea' ? 'span-2' : ''} ${autoNumberField ? 'auto-number-field' : ''}`}><span>{field.label}{field.mandatory ? ' *' : ''}</span>{field.type === 'Textarea' ? <textarea value={data[field.key] || ''} placeholder={field.placeholder} onChange={(e) => setData((d) => ({ ...d, [field.key]: e.target.value }))} /> : field.type === 'Dropdown' ? <select value={data[field.key] || ''} onChange={(e) => setData((d) => ({ ...d, [field.key]: e.target.value }))}>{(field.options || ['Option']).map((o) => <option key={o}>{o}</option>)}</select> : <input value={data[field.key] || ''} type={inputType(field.type)} inputMode={field.type === 'Number' ? 'decimal' : undefined} placeholder={field.placeholder} readOnly={autoNumberField} aria-readonly={autoNumberField} title={autoNumberField ? 'Auto-numbered by the system' : undefined} onChange={(e) => { if (!autoNumberField) setData((d) => ({ ...d, [field.key]: e.target.value })) }} />}</label>
 }
 
-function SummaryCard({ totals, settings, onPdf, onExcel }: { totals: Totals; settings: Settings; onPdf: () => void; onExcel: () => void }) {
-  return <section className="panel summary-card final-step"><div className="section-title"><div><h2>Step 3. Review & generate</h2></div></div><div className="summary-grid"><div className="total-row"><span>Taxable Amount</span><strong>{money(totals.taxable)}</strong></div><div className="total-row"><span>Total GST</span><strong>{settings.tax.gstEnabled ? money(totals.gst) : 'Disabled'}</strong></div><div className="total-row grand"><span>Final Amount</span><strong>{money(totals.final)}</strong></div></div>{settings.tax.amountInWords && <p className="amount-words">{totals.words}</p>}<div className="stack-actions"><button className="ghost full" onClick={onExcel}>Download Excel</button><button className="primary full" onClick={onPdf}>Generate PDF</button></div></section>
+function SummaryCard({ totals, settings, onPdf, onExcel, pdfBusy }: { totals: Totals; settings: Settings; onPdf: () => void; onExcel: () => void; pdfBusy?: string | null }) {
+  return <section className="panel summary-card final-step"><div className="section-title"><div><h2>Step 3. Review & generate</h2></div></div><div className="summary-grid"><div className="total-row"><span>Taxable Amount</span><strong>{money(totals.taxable)}</strong></div><div className="total-row"><span>Total GST</span><strong>{settings.tax.gstEnabled ? money(totals.gst) : 'Disabled'}</strong></div><div className="total-row grand"><span>Final Amount</span><strong>{money(totals.final)}</strong></div></div>{settings.tax.amountInWords && <p className="amount-words">{totals.words}</p>}<div className="stack-actions"><button className="ghost full" onClick={onExcel} disabled={Boolean(pdfBusy)}>Download Excel</button><LoadingButton className="primary full" busy={pdfBusy} onClick={onPdf}>Generate PDF</LoadingButton></div></section>
+}
+
+function LoadingButton({ children, busy, className = '', onClick }: { children: React.ReactNode; busy?: string | null; className?: string; onClick: () => void }) {
+  return <button className={`${className} loading-button ${busy ? 'is-loading' : ''}`} onClick={onClick} disabled={Boolean(busy)} aria-busy={Boolean(busy)}>{busy ? <><span className="button-spinner" aria-hidden="true" />{busy}</> : children}</button>
 }
 
 function LineItemsPanel({ items, setItems, settings, mode = 'quotation' }: { items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; settings: Settings; mode?: 'quotation' | 'estimate' }) {
@@ -436,7 +454,7 @@ function LineItemsPanel({ items, setItems, settings, mode = 'quotation' }: { ite
   </section>
 }
 
-function DocumentsView({ documents, tab, setTab, settings, onSave, onDuplicate, onPdf, onExcel, onDelete }: { documents: SavedDocument[]; tab: 'quotation' | 'estimate'; setTab: (t: 'quotation' | 'estimate') => void; settings: Settings; onSave: (d: SavedDocument) => void; onDuplicate: (d: SavedDocument) => void; onPdf: (d: SavedDocument) => void; onExcel: (d: SavedDocument) => void; onDelete: (id: string) => void }) {
+function DocumentsView({ documents, tab, setTab, settings, onSave, onDuplicate, onPdf, onExcel, onDelete, pdfBusy }: { documents: SavedDocument[]; tab: 'quotation' | 'estimate'; setTab: (t: 'quotation' | 'estimate') => void; settings: Settings; onSave: (d: SavedDocument) => void; onDuplicate: (d: SavedDocument) => void; onPdf: (d: SavedDocument) => void; onExcel: (d: SavedDocument) => void; onDelete: (id: string) => void; pdfBusy?: string | null }) {
   const [search, setSearch] = useState('')
   const [view, setView] = useState<'list' | 'grid'>('list')
   const [editing, setEditing] = useState<SavedDocument | null>(null)
@@ -476,7 +494,7 @@ function DocumentsView({ documents, tab, setTab, settings, onSave, onDuplicate, 
     <div className="documents-hero documents-search-only">
       <input className="search" placeholder="Search number, customer, project, status..." value={search} onChange={(e) => setSearch(e.target.value)} />
     </div>
-    <div className={`records ${view === 'grid' ? 'records-grid' : 'records-list'}`}>{docs.length === 0 && <div className="empty">No generated {tab}s yet. Complete the form and click Generate PDF.</div>}{docs.map((doc) => <article key={doc.id} className="record-card document-card"><div className="doc-main"><strong>{doc.number}</strong><span>{doc.customer} {doc.company ? `• ${doc.company}` : ''}</span></div><div className="doc-amount"><strong>{money(doc.totals.final)}</strong><span>{doc.date}</span></div><span className="status compact-status">{doc.status}</span><div className="mini-actions compact-doc-actions"><button title="Edit" aria-label="Edit" onClick={() => openEdit(doc)}>✎</button><button title="Duplicate" aria-label="Duplicate" onClick={() => confirmAction('duplicate this document', () => onDuplicate(doc))}>⧉</button><button title="PDF" aria-label="PDF" onClick={() => onPdf(doc)}>PDF</button><button title="Excel" aria-label="Excel" onClick={() => onExcel(doc)}>XLS</button><button title="Delete" aria-label="Delete" className="danger-action" onClick={() => confirmAction('delete this document', () => onDelete(doc.id))}>🗑</button></div><small>Generated {formatDate(doc.updatedAt)}</small></article>)}</div>
+    <div className={`records ${view === 'grid' ? 'records-grid' : 'records-list'}`}>{docs.length === 0 && <div className="empty">No generated {tab}s yet. Complete the form and click Generate PDF.</div>}{docs.map((doc) => <article key={doc.id} className="record-card document-card"><div className="doc-main"><strong>{doc.number}</strong><span>{doc.customer} {doc.company ? `• ${doc.company}` : ''}</span></div><div className="doc-amount"><strong>{money(doc.totals.final)}</strong><span>{doc.date}</span></div><span className="status compact-status">{doc.status}</span><div className="mini-actions compact-doc-actions"><button title="Edit" aria-label="Edit" onClick={() => openEdit(doc)} disabled={Boolean(pdfBusy)}>✎</button><button title="Duplicate" aria-label="Duplicate" onClick={() => confirmAction('duplicate this document', () => onDuplicate(doc))} disabled={Boolean(pdfBusy)}>⧉</button><LoadingButton className="mini-pdf-button" busy={pdfBusy} onClick={() => onPdf(doc)}>PDF</LoadingButton><button title="Excel" aria-label="Excel" onClick={() => onExcel(doc)} disabled={Boolean(pdfBusy)}>XLS</button><button title="Delete" aria-label="Delete" className="danger-action" onClick={() => confirmAction('delete this document', () => onDelete(doc.id))} disabled={Boolean(pdfBusy)}>🗑</button></div><small>Generated {formatDate(doc.updatedAt)}</small></article>)}</div>
     {editing && <DocumentEditModal doc={editing} data={editData} setData={setEditData} items={editItems} setItems={setEditItems} settings={settings} totals={editTotals} onClose={() => setEditing(null)} onSave={() => saveEdit(false)} onPdf={() => saveEdit(true)} />}
   </section>
 }
@@ -497,12 +515,12 @@ function DocumentEditModal({ doc, data, setData, items, setItems, settings, tota
   </div>
 }
 
-function EstimateView({ settings, totals, items, setItems, estimateData, setEstimateData, onPdf, onExcel }: { settings: Settings; totals: Totals; items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; estimateData: Record<string, string>; setEstimateData: (fn: (d: Record<string, string>) => Record<string, string>) => void; onPdf: () => void; onExcel: () => void }) {
+function EstimateView({ settings, totals, items, setItems, estimateData, setEstimateData, onPdf, onExcel, pdfBusy }: { settings: Settings; totals: Totals; items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; estimateData: Record<string, string>; setEstimateData: (fn: (d: Record<string, string>) => Record<string, string>) => void; onPdf: () => void; onExcel: () => void; pdfBusy?: string | null }) {
   const visibleEstimateFields = estimateFields.filter((f) => f.visible).sort((a, b) => a.sortOrder - b.sortOrder)
   return <div className="page-grid quote-flow estimate-flow">
     <section className="panel wide"><div className="section-title"><div><h2>Step 1. Estimate details</h2></div></div><DynamicForm fields={visibleEstimateFields} data={estimateData} setData={setEstimateData} /></section>
     <LineItemsPanel items={items} setItems={setItems} settings={settings} mode="estimate" />
-    <SummaryCard totals={totals} settings={settings} onPdf={onPdf} onExcel={onExcel} />
+    <SummaryCard totals={totals} settings={settings} onPdf={onPdf} onExcel={onExcel} pdfBusy={pdfBusy} />
   </div>
 }
 
@@ -757,6 +775,10 @@ function downloadExcel(doc: SavedDocument, settings: Settings) {
 
 async function fileToDataUrl(file: File): Promise<string> {
   return new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.onerror = reject; reader.readAsDataURL(file) })
+}
+
+function waitForPaint() {
+  return new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
 }
 
 function drawContainedPdfImage(pdf: jsPDF, image: string, boxX: number, boxY: number, boxW: number, boxH: number) {

@@ -159,6 +159,42 @@ h2 {
   border: 1px solid #e5e7eb;
 }
 
+button:disabled {
+  cursor: wait;
+  opacity: 0.78;
+}
+
+.loading-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  white-space: nowrap;
+}
+
+.loading-button.is-loading {
+  pointer-events: none;
+}
+
+.button-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.48);
+  border-top-color: #ffffff;
+  border-radius: 999px;
+  animation: pdf-spin 0.75s linear infinite;
+}
+
+.mini-pdf-button .button-spinner {
+  width: 12px;
+  height: 12px;
+  border-width: 1.8px;
+}
+
+@keyframes pdf-spin {
+  to { transform: rotate(360deg); }
+}
+
 .full {
   width: 100%;
   margin-top: 18px;
