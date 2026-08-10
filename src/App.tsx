@@ -18,6 +18,7 @@ import './mobile-app-polish.css'
 import './mobile-summary-fix.css'
 import './mobile-compact-app.css'
 import './edit-modal.css'
+import './sales-quote-options.css'
 import { DEFAULT_BSM_LOGO } from './assets/bsmLogoData'
 
 type FieldType = 'Text' | 'Number' | 'Date' | 'Dropdown' | 'Textarea' | 'Email' | 'Phone' | 'Image/File' | 'Checkbox'
@@ -101,6 +102,9 @@ type SavedDocument = {
 
 type Totals = { taxable: number; gst: number; grand: number; roundOff: number; final: number; words: string }
 type EstimateCategory = { id: string; name: string; visible: boolean; gst: number; fields: string[]; formula: string }
+type SalesLayout = 'quotation' | 'proforma'
+type ZohoCustomer = { id: string; name: string; company?: string; email?: string; phone?: string; gstin?: string; address?: string }
+type ZohoItem = { id: string; name: string; description?: string; price?: number; gst?: number }
 
 const STORAGE_SETTINGS = 'bsm_quote_settings_v1'
 const STORAGE_DOCS = 'bsm_quote_docs_v1'
@@ -250,6 +254,10 @@ function App() {
   const cloudSaveTimer = useRef<number | null>(null)
   const [quoteData, setQuoteData] = useState<Record<string, string>>(() => makeDefaults(defaultSettings.quotationFields))
   const [salesQuoteData, setSalesQuoteData] = useState<Record<string, string>>(() => makeDefaults(defaultSettings.quotationFields))
+  const [salesLayout, setSalesLayout] = useState<SalesLayout>('quotation')
+  const [salesTerms, setSalesTerms] = useState(defaultSettings.quotationTemplate.terms)
+  const [customerSuggestions, setCustomerSuggestions] = useState<ZohoCustomer[]>([])
+  const [itemSuggestions, setItemSuggestions] = useState<ZohoItem[]>([])
   const [estimateData, setEstimateData] = useState<Record<string, string>>(() => ({ ...makeDefaults(defaultSettings.estimateFields), estimate_number: nextNumber(defaultSettings.numbering.estimate, defaultSettings.numbering.financialYear, defaultSettings.numbering.nextEstimate, defaultSettings.numbering.padding), estimate_date: today() }))
   const [items, setItems] = useState<QuoteItem[]>([newItem(defaultSettings.tax.defaultGst)])
   const [salesItems, setSalesItems] = useState<QuoteItem[]>([newItem(defaultSettings.tax.defaultGst)])
@@ -298,6 +306,28 @@ function App() {
   }, [settings.quotationFields, settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding])
 
   useEffect(() => {
+    const query = salesQuoteData.customer_name || salesQuoteData.company_name || ''
+    if (query.length < 2) { setCustomerSuggestions([]); return }
+    const controller = new AbortController()
+    fetch(`/api/zoho-inventory?type=customers&q=${encodeURIComponent(query)}`, { signal: controller.signal })
+      .then((r) => r.ok ? r.json() : Promise.reject(new Error('Customer lookup failed')))
+      .then((data) => setCustomerSuggestions(Array.isArray(data.results) ? data.results : []))
+      .catch(() => {})
+    return () => controller.abort()
+  }, [salesQuoteData.customer_name, salesQuoteData.company_name])
+
+  useEffect(() => {
+    const query = salesItems.map((item) => item.productName).find((name) => name.length >= 2) || ''
+    if (!query) { setItemSuggestions([]); return }
+    const controller = new AbortController()
+    fetch(`/api/zoho-inventory?type=items&q=${encodeURIComponent(query)}`, { signal: controller.signal })
+      .then((r) => r.ok ? r.json() : Promise.reject(new Error('Item lookup failed')))
+      .then((data) => setItemSuggestions(Array.isArray(data.results) ? data.results : []))
+      .catch(() => {})
+    return () => controller.abort()
+  }, [salesItems])
+
+  useEffect(() => {
     setEstimateData((current) => ({
       ...makeDefaults(settings.estimateFields),
       ...current,
@@ -315,8 +345,9 @@ function App() {
     const sourceItems = kind === 'sales_quotation' ? salesItems : items
     const sourceTotals = kind === 'sales_quotation' ? salesTotals : totals
     const moduleLabel = kind === 'sales_quotation' ? 'Sales Quotation' : 'Spare Parts Quotation'
+    const layoutLabel = kind === 'sales_quotation' && salesLayout === 'proforma' ? 'Proforma Invoice' : moduleLabel
     const doc: SavedDocument = {
-      id: crypto.randomUUID(), type: kind, number, date: sourceData.quotation_date || today(), customer: sourceData.customer_name || 'Customer', company: sourceData.company_name, headerData: { ...sourceData, quotation_number: number, quotation_module: moduleLabel }, items: sourceItems, totals: sourceTotals, status, createdBy: sourceData.salesperson_name || 'Admin', createdAt: now, updatedAt: now,
+      id: crypto.randomUUID(), type: kind, number, date: sourceData.quotation_date || today(), customer: sourceData.customer_name || 'Customer', company: sourceData.company_name, headerData: { ...sourceData, quotation_number: number, quotation_module: moduleLabel, sales_layout: salesLayout, pdf_title: layoutLabel, terms_override: kind === 'sales_quotation' ? salesTerms : '' }, items: sourceItems, totals: sourceTotals, status, createdBy: sourceData.salesperson_name || 'Admin', createdAt: now, updatedAt: now,
     }
     setDocuments((docs) => [doc, ...docs])
     setSettings((s) => ({ ...s, numbering: { ...s.numbering, nextQuotation: s.numbering.nextQuotation + 1 } }))
@@ -384,6 +415,14 @@ function App() {
     setDocuments((docs) => docs.map((d) => d.id === doc.id ? { ...doc, updatedAt: new Date().toISOString() } : d))
   }
 
+  function applySalesCustomer(customer: ZohoCustomer) {
+    setSalesQuoteData((data) => ({ ...data, customer_name: customer.name || data.customer_name, company_name: customer.company || data.company_name, phone: customer.phone || data.phone, email: customer.email || data.email, address: customer.address || data.address, gstin: customer.gstin || data.gstin }))
+  }
+
+  function applySalesItem(rowId: string, item: ZohoItem) {
+    setSalesItems((rows) => rows.map((row) => row.id === rowId ? { ...row, productName: item.name || row.productName, description: item.description || row.description, price: Number(item.price || row.price || 0), gst: Number(item.gst || row.gst || settings.tax.defaultGst) } : row))
+  }
+
   return (
     <main className={`dashboard-shell ${mobileMenuOpen ? 'menu-open' : ''}`}>
       <button className="mobile-menu-button" aria-label="Open menu" onClick={() => setMobileMenuOpen(true)}>☰</button>
@@ -403,8 +442,9 @@ function App() {
         <div className="mobile-page-title"><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div>
 
         {active === 'sales-quotation' && <div className="page-grid quote-flow">
-          <section className="panel wide"><div className="section-title"><div><h2>Step 1. Sales quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={salesQuoteData} setData={setSalesQuoteData} /></section>
-          <LineItemsPanel items={salesItems} setItems={setSalesItems} settings={settings} />
+          <section className="panel wide"><div className="section-title"><div><h2>Step 1. Sales quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={salesQuoteData} setData={setSalesQuoteData} /><ZohoSuggestions title="Zoho Inventory customers" items={customerSuggestions.map((c) => ({ id: c.id, title: c.name, subtitle: [c.company, c.phone, c.email].filter(Boolean).join(' • '), onClick: () => applySalesCustomer(c) }))} /></section>
+          <SalesQuoteOptions layout={salesLayout} setLayout={setSalesLayout} terms={salesTerms} setTerms={setSalesTerms} />
+          <LineItemsPanel items={salesItems} setItems={setSalesItems} settings={settings} suggestions={itemSuggestions} onPickSuggestion={applySalesItem} />
           <SummaryCard totals={salesTotals} settings={settings} onPdf={generateSalesPdf} onExcel={() => downloadExcel(saveQuotation('Generated', 'sales_quotation'), settings)} pdfBusy={pdfBusy} />
         </div>}
 
@@ -449,11 +489,20 @@ function SummaryCard({ totals, settings, onPdf, onExcel, pdfBusy }: { totals: To
   return <section className="panel summary-card final-step"><div className="section-title"><div><h2>Step 3. Review & generate</h2></div></div><div className="summary-grid"><div className="total-row"><span>Taxable Amount</span><strong>{money(totals.taxable)}</strong></div><div className="total-row"><span>Total GST</span><strong>{settings.tax.gstEnabled ? money(totals.gst) : 'Disabled'}</strong></div><div className="total-row grand"><span>Final Amount</span><strong>{money(totals.final)}</strong></div></div>{settings.tax.amountInWords && <p className="amount-words">{totals.words}</p>}<div className="stack-actions"><button className="ghost full" onClick={onExcel} disabled={Boolean(pdfBusy)}>Download Excel</button><LoadingButton className="primary full" busy={pdfBusy} onClick={onPdf}>Generate PDF</LoadingButton></div></section>
 }
 
+function SalesQuoteOptions({ layout, setLayout, terms, setTerms }: { layout: SalesLayout; setLayout: (layout: SalesLayout) => void; terms: string; setTerms: (terms: string) => void }) {
+  return <section className="panel wide sales-quote-options"><div className="section-title"><div><h2>Sales quote options</h2></div></div><div className="form-grid"><label><span>PDF Layout</span><select value={layout} onChange={(e) => setLayout(e.target.value as SalesLayout)}><option value="quotation">Quotation layout</option><option value="proforma">Proforma invoice layout</option></select></label><label className="span-2"><span>Terms & Conditions</span><textarea value={terms} onChange={(e) => setTerms(e.target.value)} /></label></div></section>
+}
+
+function ZohoSuggestions({ title, items }: { title: string; items: { id: string; title: string; subtitle?: string; onClick: () => void }[] }) {
+  if (!items.length) return null
+  return <div className="zoho-suggestions"><strong>{title}</strong><div>{items.slice(0, 5).map((item) => <button type="button" key={item.id} onClick={item.onClick}><span>{item.title}</span>{item.subtitle && <small>{item.subtitle}</small>}</button>)}</div></div>
+}
+
 function LoadingButton({ children, busy, className = '', onClick }: { children: React.ReactNode; busy?: string | null; className?: string; onClick: () => void }) {
   return <button className={`${className} loading-button ${busy ? 'is-loading' : ''}`} onClick={onClick} disabled={Boolean(busy)} aria-busy={Boolean(busy)}>{busy ? <><span className="button-spinner" aria-hidden="true" />{busy}</> : children}</button>
 }
 
-function LineItemsPanel({ items, setItems, settings, mode = 'quotation' }: { items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; settings: Settings; mode?: 'quotation' | 'estimate' }) {
+function LineItemsPanel({ items, setItems, settings, mode = 'quotation', suggestions = [], onPickSuggestion }: { items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; settings: Settings; mode?: 'quotation' | 'estimate'; suggestions?: ZohoItem[]; onPickSuggestion?: (rowId: string, item: ZohoItem) => void }) {
   const addItem = () => setItems((rows) => [...rows, newItem(settings.tax.defaultGst)])
   const update = (id: string, patch: Partial<QuoteItem>) => setItems((rows) => rows.map((r) => r.id === id ? { ...r, ...patch } : r))
   const remove = (id: string) => setItems((rows) => rows.filter((r) => r.id !== id))
@@ -470,7 +519,7 @@ function LineItemsPanel({ items, setItems, settings, mode = 'quotation' }: { ite
       <div className="line-head">{!isEstimate && <span>Picture</span>}<span>{isEstimate ? 'Expense / Item' : 'Product'}</span><span>{isEstimate ? 'Days' : 'Qty'}</span><span>{isEstimate ? 'Cost' : 'Price'}</span><span>GST %</span><span>Total</span><span></span></div>
       {items.map((item) => { const taxable = item.quantity * item.price; const total = taxable + (settings.tax.gstEnabled ? taxable * ((settings.tax.rowLevelGst ? item.gst : settings.tax.defaultGst) / 100) : 0); return <div className="line-row" key={item.id}>
         {!isEstimate && <div className="image-cell">{item.image ? <img src={item.image} alt={item.productName || 'Product'} /> : <span>No image</span>}<label className="mini-upload">{item.image ? 'Replace' : 'Upload / Camera'}<input type="file" accept="image/*" capture="environment" onChange={(e) => onImage(item.id, e)} /></label>{item.image && <button className="text-danger" onClick={() => update(item.id, { image: undefined, imageName: undefined })}>Remove</button>}</div>}
-        <div className="product-inputs stacked"><input value={item.productName} onChange={(e) => update(item.id, { productName: e.target.value })} placeholder={isEstimate ? 'Expense / item name' : 'Product name'} /><textarea value={item.description} onChange={(e) => update(item.id, { description: e.target.value })} placeholder="Description" /></div>
+        <div className="product-inputs stacked"><input value={item.productName} onChange={(e) => update(item.id, { productName: e.target.value })} placeholder={isEstimate ? 'Expense / item name' : 'Product name'} /><textarea value={item.description} onChange={(e) => update(item.id, { description: e.target.value })} placeholder="Description" />{!isEstimate && onPickSuggestion && suggestions.length > 0 && <div className="zoho-item-suggestions">{suggestions.slice(0, 4).map((suggestion) => <button type="button" key={suggestion.id} onClick={() => onPickSuggestion(item.id, suggestion)}>{suggestion.name}<small>{suggestion.price ? `₹${suggestion.price}` : ''}</small></button>)}</div>}</div>
         <label className={`mobile-line-field ${isEstimate ? 'field-days' : 'field-qty'}`}><span>{isEstimate ? 'Days' : 'Quantity'}</span><input type="text" inputMode="decimal" value={item.quantity} onChange={(e) => update(item.id, { quantity: Number(e.target.value) })} /></label>
         <label className={`mobile-line-field ${isEstimate ? 'field-cost' : 'field-price'}`}><span>{isEstimate ? 'Cost' : 'Price'}</span><input type="text" inputMode="decimal" value={item.price} onChange={(e) => update(item.id, { price: Number(e.target.value) })} /></label>
         <label className="mobile-line-field field-gst"><span>GST %</span><input type="text" inputMode="decimal" value={item.gst} disabled={!settings.tax.rowLevelGst} onChange={(e) => update(item.id, { gst: Number(e.target.value) })} /></label>
@@ -655,7 +704,7 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
   const dark: [number, number, number] = [17, 24, 39]
   const muted: [number, number, number] = [107, 114, 128]
   const isEstimate = doc.type === 'estimate'
-  const title = isEstimate ? 'Estimate' : doc.type === 'sales_quotation' ? 'Sales Quotation' : 'Spare Parts Quotation'
+  const title = isEstimate ? 'Estimate' : doc.headerData.pdf_title || (doc.type === 'sales_quotation' ? 'Sales Quotation' : 'Spare Parts Quotation')
   const numberLabel = isEstimate ? 'Estimate No.' : 'Quotation No.'
   const numberKey = isEstimate ? 'estimate_number' : 'quotation_number'
 
@@ -764,7 +813,8 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
   const y = Math.min((pdf as any).lastAutoTable.finalY + 10, 228)
   pdf.setTextColor(...dark); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(9); pdf.text('Terms & Conditions', 14, y)
   pdf.setFont('helvetica', 'normal'); pdf.setFontSize(7.4)
-  const terms = (isEstimate ? settings.estimateTemplate.terms : settings.quotationTemplate.terms).split('\n').filter(Boolean)
+  const termsSource = doc.headerData.terms_override || (isEstimate ? settings.estimateTemplate.terms : settings.quotationTemplate.terms)
+  const terms = termsSource.split('\n').filter(Boolean)
   let termsY = y + 7
   terms.forEach((line) => {
     const bullet = `• ${line.replace(/^\d+\.\s*/, '')}`
@@ -784,6 +834,8 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
   pdf.setFontSize(8); pdf.setTextColor(...dark); totalLines.forEach(([label, value], i) => { pdf.text(String(label), tx + 5, y + 4 + i * 8); pdf.text(moneyPlain(Number(value)), tx + 58, y + 4 + i * 8, { align: 'right' }) })
   pdf.setFillColor(...red); pdf.roundedRect(tx, y + 24, 64, 12, 2, 2, 'F')
   pdf.setTextColor(255, 255, 255); pdf.setFont('helvetica', 'bold'); pdf.text('Grand Total', tx + 5, y + 32); pdf.text(moneyPlain(doc.totals.final), tx + 58, y + 32, { align: 'right' })
+  pdf.setTextColor(...dark); pdf.setFont('helvetica', 'bold'); pdf.setFontSize(7.2); pdf.text('Amount in words:', tx, y + 44)
+  pdf.setFont('helvetica', 'normal'); pdf.text(pdf.splitTextToSize(doc.totals.words || `${numberToWords(Math.round(doc.totals.final))} rupees only`, 64), tx, y + 49)
 
   pdf.setTextColor(...dark); pdf.setFontSize(8); pdf.text(settings.company.companyName || 'BSM India', pageWidth - 14, 270, { align: 'right' })
   pdf.setFont('helvetica', 'bold'); pdf.text('Authorized Signatory', pageWidth - 14, 280, { align: 'right' })

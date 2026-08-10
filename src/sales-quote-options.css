@@ -1,0 +1,57 @@
+.sales-quote-options textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.zoho-suggestions,
+.zoho-item-suggestions {
+  margin-top: 14px;
+  display: grid;
+  gap: 8px;
+}
+
+.zoho-suggestions > strong {
+  font-size: 12px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.zoho-suggestions > div,
+.zoho-item-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.zoho-suggestions button,
+.zoho-item-suggestions button {
+  border: 1px solid rgba(148, 163, 184, .3);
+  background: #fff;
+  color: #111827;
+  border-radius: 12px;
+  padding: 9px 12px;
+  text-align: left;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, .05);
+  cursor: pointer;
+}
+
+.zoho-suggestions button span,
+.zoho-item-suggestions button {
+  font-weight: 800;
+}
+
+.zoho-suggestions button small,
+.zoho-item-suggestions button small {
+  display: block;
+  margin-top: 3px;
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.zoho-suggestions button:hover,
+.zoho-item-suggestions button:hover {
+  border-color: #dc2626;
+  background: #fff7f7;
+}
