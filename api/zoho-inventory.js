@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     const url = new URL(req.url, 'https://local')
     const type = url.searchParams.get('type')
     const q = url.searchParams.get('q') || ''
-    if (!q || q.length < 2) return json(res, 200, { configured: true, results: [] })
+    if (!q || q.length < 3) return json(res, 200, { configured: true, results: [] })
 
     if (type === 'customers') {
       const result = await zohoFetch('/contacts', { search_text: q, contact_type: 'customer', per_page: '10' })

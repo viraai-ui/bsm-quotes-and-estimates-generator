@@ -308,7 +308,7 @@ function App() {
 
   useEffect(() => {
     const query = salesQuoteData.customer_name || salesQuoteData.company_name || ''
-    if (query.length < 2) { setCustomerSuggestions([]); return }
+    if (query.length < 3) { setCustomerSuggestions([]); return }
     const controller = new AbortController()
     fetch(`/api/zoho-inventory?type=customers&q=${encodeURIComponent(query)}`, { signal: controller.signal })
       .then((r) => r.ok ? r.json() : Promise.reject(new Error('Customer lookup failed')))
@@ -318,7 +318,7 @@ function App() {
   }, [salesQuoteData.customer_name, salesQuoteData.company_name])
 
   useEffect(() => {
-    const query = salesItems.map((item) => item.productName).find((name) => name.length >= 2) || ''
+    const query = salesItems.map((item) => item.productName).find((name) => name.length >= 3) || ''
     if (!query) { setItemSuggestions([]); return }
     const controller = new AbortController()
     fetch(`/api/zoho-inventory?type=items&q=${encodeURIComponent(query)}`, { signal: controller.signal })
