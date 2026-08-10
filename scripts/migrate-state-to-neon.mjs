@@ -19,7 +19,7 @@ create table if not exists app_settings (
 
 create table if not exists documents (
   id text primary key,
-  type text not null check (type in ('quotation','estimate')),
+  type text not null check (type in ('sales_quotation','quotation','estimate')),
   number text not null,
   date text,
   customer text,
@@ -66,7 +66,7 @@ create index if not exists documents_updated_at_idx on documents(updated_at desc
 function safeDoc(doc) {
   return {
     id: String(doc.id),
-    type: doc.type === 'estimate' ? 'estimate' : 'quotation',
+    type: doc.type === 'estimate' ? 'estimate' : doc.type === 'sales_quotation' ? 'sales_quotation' : 'quotation',
     number: String(doc.number || ''),
     date: doc.date || null,
     customer: doc.customer || null,

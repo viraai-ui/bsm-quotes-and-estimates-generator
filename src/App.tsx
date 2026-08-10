@@ -83,7 +83,7 @@ type QuoteItem = {
 
 type SavedDocument = {
   id: string
-  type: 'quotation' | 'estimate'
+  type: 'sales_quotation' | 'quotation' | 'estimate'
   number: string
   date: string
   customer: string
@@ -241,7 +241,7 @@ function App() {
     return () => document.removeEventListener('wheel', stopAccidentalNumberScroll, { capture: true })
   }, [])
 
-  const [active, setActive] = useState('quotation')
+  const [active, setActive] = useState('sales-quotation')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [pdfBusy, setPdfBusy] = useState<string | null>(null)
   const [settings, setSettings] = usePersistentState<Settings>(STORAGE_SETTINGS, defaultSettings)
@@ -249,10 +249,13 @@ function App() {
   const [cloudLoaded, setCloudLoaded] = useState(false)
   const cloudSaveTimer = useRef<number | null>(null)
   const [quoteData, setQuoteData] = useState<Record<string, string>>(() => makeDefaults(defaultSettings.quotationFields))
+  const [salesQuoteData, setSalesQuoteData] = useState<Record<string, string>>(() => makeDefaults(defaultSettings.quotationFields))
   const [estimateData, setEstimateData] = useState<Record<string, string>>(() => ({ ...makeDefaults(defaultSettings.estimateFields), estimate_number: nextNumber(defaultSettings.numbering.estimate, defaultSettings.numbering.financialYear, defaultSettings.numbering.nextEstimate, defaultSettings.numbering.padding), estimate_date: today() }))
   const [items, setItems] = useState<QuoteItem[]>([newItem(defaultSettings.tax.defaultGst)])
+  const [salesItems, setSalesItems] = useState<QuoteItem[]>([newItem(defaultSettings.tax.defaultGst)])
   const [docTab, setDocTab] = useState<'quotation' | 'estimate'>('quotation')
   const totals = useMemo(() => computeTotals(items, settings.tax), [items, settings.tax])
+  const salesTotals = useMemo(() => computeTotals(salesItems, settings.tax), [salesItems, settings.tax])
   const visibleQuoteFields = settings.quotationFields.filter((f) => f.visible && f.key !== 'notes' && f.key !== 'salesperson_name').sort((a, b) => a.sortOrder - b.sortOrder)
 
   useEffect(() => {
@@ -287,6 +290,14 @@ function App() {
   }, [settings.quotationFields, settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding])
 
   useEffect(() => {
+    setSalesQuoteData((current) => ({
+      ...makeDefaults(settings.quotationFields),
+      ...current,
+      quotation_number: nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding),
+    }))
+  }, [settings.quotationFields, settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding])
+
+  useEffect(() => {
     setEstimateData((current) => ({
       ...makeDefaults(settings.estimateFields),
       ...current,
@@ -295,17 +306,23 @@ function App() {
     }))
   }, [settings.estimateFields, settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate, settings.numbering.padding])
 
-  const nav = [['quotation', 'Create Quotation', '🧾'], ['estimate', 'Create Estimate', '🧾'], ['documents', 'Documents', '📄'], ['settings', 'Settings', '⚙️']]
+  const nav = [['sales-quotation', 'Sales Quotation', '🧾'], ['quotation', 'Spare Parts Quotation', '🧾'], ['estimate', 'Estimates', '🧾'], ['documents', 'Documents', '📄'], ['settings', 'Settings', '⚙️']]
 
-  function saveQuotation(status: Status = 'Generated') {
+  function saveQuotation(status: Status = 'Generated', kind: 'sales_quotation' | 'quotation' = 'quotation') {
     const number = nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding)
     const now = new Date().toISOString()
+    const sourceData = kind === 'sales_quotation' ? salesQuoteData : quoteData
+    const sourceItems = kind === 'sales_quotation' ? salesItems : items
+    const sourceTotals = kind === 'sales_quotation' ? salesTotals : totals
+    const moduleLabel = kind === 'sales_quotation' ? 'Sales Quotation' : 'Spare Parts Quotation'
     const doc: SavedDocument = {
-      id: crypto.randomUUID(), type: 'quotation', number, date: quoteData.quotation_date || today(), customer: quoteData.customer_name || 'Customer', company: quoteData.company_name, headerData: { ...quoteData, quotation_number: number }, items, totals, status, createdBy: quoteData.salesperson_name || 'Admin', createdAt: now, updatedAt: now,
+      id: crypto.randomUUID(), type: kind, number, date: sourceData.quotation_date || today(), customer: sourceData.customer_name || 'Customer', company: sourceData.company_name, headerData: { ...sourceData, quotation_number: number, quotation_module: moduleLabel }, items: sourceItems, totals: sourceTotals, status, createdBy: sourceData.salesperson_name || 'Admin', createdAt: now, updatedAt: now,
     }
     setDocuments((docs) => [doc, ...docs])
     setSettings((s) => ({ ...s, numbering: { ...s.numbering, nextQuotation: s.numbering.nextQuotation + 1 } }))
-    setQuoteData((d) => ({ ...d, quotation_number: nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation + 1, settings.numbering.padding) }))
+    const next = nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation + 1, settings.numbering.padding)
+    setQuoteData((d) => ({ ...d, quotation_number: next }))
+    setSalesQuoteData((d) => ({ ...d, quotation_number: next }))
     return doc
   }
 
@@ -327,6 +344,10 @@ function App() {
 
   function generatePdf() {
     void runPdfDownload('Generating PDF…', () => saveQuotation('Generated'))
+  }
+
+  function generateSalesPdf() {
+    void runPdfDownload('Generating PDF…', () => saveQuotation('Generated', 'sales_quotation'))
   }
 
   function generateExcel(doc = saveQuotation('Generated')) {
@@ -381,8 +402,14 @@ function App() {
         </header>
         <div className="mobile-page-title"><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div>
 
+        {active === 'sales-quotation' && <div className="page-grid quote-flow">
+          <section className="panel wide"><div className="section-title"><div><h2>Step 1. Sales quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={salesQuoteData} setData={setSalesQuoteData} /></section>
+          <LineItemsPanel items={salesItems} setItems={setSalesItems} settings={settings} />
+          <SummaryCard totals={salesTotals} settings={settings} onPdf={generateSalesPdf} onExcel={() => downloadExcel(saveQuotation('Generated', 'sales_quotation'), settings)} pdfBusy={pdfBusy} />
+        </div>}
+
         {active === 'quotation' && <div className="page-grid quote-flow">
-          <section className="panel wide"><div className="section-title"><div><h2>Step 1. Quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={quoteData} setData={setQuoteData} /></section>
+          <section className="panel wide"><div className="section-title"><div><h2>Step 1. Spare parts quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={quoteData} setData={setQuoteData} /></section>
           <LineItemsPanel items={items} setItems={setItems} settings={settings} />
           <SummaryCard totals={totals} settings={settings} onPdf={generatePdf} onExcel={() => generateExcel()} pdfBusy={pdfBusy} />
         </div>}
@@ -460,7 +487,7 @@ function DocumentsView({ documents, tab, setTab, settings, onSave, onDuplicate, 
   const [editing, setEditing] = useState<SavedDocument | null>(null)
   const [editData, setEditData] = useState<Record<string, string>>({})
   const [editItems, setEditItems] = useState<QuoteItem[]>([])
-  const docs = documents.filter((d) => d.type === tab && d.status !== 'Draft' && JSON.stringify(d).toLowerCase().includes(search.toLowerCase()))
+  const docs = documents.filter((d) => (tab === 'quotation' ? d.type === 'quotation' || d.type === 'sales_quotation' : d.type === 'estimate') && d.status !== 'Draft' && JSON.stringify(d).toLowerCase().includes(search.toLowerCase()))
   const confirmAction = (label: string, action: () => void) => { if (window.confirm(`Are you sure you want to ${label}?`)) action() }
   const openEdit = (doc: SavedDocument) => { setEditing(doc); setEditData({ ...doc.headerData }); setEditItems(doc.items.map((i) => ({ ...i }))) }
   const editTotals = useMemo(() => computeTotals(editItems, settings.tax), [editItems, settings.tax])
@@ -628,7 +655,7 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
   const dark: [number, number, number] = [17, 24, 39]
   const muted: [number, number, number] = [107, 114, 128]
   const isEstimate = doc.type === 'estimate'
-  const title = isEstimate ? 'Estimate' : 'Quotation'
+  const title = isEstimate ? 'Estimate' : doc.type === 'sales_quotation' ? 'Sales Quotation' : 'Spare Parts Quotation'
   const numberLabel = isEstimate ? 'Estimate No.' : 'Quotation No.'
   const numberKey = isEstimate ? 'estimate_number' : 'quotation_number'
 
@@ -768,7 +795,7 @@ function downloadExcel(doc: SavedDocument, settings: Settings) {
   const rows = doc.items.map((item, i) => ({ 'S.No.': i + 1, 'Quotation Number': doc.number, Date: doc.date, Customer: doc.customer, Company: doc.company, 'Product Name': item.productName, Description: item.description, Quantity: item.quantity, Price: item.price, 'GST %': item.gst, 'GST Amount': item.quantity * item.price * item.gst / 100, Total: item.quantity * item.price * (1 + item.gst / 100), 'Image Link': item.imageName || '' }))
   rows.push({ 'S.No.': '', 'Quotation Number': '', Date: '', Customer: '', Company: '', 'Product Name': 'Grand Total', Description: doc.headerData.notes || '', Quantity: '', Price: '', 'GST %': '', 'GST Amount': doc.totals.gst, Total: doc.totals.final, 'Image Link': '' } as any)
   const ws = XLSX.utils.json_to_sheet(rows)
-  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, doc.type === 'quotation' ? 'Quotation' : 'Estimate')
+  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, doc.type === 'estimate' ? 'Estimate' : doc.type === 'sales_quotation' ? 'Sales Quotation' : 'Spare Parts')
   XLSX.writeFile(wb, `${doc.number.replaceAll('/', '-')}.xlsx`)
   void settings
 }

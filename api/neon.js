@@ -27,7 +27,7 @@ export async function ensureSchema(client) {
 
     create table if not exists documents (
       id text primary key,
-      type text not null check (type in ('quotation','estimate')),
+      type text not null check (type in ('sales_quotation','quotation','estimate')),
       number text not null,
       date text,
       customer text,
@@ -40,6 +40,9 @@ export async function ensureSchema(client) {
       created_at timestamptz not null default now(),
       updated_at timestamptz not null default now()
     );
+
+    alter table documents drop constraint if exists documents_type_check;
+    alter table documents add constraint documents_type_check check (type in ('sales_quotation','quotation','estimate'));
 
     create table if not exists document_items (
       document_id text not null references documents(id) on delete cascade,
@@ -91,7 +94,7 @@ export async function readNeonState() {
 function safeDoc(doc) {
   return {
     id: String(doc.id),
-    type: doc.type === 'estimate' ? 'estimate' : 'quotation',
+    type: doc.type === 'estimate' ? 'estimate' : doc.type === 'sales_quotation' ? 'sales_quotation' : 'quotation',
     number: String(doc.number || ''),
     date: doc.date || null,
     customer: doc.customer || null,
