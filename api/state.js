@@ -21,8 +21,16 @@ async function readState(token) {
   if (r.status === 404) return { state: { settings: null, documents: [] }, sha: null }
   if (!r.ok) throw new Error(`GitHub read failed: ${r.status}`)
   const data = await r.json()
-  const decoded = Buffer.from(data.content || '', 'base64').toString('utf8')
-  return { state: decoded ? JSON.parse(decoded) : { settings: null, documents: [] }, sha: data.sha }
+  let decoded = ''
+  if (data.content && data.encoding === 'base64') {
+    decoded = Buffer.from(data.content, 'base64').toString('utf8')
+  } else if (data.download_url) {
+    const raw = await fetch(data.download_url, { headers: headers(token), cache: 'no-store' })
+    if (!raw.ok) throw new Error(`GitHub raw read failed: ${raw.status}`)
+    decoded = await raw.text()
+  }
+  if (!decoded) throw new Error('Cloud state file is empty or unreadable')
+  return { state: JSON.parse(decoded), sha: data.sha }
 }
 
 async function writeState(token, state) {
