@@ -1,6 +1,18 @@
 const owner = 'viraai-ui'
 const repo = 'bsm-quotes-and-estimates-generator'
 const path = 'data/bsm-state.json'
+const backupDir = 'data/backups'
+
+const protectedCompany = {
+  companyName: 'BSM India',
+  address: 'Plot No. 1 At Khasra No. 64/10/3 And 64/11/1, Mundka Industrial Area, Near Prashant Dharam Kanta, Opposite Metro Pillar No. 583, West Delhi, Delhi - 110041',
+  phone: '+91 9310423242',
+  email: 'info@bsmindia.com',
+  website: 'www.bsmindia.com',
+  gstin: '07AACCB4067D1Z0',
+}
+
+const protectedBankDetails = 'A/c Name:  Build Scale Manufacture Pvt. Ltd.\nAccount No.: 015505006648\nIFSC: ICIC0000155\nBank Name: ICICI Bank\nBranch: Punjabi Bagh, Delhi\nType: Current Account'
 
 const headers = (token) => ({
   Authorization: `Bearer ${token}`,
@@ -33,19 +45,72 @@ async function readState(token) {
   return { state: JSON.parse(decoded), sha: data.sha }
 }
 
-async function writeState(token, state) {
-  const current = await readState(token)
-  const content = Buffer.from(JSON.stringify({ ...state, updatedAt: new Date().toISOString() }, null, 2)).toString('base64')
-  const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+function assertSafeState(state) {
+  if (!state || typeof state !== 'object') throw new Error('Invalid state payload')
+  const company = state.settings?.company || {}
+  const bankDetails = state.settings?.quotationTemplate?.bankDetails || ''
+  const logoImage = company.logoImage || ''
+  const problems = []
+
+  if (company.gstin !== protectedCompany.gstin) problems.push('protected GSTIN missing')
+  if (company.address === 'Delhi, India' || !String(company.address || '').includes('Mundka Industrial Area')) problems.push('protected address missing')
+  if (String(bankDetails).includes('Update in Settings') || !String(bankDetails).includes('ICICI Bank')) problems.push('protected bank details missing')
+  if (!String(logoImage).startsWith('data:image/') || String(logoImage).length < 100000) problems.push('protected BSM logo missing')
+  if (problems.length) throw new Error(`Unsafe state blocked: ${problems.join(', ')}`)
+}
+
+function protectState(nextState, current) {
+  const currentSettings = current.state?.settings || {}
+  const currentDocs = Array.isArray(current.state?.documents) ? current.state.documents : []
+  const incomingDocs = Array.isArray(nextState.documents) ? nextState.documents : []
+  const incomingSettings = nextState.settings || currentSettings
+  const currentLogo = currentSettings.company?.logoImage
+
+  const safeState = {
+    settings: {
+      ...incomingSettings,
+      company: {
+        ...(incomingSettings.company || {}),
+        ...protectedCompany,
+        logoText: 'BSM',
+        logoImage: currentLogo || incomingSettings.company?.logoImage,
+      },
+      quotationTemplate: {
+        ...(incomingSettings.quotationTemplate || {}),
+        bankDetails: protectedBankDetails,
+      },
+    },
+    documents: incomingDocs.length >= currentDocs.length ? incomingDocs : currentDocs,
+  }
+
+  assertSafeState(safeState)
+  return safeState
+}
+
+async function writeGithubFile(token, targetPath, contentJson, sha, message) {
+  const content = Buffer.from(JSON.stringify(contentJson, null, 2)).toString('base64')
+  const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${targetPath}`, {
     method: 'PUT',
     headers: { ...headers(token), 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      message: 'Update BSM dashboard cloud state',
-      content,
-      sha: current.sha || undefined,
-    }),
+    body: JSON.stringify({ message, content, sha: sha || undefined }),
   })
-  if (!r.ok) throw new Error(`GitHub write failed: ${r.status}`)
+  if (!r.ok) throw new Error(`GitHub write failed for ${targetPath}: ${r.status}`)
+  return r.json()
+}
+
+async function writeBackup(token, state) {
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-').replace('T', '-').slice(0, 23)
+  const suffix = Math.random().toString(36).slice(2, 8)
+  const backupPath = `${backupDir}/bsm-state-${stamp}-${suffix}.json`
+  await writeGithubFile(token, backupPath, state, null, `Backup BSM dashboard cloud state ${stamp}`)
+}
+
+async function writeState(token, state) {
+  const current = await readState(token)
+  assertSafeState(current.state)
+  await writeBackup(token, current.state)
+  const safeState = protectState(state, current)
+  await writeGithubFile(token, path, { ...safeState, updatedAt: new Date().toISOString() }, current.sha, 'Update BSM dashboard cloud state')
   return { ok: true }
 }
 
