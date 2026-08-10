@@ -19,6 +19,7 @@ import './mobile-summary-fix.css'
 import './mobile-compact-app.css'
 import './edit-modal.css'
 import './sales-quote-options.css'
+import './typography-normalize.css'
 import { DEFAULT_BSM_LOGO } from './assets/bsmLogoData'
 
 type FieldType = 'Text' | 'Number' | 'Date' | 'Dropdown' | 'Textarea' | 'Email' | 'Phone' | 'Image/File' | 'Checkbox'

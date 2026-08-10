@@ -1,0 +1,82 @@
+/* Global typography correction: headings bold, supporting UI text clean/unbold */
+.dashboard-shell,
+.dashboard-shell label,
+.dashboard-shell input,
+.dashboard-shell textarea,
+.dashboard-shell select,
+.dashboard-shell button,
+.dashboard-shell span,
+.dashboard-shell small,
+.dashboard-shell p,
+.dashboard-shell td,
+.dashboard-shell th,
+.dashboard-shell .record-card,
+.dashboard-shell .status,
+.dashboard-shell .amount-words,
+.dashboard-shell .total-row,
+.dashboard-shell .doc-main span,
+.dashboard-shell .doc-amount span {
+  font-weight: 400 !important;
+}
+
+.dashboard-shell input::placeholder,
+.dashboard-shell textarea::placeholder {
+  font-weight: 400 !important;
+}
+
+.dashboard-shell h1,
+.dashboard-shell h2,
+.dashboard-shell h3,
+.dashboard-shell .section-title h2,
+.dashboard-shell .desktop-page-title h1,
+.dashboard-shell .mobile-page-title h1,
+.dashboard-shell .mobile-brand-bar strong,
+.dashboard-shell .logo-block strong {
+  font-weight: 700 !important;
+}
+
+.dashboard-shell nav button,
+.dashboard-shell nav button span,
+.dashboard-shell .tabbar button,
+.dashboard-shell .view-toggle button,
+.dashboard-shell .stack-actions button,
+.dashboard-shell .primary,
+.dashboard-shell .ghost,
+.dashboard-shell .loading-button,
+.dashboard-shell .mini-actions button {
+  font-weight: 500 !important;
+}
+
+.dashboard-shell .active,
+.dashboard-shell nav button.active,
+.dashboard-shell nav button.active span,
+.dashboard-shell .tabbar button.active,
+.dashboard-shell .view-toggle button.active {
+  font-weight: 600 !important;
+}
+
+.dashboard-shell .total-row strong,
+.dashboard-shell .doc-main strong,
+.dashboard-shell .doc-amount strong,
+.dashboard-shell .grand strong,
+.dashboard-shell .summary-card strong,
+.dashboard-shell .auto-number-field input,
+.dashboard-shell .mobile-total-chip strong,
+.dashboard-shell .zoho-suggestions strong {
+  font-weight: 600 !important;
+}
+
+.dashboard-shell .line-head span,
+.dashboard-shell label > span,
+.dashboard-shell .config-list label span,
+.dashboard-shell .settings-card label span,
+.dashboard-shell .documents-toolbar button {
+  font-weight: 500 !important;
+}
+
+.dashboard-shell textarea,
+.dashboard-shell .sales-quote-options textarea,
+.dashboard-shell .terms textarea {
+  font-weight: 400 !important;
+  line-height: 1.55;
+}
