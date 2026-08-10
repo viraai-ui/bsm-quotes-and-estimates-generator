@@ -2,6 +2,7 @@ const owner = 'viraai-ui'
 const repo = 'bsm-quotes-and-estimates-generator'
 const path = 'data/bsm-state.json'
 const backupDir = 'data/backups'
+import { hasNeon, readNeonState, writeNeonState } from './neon.js'
 
 const protectedCompany = {
   companyName: 'BSM India',
@@ -110,8 +111,9 @@ async function writeState(token, state) {
   assertSafeState(current.state)
   await writeBackup(token, current.state)
   const safeState = protectState(state, current)
-  await writeGithubFile(token, path, { ...safeState, updatedAt: new Date().toISOString() }, current.sha, 'Update BSM dashboard cloud state')
-  return { ok: true }
+  const writtenState = { ...safeState, updatedAt: new Date().toISOString() }
+  await writeGithubFile(token, path, writtenState, current.sha, 'Update BSM dashboard cloud state')
+  return { ok: true, state: writtenState }
 }
 
 export default async function handler(req, res) {
@@ -120,6 +122,13 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'GET') {
+      if (hasNeon()) {
+        try {
+          return json(res, 200, await readNeonState())
+        } catch (error) {
+          console.error('Neon read failed; using GitHub fallback', error)
+        }
+      }
       const { state } = await readState(token)
       return json(res, 200, state)
     }
@@ -129,7 +138,9 @@ export default async function handler(req, res) {
       for await (const chunk of req) chunks.push(chunk)
       const body = JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}')
       if (!body || typeof body !== 'object') return json(res, 400, { error: 'Invalid state' })
-      await writeState(token, { settings: body.settings || null, documents: Array.isArray(body.documents) ? body.documents : [] })
+      const nextState = { settings: body.settings || null, documents: Array.isArray(body.documents) ? body.documents : [] }
+      const safeGithubWrite = await writeState(token, nextState)
+      if (hasNeon()) await writeNeonState(safeGithubWrite.state, 'api')
       return json(res, 200, { ok: true })
     }
 
