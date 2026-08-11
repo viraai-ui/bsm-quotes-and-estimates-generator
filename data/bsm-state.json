@@ -448,10 +448,58 @@
       "resetYearly": true,
       "nextEstimate": 8,
       "financialYear": "2026-27",
-      "nextQuotation": 9
+      "nextQuotation": 10
     }
   },
   "documents": [
+    {
+      "id": "e189be93-3870-4adf-86b1-352f09b94770",
+      "type": "sales_quotation",
+      "number": "BSM/QTN/2026-27/0009",
+      "date": "2026-08-11",
+      "customer": "Sanjay",
+      "company": " Veekesy Footcare (India) Pvt. Ltd.",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0009",
+        "quotation_date": "2026-08-11",
+        "valid_till": "2026-08-18",
+        "customer_name": "Sanjay",
+        "company_name": " Veekesy Footcare (India) Pvt. Ltd.",
+        "phone": "+919677688488",
+        "email": "",
+        "address": "147 & 148 Seerapalayam Village Madukkarai TK, Coimbatore, 641105",
+        "gstin": "33AACCV2579A1ZM",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": "",
+        "quotation_module": "Sales Quotation",
+        "sales_layout": "quotation",
+        "pdf_title": "Sales Quotation",
+        "terms_override": "1.  Valid For 7 Days.\n2. Payment Terms - 100% Payment In Advance.\n3. Price: Ex-Works Delhi.\n4. TRANSPORTATION CHARGES will be Additional (As Per Actual).\n5. Machine Installation, Service and Spare Parts Chargeable (As Per\nActual).\n6. We are not responsible for any loss or damaged incurred during\ntransportation of the goods.\nThe goods will remain exclusive property of Bengal Shoe Machinery Pvt Ltd.\nuntil full & final payment has been received"
+      },
+      "items": [
+        {
+          "id": "e668a0a1-e9a7-441e-8f6d-afa6971c42b5",
+          "productName": "Automatic Snap Button Riviting Machine",
+          "description": "",
+          "quantity": 1,
+          "price": 275000,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 275000,
+        "gst": 49500,
+        "grand": 324500,
+        "roundOff": 0,
+        "final": 324500,
+        "words": "Three Lakh Twenty Four Thousand Five Hundred rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-08-11T13:35:27.109Z",
+      "updatedAt": "2026-08-11T13:35:27.109Z",
+      "pdfGeneratedAt": "2026-08-11T13:35:32.400Z"
+    },
     {
       "id": "8260ab19-e357-4f77-93b5-5138fcf3443a",
       "date": "2026-08-10",
@@ -1133,5 +1181,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-11T13:31:46.628Z"
+  "updatedAt": "2026-08-11T13:36:22.475Z"
 }
