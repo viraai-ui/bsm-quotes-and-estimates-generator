@@ -448,10 +448,66 @@
       "resetYearly": true,
       "nextEstimate": 8,
       "financialYear": "2026-27",
-      "nextQuotation": 12
+      "nextQuotation": 13
     }
   },
   "documents": [
+    {
+      "id": "886c134a-309c-4bcf-8ec2-ac2f4f5ad815",
+      "type": "sales_quotation",
+      "number": "BSM/QTN/2026-27/0012",
+      "date": "2026-08-17",
+      "customer": "Shahid Arif",
+      "company": "L Artisan Products",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0012",
+        "quotation_date": "2026-08-17",
+        "valid_till": "2026-08-24",
+        "customer_name": "Shahid Arif",
+        "company_name": "L Artisan Products",
+        "phone": "+919818644828",
+        "email": "",
+        "address": "Plot No. 702, Pace City-2, Sec-37, Gurgaon, Haryana-122001",
+        "gstin": "06AFAPM5726L1ZB",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": "",
+        "quotation_module": "Sales Quotation",
+        "sales_layout": "quotation",
+        "pdf_title": "Sales Quotation",
+        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed."
+      },
+      "items": [
+        {
+          "id": "9bfa42b3-52b3-4d5a-97fa-19c7e1f01018",
+          "productName": "Buckle Attaching Machine",
+          "description": "",
+          "quantity": 1,
+          "price": 210000,
+          "gst": 18
+        },
+        {
+          "id": "324ca63a-22d8-46dc-ad4f-7b848a3346d1",
+          "productName": "Pin",
+          "description": "1000 Pcs",
+          "quantity": 1,
+          "price": 5100,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 215100,
+        "gst": 38718,
+        "grand": 253818,
+        "roundOff": 0,
+        "final": 253818,
+        "words": "Two Lakh Fifty Three Thousand Eight Hundred Eighteen rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-08-17T09:39:06.656Z",
+      "updatedAt": "2026-08-17T09:39:06.656Z",
+      "pdfGeneratedAt": "2026-08-17T09:39:12.328Z"
+    },
     {
       "id": "8f448f6f-122e-4ed7-a66e-a38c752260a3",
       "type": "sales_quotation",
@@ -1287,5 +1343,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-17T09:39:29.324Z"
+  "updatedAt": "2026-08-17T09:40:04.472Z"
 }
