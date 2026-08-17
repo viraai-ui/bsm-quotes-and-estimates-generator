@@ -454,114 +454,114 @@
   "documents": [
     {
       "id": "886c134a-309c-4bcf-8ec2-ac2f4f5ad815",
-      "type": "sales_quotation",
-      "number": "BSM/QTN/2026-27/0012",
       "date": "2026-08-17",
-      "customer": "Shahid Arif",
-      "company": "L Artisan Products",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0012",
-        "quotation_date": "2026-08-17",
-        "valid_till": "2026-08-24",
-        "customer_name": "Shahid Arif",
-        "company_name": "L Artisan Products",
-        "phone": "+919818644828",
-        "email": "",
-        "address": "Plot No. 702, Pace City-2, Sec-37, Gurgaon, Haryana-122001",
-        "gstin": "06AFAPM5726L1ZB",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": "",
-        "quotation_module": "Sales Quotation",
-        "sales_layout": "quotation",
-        "pdf_title": "Sales Quotation",
-        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed."
-      },
+      "type": "sales_quotation",
       "items": [
         {
           "id": "9bfa42b3-52b3-4d5a-97fa-19c7e1f01018",
-          "productName": "Buckle Attaching Machine",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 210000,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "Buckle Attaching Machine"
         },
         {
           "id": "324ca63a-22d8-46dc-ad4f-7b848a3346d1",
-          "productName": "Pin",
-          "description": "1000 Pcs",
-          "quantity": 1,
+          "gst": 18,
           "price": 5100,
-          "gst": 18
+          "quantity": 1,
+          "description": "1000 Pcs",
+          "productName": "Pin"
         }
       ],
-      "totals": {
-        "taxable": 215100,
-        "gst": 38718,
-        "grand": 253818,
-        "roundOff": 0,
-        "final": 253818,
-        "words": "Two Lakh Fifty Three Thousand Eight Hundred Eighteen rupees only"
-      },
+      "number": "BSM/QTN/2026-27/0012",
       "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
+      "totals": {
+        "gst": 38718,
+        "final": 253818,
+        "grand": 253818,
+        "words": "Two Lakh Fifty Three Thousand Eight Hundred Eighteen rupees only",
+        "taxable": 215100,
+        "roundOff": 0
+      },
+      "company": "L Artisan Products",
+      "customer": "Shahid Arif",
       "createdAt": "2026-08-17T09:39:06.656Z",
+      "createdBy": "Ainesh Sikdar",
       "updatedAt": "2026-08-17T09:39:06.656Z",
+      "headerData": {
+        "email": "",
+        "gstin": "06AFAPM5726L1ZB",
+        "notes": "",
+        "phone": "+919818644828",
+        "address": "Plot No. 702, Pace City-2, Sec-37, Gurgaon, Haryana-122001",
+        "pdf_title": "Sales Quotation",
+        "valid_till": "2026-08-24",
+        "company_name": "L Artisan Products",
+        "sales_layout": "quotation",
+        "customer_name": "Shahid Arif",
+        "quotation_date": "2026-08-17",
+        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed.",
+        "quotation_module": "Sales Quotation",
+        "quotation_number": "BSM/QTN/2026-27/0012",
+        "salesperson_name": "Ainesh Sikdar"
+      },
       "pdfGeneratedAt": "2026-08-17T09:39:12.328Z"
     },
     {
       "id": "8f448f6f-122e-4ed7-a66e-a38c752260a3",
-      "type": "sales_quotation",
-      "number": "BSM/QTN/2026-27/0011",
       "date": "2026-08-17",
-      "customer": "Shahid Arif",
-      "company": "L Artisan Products",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0011",
-        "quotation_date": "2026-08-17",
-        "valid_till": "2026-08-24",
-        "customer_name": "Shahid Arif",
-        "company_name": "L Artisan Products",
-        "phone": "+919818644828",
-        "email": "",
-        "address": "Plot No. 702, Pace City-2, Sec-37, Gurgaon, Haryana-122001",
-        "gstin": "06AFAPM5726L1ZB",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": "",
-        "quotation_module": "Sales Quotation",
-        "sales_layout": "quotation",
-        "pdf_title": "Sales Quotation",
-        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed."
-      },
+      "type": "sales_quotation",
       "items": [
         {
           "id": "9bfa42b3-52b3-4d5a-97fa-19c7e1f01018",
-          "productName": "Buckle Attaching Machine",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 210000,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "Buckle Attaching Machine"
         },
         {
           "id": "324ca63a-22d8-46dc-ad4f-7b848a3346d1",
-          "productName": "Pin",
-          "description": "1000 Pcs",
-          "quantity": 1,
+          "gst": 0,
           "price": 5100,
-          "gst": 0
+          "quantity": 1,
+          "description": "1000 Pcs",
+          "productName": "Pin"
         }
       ],
-      "totals": {
-        "taxable": 215100,
-        "gst": 37800,
-        "grand": 252900,
-        "roundOff": 0,
-        "final": 252900,
-        "words": "Two Lakh Fifty Two Thousand Nine Hundred rupees only"
-      },
+      "number": "BSM/QTN/2026-27/0011",
       "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
+      "totals": {
+        "gst": 37800,
+        "final": 252900,
+        "grand": 252900,
+        "words": "Two Lakh Fifty Two Thousand Nine Hundred rupees only",
+        "taxable": 215100,
+        "roundOff": 0
+      },
+      "company": "L Artisan Products",
+      "customer": "Shahid Arif",
       "createdAt": "2026-08-17T09:38:27.287Z",
+      "createdBy": "Ainesh Sikdar",
       "updatedAt": "2026-08-17T09:38:27.287Z",
+      "headerData": {
+        "email": "",
+        "gstin": "06AFAPM5726L1ZB",
+        "notes": "",
+        "phone": "+919818644828",
+        "address": "Plot No. 702, Pace City-2, Sec-37, Gurgaon, Haryana-122001",
+        "pdf_title": "Sales Quotation",
+        "valid_till": "2026-08-24",
+        "company_name": "L Artisan Products",
+        "sales_layout": "quotation",
+        "customer_name": "Shahid Arif",
+        "quotation_date": "2026-08-17",
+        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed.",
+        "quotation_module": "Sales Quotation",
+        "quotation_number": "BSM/QTN/2026-27/0011",
+        "salesperson_name": "Ainesh Sikdar"
+      },
       "pdfGeneratedAt": "2026-08-17T09:38:32.877Z"
     },
     {
@@ -1343,5 +1343,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-17T09:40:04.472Z"
+  "updatedAt": "2026-08-17T09:55:30.139Z"
 }
