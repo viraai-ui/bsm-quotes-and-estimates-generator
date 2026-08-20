@@ -448,10 +448,58 @@
       "resetYearly": true,
       "nextEstimate": 8,
       "financialYear": "2026-27",
-      "nextQuotation": 13
+      "nextQuotation": 14
     }
   },
   "documents": [
+    {
+      "id": "cec81ecb-60ad-4dcb-b806-033efbf86610",
+      "type": "quotation",
+      "number": "BSM/QTN/2026-27/0013",
+      "date": "2026-08-20",
+      "customer": "Subhash Pahwa",
+      "company": "Petro Shoes",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0013",
+        "quotation_date": "2026-08-20",
+        "valid_till": "",
+        "customer_name": "Subhash Pahwa",
+        "company_name": "Petro Shoes",
+        "phone": "987987987987",
+        "email": "",
+        "address": "",
+        "gstin": "",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": "",
+        "quotation_module": "Spare Parts Quotation",
+        "sales_layout": "quotation",
+        "pdf_title": "Spare Parts Quotation",
+        "terms_override": ""
+      },
+      "items": [
+        {
+          "id": "a7332404-beb8-4011-ba62-317aa413ed26",
+          "productName": "Swing arm Motor",
+          "description": "",
+          "quantity": 1,
+          "price": 9000,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 9000,
+        "gst": 1620,
+        "grand": 10620,
+        "roundOff": 0,
+        "final": 10620,
+        "words": "Ten Thousand Six Hundred Twenty rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-08-20T07:49:12.977Z",
+      "updatedAt": "2026-08-20T07:49:12.977Z",
+      "pdfGeneratedAt": "2026-08-20T07:49:18.389Z"
+    },
     {
       "id": "886c134a-309c-4bcf-8ec2-ac2f4f5ad815",
       "date": "2026-08-17",
@@ -1343,5 +1391,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-20T07:48:08.388Z"
+  "updatedAt": "2026-08-20T07:49:23.319Z"
 }
