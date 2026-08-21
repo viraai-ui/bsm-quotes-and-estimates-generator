@@ -454,50 +454,50 @@
   "documents": [
     {
       "id": "cec81ecb-60ad-4dcb-b806-033efbf86610",
-      "type": "quotation",
-      "number": "BSM/QTN/2026-27/0013",
       "date": "2026-08-20",
-      "customer": "Subhash Pahwa",
-      "company": "Petro Shoes",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0013",
-        "quotation_date": "2026-08-20",
-        "valid_till": "",
-        "customer_name": "Subhash Pahwa",
-        "company_name": "Petro Shoes",
-        "phone": "987987987987",
-        "email": "",
-        "address": "",
-        "gstin": "",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": "",
-        "quotation_module": "Spare Parts Quotation",
-        "sales_layout": "quotation",
-        "pdf_title": "Spare Parts Quotation",
-        "terms_override": ""
-      },
+      "type": "quotation",
       "items": [
         {
           "id": "a7332404-beb8-4011-ba62-317aa413ed26",
-          "productName": "Swing arm Motor",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 9000,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "Swing arm Motor"
         }
       ],
-      "totals": {
-        "taxable": 9000,
-        "gst": 1620,
-        "grand": 10620,
-        "roundOff": 0,
-        "final": 10620,
-        "words": "Ten Thousand Six Hundred Twenty rupees only"
-      },
+      "number": "BSM/QTN/2026-27/0013",
       "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
+      "totals": {
+        "gst": 1620,
+        "final": 10620,
+        "grand": 10620,
+        "words": "Ten Thousand Six Hundred Twenty rupees only",
+        "taxable": 9000,
+        "roundOff": 0
+      },
+      "company": "Petro Shoes",
+      "customer": "Subhash Pahwa",
       "createdAt": "2026-08-20T07:49:12.977Z",
+      "createdBy": "Ainesh Sikdar",
       "updatedAt": "2026-08-20T07:49:12.977Z",
+      "headerData": {
+        "email": "",
+        "gstin": "",
+        "notes": "",
+        "phone": "987987987987",
+        "address": "",
+        "pdf_title": "Spare Parts Quotation",
+        "valid_till": "",
+        "company_name": "Petro Shoes",
+        "sales_layout": "quotation",
+        "customer_name": "Subhash Pahwa",
+        "quotation_date": "2026-08-20",
+        "terms_override": "",
+        "quotation_module": "Spare Parts Quotation",
+        "quotation_number": "BSM/QTN/2026-27/0013",
+        "salesperson_name": "Ainesh Sikdar"
+      },
       "pdfGeneratedAt": "2026-08-20T07:49:18.389Z"
     },
     {
@@ -1391,5 +1391,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-20T07:49:23.319Z"
+  "updatedAt": "2026-08-21T01:21:20.822Z"
 }
