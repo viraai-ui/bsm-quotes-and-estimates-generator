@@ -448,10 +448,58 @@
       "resetYearly": true,
       "nextEstimate": 8,
       "financialYear": "2026-27",
-      "nextQuotation": 16
+      "nextQuotation": 17
     }
   },
   "documents": [
+    {
+      "id": "29c8ed52-84b5-4d95-88ad-915017ded542",
+      "type": "sales_quotation",
+      "number": "BSM/QTN/2026-27/0016",
+      "date": "2026-08-31",
+      "customer": "HAPPY JI",
+      "company": "RKG LAMINATES PVT. LTD.",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0016",
+        "quotation_date": "2026-08-31",
+        "valid_till": "2026-01-11",
+        "customer_name": "HAPPY JI",
+        "company_name": "RKG LAMINATES PVT. LTD.",
+        "phone": "+91 9810039615",
+        "email": "rkglaminates262@gmail.com",
+        "address": "PLOT NO 262, SECTOR-17 INDUSTRIAL ESTATE, BAHADURGARH, Jhajjar, Haryana, 124507\n\n",
+        "gstin": "06AACCR3365G1ZH",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": "",
+        "quotation_module": "Sales Quotation",
+        "sales_layout": "quotation",
+        "pdf_title": "Sales Quotation",
+        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed."
+      },
+      "items": [
+        {
+          "id": "507f7e6f-6746-415f-a9e3-dcf8c5747707",
+          "productName": "FLAT BED /SINGLE NEEDLE STITCHING MACHINE ",
+          "description": "",
+          "quantity": 2,
+          "price": 21700,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 43400,
+        "gst": 7812,
+        "grand": 51212,
+        "roundOff": 0,
+        "final": 51212,
+        "words": "Fifty One Thousand Two Hundred Twelve rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-08-31T12:18:32.951Z",
+      "updatedAt": "2026-08-31T12:18:32.951Z",
+      "pdfGeneratedAt": "2026-08-31T12:18:40.562Z"
+    },
     {
       "id": "138599e1-7c87-41f6-b6a6-2eb1d9f04540",
       "type": "sales_quotation",
@@ -1487,5 +1535,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-31T12:16:45.049Z"
+  "updatedAt": "2026-08-31T12:18:46.423Z"
 }
