@@ -448,10 +448,58 @@
       "resetYearly": true,
       "nextEstimate": 8,
       "financialYear": "2026-27",
-      "nextQuotation": 15
+      "nextQuotation": 16
     }
   },
   "documents": [
+    {
+      "id": "138599e1-7c87-41f6-b6a6-2eb1d9f04540",
+      "type": "sales_quotation",
+      "number": "BSM/QTN/2026-27/0015",
+      "date": "2026-08-31",
+      "customer": "HAPPY JI",
+      "company": "RKG LAMINATES PVT. LTD.",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0015",
+        "quotation_date": "2026-08-31",
+        "valid_till": "2026-01-11",
+        "customer_name": "HAPPY JI",
+        "company_name": "RKG LAMINATES PVT. LTD.",
+        "phone": "+91 9810039615",
+        "email": "rkglaminates262@gmail.com",
+        "address": "PLOT NO 262, SECTOR-17 INDUSTRIAL ESTATE, BAHADURGARH, Jhajjar, Haryana, 124507\n\n",
+        "gstin": "06AACCR3365G1ZH",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": "",
+        "quotation_module": "Sales Quotation",
+        "sales_layout": "quotation",
+        "pdf_title": "Sales Quotation",
+        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed."
+      },
+      "items": [
+        {
+          "id": "507f7e6f-6746-415f-a9e3-dcf8c5747707",
+          "productName": "TRIMMING MACHINE",
+          "description": "",
+          "quantity": 22,
+          "price": 22000,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 484000,
+        "gst": 87120,
+        "grand": 571120,
+        "roundOff": 0,
+        "final": 571120,
+        "words": "Five Lakh Seventy One Thousand One Hundred Twenty rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-08-31T12:16:31.675Z",
+      "updatedAt": "2026-08-31T12:16:31.675Z",
+      "pdfGeneratedAt": "2026-08-31T12:16:39.225Z"
+    },
     {
       "id": "3de36e96-980a-45be-b66c-57372858ffb9",
       "type": "sales_quotation",
@@ -1439,5 +1487,5 @@
       }
     }
   ],
-  "updatedAt": "2026-08-31T12:14:07.255Z"
+  "updatedAt": "2026-08-31T12:16:45.049Z"
 }
