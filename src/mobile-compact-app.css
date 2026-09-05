@@ -610,9 +610,10 @@
     border-radius: 14px;
     background: #f8fafc;
     border: 1px dashed #dbe2ea;
-    overflow: hidden;
+    overflow: visible;
   }
 
+  .quote-flow .line-row:not(.estimate-lines .line-row) > .image-cell .image-picker,
   .quote-flow .line-row:not(.estimate-lines .line-row) > .image-cell img {
     width: 100%;
     height: 100%;
@@ -620,28 +621,25 @@
     object-fit: cover;
   }
 
-  .quote-flow .line-row:not(.estimate-lines .line-row) > .image-cell > span {
+  .quote-flow .line-row:not(.estimate-lines .line-row) > .image-cell .image-placeholder {
     display: none;
   }
 
-  .quote-flow .line-row:not(.estimate-lines .line-row) > .image-cell .mini-upload {
-    position: absolute;
-    inset: 0;
-    display: grid !important;
-    place-items: center;
-    min-height: 0 !important;
-    padding: 0 !important;
-    border: 0 !important;
-    background: transparent !important;
-    color: transparent !important;
-    box-shadow: none !important;
+  .quote-flow .line-row:not(.estimate-lines .line-row) > .image-cell .camera-badge {
+    bottom: 50%;
+    transform: translate(-50%, 50%);
   }
 
-  .quote-flow .line-row:not(.estimate-lines .line-row) > .image-cell .mini-upload::before {
-    content: '📷';
-    color: #64748b;
-    font-size: 22px;
-    line-height: 1;
+  .quote-flow .line-row:not(.estimate-lines .line-row) > .image-cell.has-image .camera-badge {
+    bottom: 5px;
+    transform: translateX(-50%);
+  }
+
+  .quote-flow .line-row:not(.estimate-lines .line-row) > .image-cell .remove-image {
+    top: -7px;
+    right: -7px;
+    width: 28px;
+    min-height: 28px;
   }
 
   .quote-flow .line-row:not(.estimate-lines .line-row) > .product-inputs {
