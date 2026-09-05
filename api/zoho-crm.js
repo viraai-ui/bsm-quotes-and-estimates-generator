@@ -9,7 +9,7 @@ function json(res, status, data) {
 
 async function getAccessToken() {
   if (process.env.ZOHO_CRM_ACCESS_TOKEN) return process.env.ZOHO_CRM_ACCESS_TOKEN
-  const refreshToken = process.env.ZOHO_CRM_REFRESH_TOKEN
+  const refreshToken = process.env.ZOHO_CRM_REFRESH_TOKEN || process.env.ZOHO_REFRESH_TOKEN
   const clientId = process.env.ZOHO_CRM_CLIENT_ID || process.env.ZOHO_CLIENT_ID
   const clientSecret = process.env.ZOHO_CRM_CLIENT_SECRET || process.env.ZOHO_CLIENT_SECRET
   if (!refreshToken || !clientId || !clientSecret) return null
