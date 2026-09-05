@@ -3,14 +3,31 @@
   resize: vertical;
 }
 
-.zoho-suggestions,
 .zoho-item-suggestions {
   margin-top: 14px;
   display: grid;
   gap: 8px;
 }
 
+.crm-input-wrap .zoho-suggestions {
+  position: absolute;
+  z-index: 1000;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  min-width: 0;
+  max-height: min(340px, 50vh);
+  overflow: hidden;
+  padding: 8px;
+  border: 1px solid rgba(148, 163, 184, .45);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, .18);
+}
+
 .zoho-suggestions > strong {
+  display: block;
+  padding: 2px 4px 7px;
   font-size: 12px;
   color: #6b7280;
   text-transform: uppercase;
@@ -24,6 +41,26 @@
   gap: 8px;
 }
 
+.zoho-suggestions > div {
+  max-height: 280px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: grid;
+  gap: 4px;
+}
+
+.zoho-suggestion-message {
+  display: block;
+  padding: 10px 8px;
+  color: #667085;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.zoho-suggestion-message.is-error {
+  color: #b42318;
+}
+
 .zoho-suggestions button,
 .zoho-item-suggestions button {
   border: 1px solid rgba(148, 163, 184, .3);
@@ -34,6 +71,14 @@
   text-align: left;
   box-shadow: 0 6px 18px rgba(15, 23, 42, .05);
   cursor: pointer;
+}
+
+.zoho-suggestions button {
+  width: 100%;
+  flex: none;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: none;
 }
 
 .zoho-suggestions button span,
@@ -51,7 +96,9 @@
 }
 
 .zoho-suggestions button:hover,
+.zoho-suggestions button:focus-visible,
 .zoho-item-suggestions button:hover {
   border-color: #dc2626;
   background: #fff7f7;
+  outline: none;
 }

@@ -3,6 +3,10 @@ import type { ChangeEvent } from 'react'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import * as XLSX from 'xlsx'
+import { companySearchQuery, mergeSelectedCompany } from './zohoCompany'
+import type { ZohoCompany } from './zohoCompany'
+import { applyEstimateExpensePreset, createDefaultEstimateRows, matchingEstimateExpenses } from './estimateExpenses'
+import { freshDocumentData, freshEstimateDocument } from './formReset'
 import './App.css'
 import './ai-polish.css'
 import './settings-saas.css'
@@ -20,6 +24,7 @@ import './mobile-compact-app.css'
 import './edit-modal.css'
 import './sales-quote-options.css'
 import './typography-normalize.css'
+import './premium-dashboard.css'
 import { DEFAULT_BSM_LOGO } from './assets/bsmLogoData'
 
 type FieldType = 'Text' | 'Number' | 'Date' | 'Dropdown' | 'Textarea' | 'Email' | 'Phone' | 'Image/File' | 'Checkbox'
@@ -104,8 +109,8 @@ type SavedDocument = {
 type Totals = { taxable: number; gst: number; grand: number; roundOff: number; final: number; words: string }
 type EstimateCategory = { id: string; name: string; visible: boolean; gst: number; fields: string[]; formula: string }
 type SalesLayout = 'quotation' | 'proforma'
-type ZohoCustomer = { id: string; name: string; company?: string; email?: string; phone?: string; gstin?: string; address?: string }
 type ZohoItem = { id: string; name: string; description?: string; price?: number; gst?: number }
+type CompanyLookupStatus = 'idle' | 'loading' | 'success' | 'error' | 'unconfigured'
 
 const STORAGE_SETTINGS = 'bsm_quote_settings_v1'
 const STORAGE_DOCS = 'bsm_quote_docs_v1'
@@ -157,6 +162,7 @@ const estimateFields: FieldConfig[] = [
   field('phone', 'Phone Number', 'Phone'),
   field('email', 'Email', 'Email'),
   field('address', 'Address', 'Textarea'),
+  field('gstin', 'GSTIN', 'Text'),
   field('location', 'Location', 'Text'),
   field('duration_days', 'Duration (Days)', 'Number'),
 ].map((f, index) => ({ ...f, sortOrder: index + 1 }))
@@ -230,6 +236,47 @@ function useZohoWidgetBoot(enabled: boolean) {
   }, [enabled])
 }
 
+function useZohoCompanyLookup(value?: string) {
+  const query = companySearchQuery(value)
+  const [items, setItems] = useState<ZohoCompany[]>([])
+  const [status, setStatus] = useState<CompanyLookupStatus>('idle')
+  const [error, setError] = useState('')
+  const [dismissedQuery, setDismissedQuery] = useState('')
+
+  useEffect(() => {
+    if (!query || query === dismissedQuery) {
+      setItems([]); setStatus('idle'); setError('')
+      return
+    }
+    const controller = new AbortController()
+    let current = true
+    setStatus('loading'); setError('')
+    const timer = window.setTimeout(async () => {
+      try {
+        const response = await fetch(`/api/zoho-crm?q=${encodeURIComponent(query)}`, { signal: controller.signal })
+        const data = await response.json().catch(() => ({}))
+        if (!response.ok) throw new Error(data.error || 'Company lookup failed')
+        if (!current) return
+        setItems(Array.isArray(data.results) ? data.results : [])
+        setStatus(data.configured === false ? 'unconfigured' : 'success')
+      } catch (caught) {
+        if (!current || controller.signal.aborted) return
+        setItems([])
+        setError(caught instanceof Error ? caught.message : 'Company lookup failed')
+        setStatus('error')
+      }
+    }, 250)
+    return () => { current = false; window.clearTimeout(timer); controller.abort() }
+  }, [query, dismissedQuery])
+
+  const clear = (dismissValue?: string) => {
+    setDismissedQuery(companySearchQuery(dismissValue) || query)
+    setItems([])
+    setStatus('idle')
+  }
+  return { items, status, error, query, clear }
+}
+
 function App() {
   const isZohoWidgetRoute = window.location.pathname === '/crm-widget'
   useZohoWidgetBoot(isZohoWidgetRoute)
@@ -257,14 +304,18 @@ function App() {
   const [salesQuoteData, setSalesQuoteData] = useState<Record<string, string>>(() => makeDefaults(defaultSettings.quotationFields))
   const [salesLayout, setSalesLayout] = useState<SalesLayout>('quotation')
   const [salesTerms, setSalesTerms] = useState(defaultSettings.quotationTemplate.terms)
-  const [customerSuggestions, setCustomerSuggestions] = useState<ZohoCustomer[]>([])
   const [itemSuggestions, setItemSuggestions] = useState<ZohoItem[]>([])
   const [estimateData, setEstimateData] = useState<Record<string, string>>(() => ({ ...makeDefaults(defaultSettings.estimateFields), estimate_number: nextNumber(defaultSettings.numbering.estimate, defaultSettings.numbering.financialYear, defaultSettings.numbering.nextEstimate, defaultSettings.numbering.padding), estimate_date: today() }))
   const [items, setItems] = useState<QuoteItem[]>([newItem(defaultSettings.tax.defaultGst)])
   const [salesItems, setSalesItems] = useState<QuoteItem[]>([newItem(defaultSettings.tax.defaultGst)])
+  const [estimateItems, setEstimateItems] = useState<QuoteItem[]>(() => createDefaultEstimateRows(defaultSettings.tax.defaultGst))
+  const salesCompanyLookup = useZohoCompanyLookup(salesQuoteData.company_name)
+  const sparesCompanyLookup = useZohoCompanyLookup(quoteData.company_name)
+  const estimateCompanyLookup = useZohoCompanyLookup(estimateData.company_name)
   const [docTab, setDocTab] = useState<'quotation' | 'estimate'>('quotation')
   const totals = useMemo(() => computeTotals(items, settings.tax), [items, settings.tax])
   const salesTotals = useMemo(() => computeTotals(salesItems, settings.tax), [salesItems, settings.tax])
+  const estimateTotals = useMemo(() => computeTotals(estimateItems, settings.tax), [estimateItems, settings.tax])
   const visibleQuoteFields = settings.quotationFields.filter((f) => f.visible && f.key !== 'notes' && f.key !== 'salesperson_name').sort((a, b) => a.sortOrder - b.sortOrder)
 
   useEffect(() => {
@@ -307,17 +358,6 @@ function App() {
   }, [settings.quotationFields, settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding])
 
   useEffect(() => {
-    const query = salesQuoteData.customer_name || salesQuoteData.company_name || ''
-    if (query.length < 3) { setCustomerSuggestions([]); return }
-    const controller = new AbortController()
-    fetch(`/api/zoho-inventory?type=customers&q=${encodeURIComponent(query)}`, { signal: controller.signal })
-      .then((r) => r.ok ? r.json() : Promise.reject(new Error('Customer lookup failed')))
-      .then((data) => setCustomerSuggestions(Array.isArray(data.results) ? data.results : []))
-      .catch(() => {})
-    return () => controller.abort()
-  }, [salesQuoteData.customer_name, salesQuoteData.company_name])
-
-  useEffect(() => {
     const query = salesItems.map((item) => item.productName).find((name) => name.length >= 3) || ''
     if (!query) { setItemSuggestions([]); return }
     const controller = new AbortController()
@@ -358,7 +398,7 @@ function App() {
     return doc
   }
 
-  async function runPdfDownload(label: string, createDoc: () => SavedDocument) {
+  async function runPdfDownload(label: string, createDoc: () => SavedDocument, onSuccess?: () => void) {
     if (pdfBusy) return
     setPdfBusy(label)
     await waitForPaint()
@@ -366,6 +406,7 @@ function App() {
       const doc = createDoc()
       downloadQuotationPdf(doc, settings)
       setDocuments((docs) => docs.map((d) => d.id === doc.id ? { ...d, pdfGeneratedAt: new Date().toISOString(), status: 'Generated' } : d))
+      onSuccess?.()
     } catch (error) {
       console.error('PDF download failed', error)
       window.alert('PDF could not be generated. Please try again.')
@@ -374,12 +415,37 @@ function App() {
     }
   }
 
+  function resetQuotationForm(kind: 'sales_quotation' | 'quotation') {
+    const next = nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation + 1, settings.numbering.padding)
+    const fresh = freshDocumentData(makeDefaults(settings.quotationFields), 'quotation_number', next, 'quotation_date', today())
+    if (kind === 'sales_quotation') {
+      setSalesQuoteData(fresh)
+      setSalesItems([newItem(settings.tax.defaultGst)])
+      salesCompanyLookup.clear()
+      setItemSuggestions([])
+      setSalesLayout('quotation')
+      setSalesTerms(settings.quotationTemplate.terms)
+    } else {
+      setQuoteData(fresh)
+      setItems([newItem(settings.tax.defaultGst)])
+      sparesCompanyLookup.clear()
+    }
+  }
+
+  function resetEstimateForm() {
+    const next = nextNumber(settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate + 1, settings.numbering.padding)
+    const fresh = freshEstimateDocument(makeDefaults(settings.estimateFields), next, today(), settings.tax.defaultGst)
+    setEstimateData(fresh.data)
+    setEstimateItems(fresh.items)
+    estimateCompanyLookup.clear()
+  }
+
   function generatePdf() {
-    void runPdfDownload('Generating PDF…', () => saveQuotation('Generated'))
+    void runPdfDownload('Generating PDF…', () => saveQuotation('Generated'), () => resetQuotationForm('quotation'))
   }
 
   function generateSalesPdf() {
-    void runPdfDownload('Generating PDF…', () => saveQuotation('Generated', 'sales_quotation'))
+    void runPdfDownload('Generating PDF…', () => saveQuotation('Generated', 'sales_quotation'), () => resetQuotationForm('sales_quotation'))
   }
 
   function generateExcel(doc = saveQuotation('Generated')) {
@@ -390,7 +456,7 @@ function App() {
     const number = nextNumber(settings.numbering.estimate, settings.numbering.financialYear, settings.numbering.nextEstimate, settings.numbering.padding)
     const now = new Date().toISOString()
     const doc: SavedDocument = {
-      id: crypto.randomUUID(), type: 'estimate', number, date: estimateData.estimate_date || today(), customer: estimateData.customer_name || 'Customer', company: estimateData.company_name, location: estimateData.location, headerData: { ...estimateData, estimate_number: number }, items, totals, status, createdBy: 'Admin', createdAt: now, updatedAt: now,
+      id: crypto.randomUUID(), type: 'estimate', number, date: estimateData.estimate_date || today(), customer: estimateData.customer_name || 'Customer', company: estimateData.company_name, location: estimateData.location, headerData: { ...estimateData, estimate_number: number }, items: estimateItems, totals: estimateTotals, status, createdBy: 'Admin', createdAt: now, updatedAt: now,
     }
     setDocuments((docs) => [doc, ...docs])
     setSettings((s) => ({ ...s, numbering: { ...s.numbering, nextEstimate: s.numbering.nextEstimate + 1 } }))
@@ -399,7 +465,7 @@ function App() {
   }
 
   function generateEstimatePdf() {
-    void runPdfDownload('Generating PDF…', () => saveEstimate('Generated'))
+    void runPdfDownload('Generating PDF…', () => saveEstimate('Generated'), resetEstimateForm)
   }
 
   function duplicateDocument(doc: SavedDocument) {
@@ -416,8 +482,9 @@ function App() {
     setDocuments((docs) => docs.map((d) => d.id === doc.id ? { ...doc, updatedAt: new Date().toISOString() } : d))
   }
 
-  function applySalesCustomer(customer: ZohoCustomer) {
-    setSalesQuoteData((data) => ({ ...data, customer_name: customer.name || data.customer_name, company_name: customer.company || data.company_name, phone: customer.phone || data.phone, email: customer.email || data.email, address: customer.address || data.address, gstin: customer.gstin || data.gstin }))
+  function applyCompany(company: ZohoCompany, setData: React.Dispatch<React.SetStateAction<Record<string, string>>>, clearSuggestions: (selectedName?: string) => void) {
+    setData((data) => mergeSelectedCompany(data, company))
+    clearSuggestions(company.name)
   }
 
   function applySalesItem(rowId: string, item: ZohoItem) {
@@ -443,19 +510,19 @@ function App() {
         <div className="mobile-page-title"><h1>{nav.find(([key]) => key === active)?.[1]}</h1></div>
 
         {active === 'sales-quotation' && <div className="page-grid quote-flow">
-          <section className="panel wide"><div className="section-title"><div><h2>Step 1. Sales quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={salesQuoteData} setData={setSalesQuoteData} /><ZohoSuggestions title="Zoho Inventory customers" items={customerSuggestions.map((c) => ({ id: c.id, title: c.name, subtitle: [c.company, c.phone, c.email].filter(Boolean).join(' • '), onClick: () => applySalesCustomer(c) }))} /></section>
+          <section className="panel wide"><div className="section-title"><div><h2>Step 1. Sales quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={salesQuoteData} setData={setSalesQuoteData} companyLookup={salesCompanyLookup} onPickCompany={(company) => applyCompany(company, setSalesQuoteData, salesCompanyLookup.clear)} formName="sales-quotation" /></section>
           <SalesQuoteOptions layout={salesLayout} setLayout={setSalesLayout} terms={salesTerms} setTerms={setSalesTerms} />
           <LineItemsPanel items={salesItems} setItems={setSalesItems} settings={settings} suggestions={itemSuggestions} onPickSuggestion={applySalesItem} />
           <SummaryCard totals={salesTotals} settings={settings} onPdf={generateSalesPdf} onExcel={() => downloadExcel(saveQuotation('Generated', 'sales_quotation'), settings)} pdfBusy={pdfBusy} />
         </div>}
 
         {active === 'quotation' && <div className="page-grid quote-flow">
-          <section className="panel wide"><div className="section-title"><div><h2>Step 1. Spare parts quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={quoteData} setData={setQuoteData} /></section>
+          <section className="panel wide"><div className="section-title"><div><h2>Step 1. Spare parts quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={quoteData} setData={setQuoteData} companyLookup={sparesCompanyLookup} onPickCompany={(company) => applyCompany(company, setQuoteData, sparesCompanyLookup.clear)} formName="spare-parts-quotation" /></section>
           <LineItemsPanel items={items} setItems={setItems} settings={settings} />
           <SummaryCard totals={totals} settings={settings} onPdf={generatePdf} onExcel={() => generateExcel()} pdfBusy={pdfBusy} />
         </div>}
 
-        {active === 'estimate' && <EstimateView settings={settings} totals={totals} items={items} setItems={setItems} estimateData={estimateData} setEstimateData={setEstimateData} onPdf={generateEstimatePdf} onExcel={() => downloadExcel(saveEstimate('Generated'), settings)} pdfBusy={pdfBusy} />}
+        {active === 'estimate' && <EstimateView settings={settings} totals={estimateTotals} items={estimateItems} setItems={setEstimateItems} estimateData={estimateData} setEstimateData={setEstimateData} companyLookup={estimateCompanyLookup} onPickCompany={(company) => applyCompany(company, setEstimateData, estimateCompanyLookup.clear)} onPdf={generateEstimatePdf} onExcel={() => downloadExcel(saveEstimate('Generated'), settings)} pdfBusy={pdfBusy} />}
         {active === 'documents' && <DocumentsView documents={documents} tab={docTab} setTab={setDocTab} settings={settings} onSave={updateDocument} onDuplicate={duplicateDocument} onPdf={(d) => void runPdfDownload('Preparing PDF…', () => d)} onExcel={(d) => downloadExcel(d, settings)} onDelete={(id) => setDocuments((docs) => docs.filter((d) => d.id !== id))} pdfBusy={pdfBusy} />}
         {active === 'settings' && <SettingsView settings={settings} setSettings={setSettings} />}
       </section>
@@ -463,27 +530,38 @@ function App() {
   )
 }
 
-function DynamicForm({ fields, data, setData }: { fields: FieldConfig[]; data: Record<string, string>; setData: (fn: (d: Record<string, string>) => Record<string, string>) => void }) {
+function DynamicForm({ fields, data, setData, companyLookup, onPickCompany, formName = 'document' }: { fields: FieldConfig[]; data: Record<string, string>; setData: (fn: (d: Record<string, string>) => Record<string, string>) => void; companyLookup?: ReturnType<typeof useZohoCompanyLookup>; onPickCompany?: (company: ZohoCompany) => void; formName?: string }) {
+  const renderField = (field: FieldConfig) => <FormField key={field.id} field={field} data={data} setData={setData} companyLookup={companyLookup} onPickCompany={onPickCompany} formName={formName} />
   const quoteLayout = fields.some((field) => field.key === 'quotation_number')
   if (quoteLayout) {
     const leftKeys = ['company_name', 'customer_name', 'phone', 'email', 'address', 'gstin']
     const rightKeys = ['quotation_number', 'quotation_date', 'valid_till']
-    const renderField = (field: FieldConfig) => <FormField key={field.id} field={field} data={data} setData={setData} />
     return <div className="quotation-form-layout"><div className="quotation-form-stack">{leftKeys.map((key) => fields.find((field) => field.key === key)).filter(Boolean).map((field) => renderField(field as FieldConfig))}</div><div className="quotation-form-stack compact-side">{rightKeys.map((key) => fields.find((field) => field.key === key)).filter(Boolean).map((field) => renderField(field as FieldConfig))}</div></div>
   }
   const estimateLayout = fields.some((field) => field.key === 'estimate_number')
   if (estimateLayout) {
-    const leftKeys = ['customer_name', 'company_name', 'phone', 'email', 'address']
+    const leftKeys = ['company_name', 'customer_name', 'phone', 'email', 'address', 'gstin']
     const rightKeys = ['estimate_number', 'estimate_date', 'location', 'duration_days']
-    const renderField = (field: FieldConfig) => <FormField key={field.id} field={field} data={data} setData={setData} />
     return <div className="quotation-form-layout estimate-form-layout"><div className="quotation-form-stack">{leftKeys.map((key) => fields.find((field) => field.key === key)).filter(Boolean).map((field) => renderField(field as FieldConfig))}</div><div className="quotation-form-stack compact-side">{rightKeys.map((key) => fields.find((field) => field.key === key)).filter(Boolean).map((field) => renderField(field as FieldConfig))}</div></div>
   }
-  return <div className="form-grid">{fields.map((field) => <FormField key={field.id} field={field} data={data} setData={setData} />)}</div>
+  return <div className="form-grid">{fields.map((field) => renderField(field))}</div>
 }
 
-function FormField({ field, data, setData }: { field: FieldConfig; data: Record<string, string>; setData: (fn: (d: Record<string, string>) => Record<string, string>) => void }) {
+function FormField({ field, data, setData, companyLookup, onPickCompany, formName }: { field: FieldConfig; data: Record<string, string>; setData: (fn: (d: Record<string, string>) => Record<string, string>) => void; companyLookup?: ReturnType<typeof useZohoCompanyLookup>; onPickCompany?: (company: ZohoCompany) => void; formName?: string }) {
+  const [companyFocused, setCompanyFocused] = useState(false)
   const autoNumberField = field.key === 'quotation_number' || field.key === 'estimate_number'
-  return <label className={`${field.type === 'Textarea' ? 'span-2' : ''} ${autoNumberField ? 'auto-number-field' : ''}`}><span>{field.label}{field.mandatory ? ' *' : ''}</span>{field.type === 'Textarea' ? <textarea value={data[field.key] || ''} placeholder={field.placeholder} onChange={(e) => setData((d) => ({ ...d, [field.key]: e.target.value }))} /> : field.type === 'Dropdown' ? <select value={data[field.key] || ''} onChange={(e) => setData((d) => ({ ...d, [field.key]: e.target.value }))}>{(field.options || ['Option']).map((o) => <option key={o}>{o}</option>)}</select> : <input value={data[field.key] || ''} type={inputType(field.type)} inputMode={field.type === 'Number' ? 'decimal' : undefined} placeholder={field.placeholder} readOnly={autoNumberField} aria-readonly={autoNumberField} title={autoNumberField ? 'Auto-numbered by the system' : undefined} onChange={(e) => { if (!autoNumberField) setData((d) => ({ ...d, [field.key]: e.target.value })) }} />}</label>
+  const companyField = field.key === 'company_name'
+  const suggestionsId = `${formName || 'document'}-company-suggestions`
+  useEffect(() => {
+    if (!companyFocused) return
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setCompanyFocused(false)
+    }
+    document.addEventListener('keydown', closeOnEscape)
+    return () => document.removeEventListener('keydown', closeOnEscape)
+  }, [companyFocused])
+  const textInput = <input className={companyField ? 'crm-company-input' : undefined} value={data[field.key] || ''} type={inputType(field.type)} inputMode={field.type === 'Number' ? 'decimal' : undefined} placeholder={companyField ? 'Type 3+ characters to search Zoho CRM' : field.placeholder} readOnly={autoNumberField} aria-readonly={autoNumberField} aria-description={companyField ? 'Zoho CRM lookup starts after 3 characters. The selected company name remains editable.' : undefined} role={companyField ? 'combobox' : undefined} aria-autocomplete={companyField ? 'list' : undefined} aria-expanded={companyField ? companyFocused && Boolean(companyLookup?.query) && companyLookup?.status !== 'idle' : undefined} aria-controls={companyField ? suggestionsId : undefined} autoComplete={companyField ? 'new-password' : undefined} name={companyField ? `crm-company-search-${formName || 'document'}` : undefined} data-lpignore={companyField ? 'true' : undefined} data-1p-ignore={companyField ? 'true' : undefined} title={autoNumberField ? 'Auto-numbered by the system' : undefined} onFocus={companyField ? () => setCompanyFocused(true) : undefined} onChange={(e) => { if (!autoNumberField) setData((d) => ({ ...d, [field.key]: e.target.value })) }} />
+  return <label className={`${field.type === 'Textarea' ? 'span-2' : ''} ${autoNumberField ? 'auto-number-field' : ''} ${companyField ? 'crm-company-field' : ''}`}><span>{field.label}{field.mandatory ? ' *' : ''}{companyField && <small className="crm-lookup-badge">CRM lookup</small>}</span>{field.type === 'Textarea' ? <textarea value={data[field.key] || ''} placeholder={field.placeholder} onChange={(e) => setData((d) => ({ ...d, [field.key]: e.target.value }))} /> : field.type === 'Dropdown' ? <select value={data[field.key] || ''} onChange={(e) => setData((d) => ({ ...d, [field.key]: e.target.value }))}>{(field.options || ['Option']).map((o) => <option key={o}>{o}</option>)}</select> : companyField ? <div className="crm-input-wrap" onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setCompanyFocused(false) }}>{textInput}<span className="crm-input-icon" aria-hidden="true">⌕</span>{companyFocused && companyLookup && onPickCompany && <ZohoSuggestions id={suggestionsId} title="Zoho CRM companies" items={companyLookup.items.map((company) => ({ id: company.id, title: company.name, subtitle: [company.gstin, company.address].filter(Boolean).join(' • '), onClick: () => onPickCompany(company) }))} status={companyLookup.status} query={companyLookup.query} error={companyLookup.error} />}</div> : textInput}</label>
 }
 
 function SummaryCard({ totals, settings, onPdf, onExcel, pdfBusy }: { totals: Totals; settings: Settings; onPdf: () => void; onExcel: () => void; pdfBusy?: string | null }) {
@@ -494,9 +572,14 @@ function SalesQuoteOptions({ layout, setLayout, terms, setTerms }: { layout: Sal
   return <section className="panel wide sales-quote-options"><div className="section-title"><div><h2>Sales quote options</h2></div></div><div className="form-grid"><label><span>PDF Layout</span><select value={layout} onChange={(e) => setLayout(e.target.value as SalesLayout)}><option value="quotation">Quotation layout</option><option value="proforma">Proforma invoice layout</option></select></label><label className="span-2"><span>Terms & Conditions</span><textarea value={terms} onChange={(e) => setTerms(e.target.value)} /></label></div></section>
 }
 
-function ZohoSuggestions({ title, items }: { title: string; items: { id: string; title: string; subtitle?: string; onClick: () => void }[] }) {
-  if (!items.length) return null
-  return <div className="zoho-suggestions"><strong>{title}</strong><div>{items.slice(0, 5).map((item) => <button type="button" key={item.id} onClick={item.onClick}><span>{item.title}</span>{item.subtitle && <small>{item.subtitle}</small>}</button>)}</div></div>
+function ZohoSuggestions({ id, title, items, status, query, error }: { id: string; title: string; items: { id: string; title: string; subtitle?: string; onClick: () => void }[]; status: CompanyLookupStatus; query: string; error: string }) {
+  if (!query || status === 'idle') return null
+  let message = ''
+  if (status === 'loading') message = 'Searching Zoho CRM…'
+  else if (status === 'error') message = error || 'Zoho CRM lookup failed. Please try again.'
+  else if (status === 'unconfigured') message = 'Zoho CRM lookup is not configured.'
+  else if (!items.length) message = `No Zoho CRM companies found for “${query}”.`
+  return <div id={id} className="zoho-suggestions" role="listbox" aria-label={title} aria-live="polite"><strong>{title}</strong>{message ? <small className={`zoho-suggestion-message ${status === 'error' ? 'is-error' : ''}`}>{message}</small> : <div>{items.slice(0, 10).map((item) => <button type="button" role="option" key={item.id} onMouseDown={(event) => event.preventDefault()} onClick={item.onClick}><span>{item.title}</span>{item.subtitle && <small>{item.subtitle}</small>}</button>)}</div>}</div>
 }
 
 function LoadingButton({ children, busy, className = '', onClick }: { children: React.ReactNode; busy?: string | null; className?: string; onClick: () => void }) {
@@ -504,10 +587,27 @@ function LoadingButton({ children, busy, className = '', onClick }: { children: 
 }
 
 function LineItemsPanel({ items, setItems, settings, mode = 'quotation', suggestions = [], onPickSuggestion }: { items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; settings: Settings; mode?: 'quotation' | 'estimate'; suggestions?: ZohoItem[]; onPickSuggestion?: (rowId: string, item: ZohoItem) => void }) {
+  const [openExpensePicker, setOpenExpensePicker] = useState<{ id: string; showAll: boolean } | null>(null)
+  const expensePickerRoot = useRef<HTMLDivElement | null>(null)
   const addItem = () => setItems((rows) => [...rows, newItem(settings.tax.defaultGst)])
   const update = (id: string, patch: Partial<QuoteItem>) => setItems((rows) => rows.map((r) => r.id === id ? { ...r, ...patch } : r))
-  const remove = (id: string) => setItems((rows) => rows.filter((r) => r.id !== id))
+  const remove = (id: string) => { setOpenExpensePicker((open) => open?.id === id ? null : open); setItems((rows) => rows.filter((r) => r.id !== id)) }
   const isEstimate = mode === 'estimate'
+  useEffect(() => {
+    if (!openExpensePicker) return
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (!expensePickerRoot.current?.contains(event.target as Node)) setOpenExpensePicker(null)
+    }
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpenExpensePicker(null)
+    }
+    document.addEventListener('pointerdown', closeOnOutsidePointer)
+    document.addEventListener('keydown', closeOnEscape)
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsidePointer)
+      document.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [openExpensePicker])
   async function onImage(id: string, e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
@@ -518,9 +618,10 @@ function LineItemsPanel({ items, setItems, settings, mode = 'quotation', suggest
     <div className="section-title"><div><h2>Step 2. {isEstimate ? 'Estimate line items' : 'Product line items'}</h2></div></div>
     <div className={`line-table ${isEstimate ? 'estimate-lines' : ''}`}>
       <div className="line-head">{!isEstimate && <span>Picture</span>}<span>{isEstimate ? 'Expense / Item' : 'Product'}</span><span>{isEstimate ? 'Days' : 'Qty'}</span><span>{isEstimate ? 'Cost' : 'Price'}</span><span>GST %</span><span>Total</span><span></span></div>
-      {items.map((item) => { const taxable = item.quantity * item.price; const total = taxable + (settings.tax.gstEnabled ? taxable * ((settings.tax.rowLevelGst ? item.gst : settings.tax.defaultGst) / 100) : 0); return <div className="line-row" key={item.id}>
+      {items.map((item) => { const taxable = item.quantity * item.price; const total = taxable + (settings.tax.gstEnabled ? taxable * ((settings.tax.rowLevelGst ? item.gst : settings.tax.defaultGst) / 100) : 0); const pickerOpen = openExpensePicker?.id === item.id; const expenseOptions = matchingEstimateExpenses(item.productName, pickerOpen && openExpensePicker.showAll); return <div className={`line-row ${pickerOpen ? 'has-open-expense-picker' : ''}`} key={item.id}>
         {!isEstimate && <div className="image-cell">{item.image ? <img src={item.image} alt={item.productName || 'Product'} /> : <span>No image</span>}<label className="mini-upload">{item.image ? 'Replace' : 'Upload / Camera'}<input type="file" accept="image/*" capture="environment" onChange={(e) => onImage(item.id, e)} /></label>{item.image && <button className="text-danger" onClick={() => update(item.id, { image: undefined, imageName: undefined })}>Remove</button>}</div>}
-        <div className="product-inputs stacked"><input value={item.productName} onChange={(e) => update(item.id, { productName: e.target.value })} placeholder={isEstimate ? 'Expense / item name' : 'Product name'} /><textarea value={item.description} onChange={(e) => update(item.id, { description: e.target.value })} placeholder="Description" />{!isEstimate && onPickSuggestion && suggestions.length > 0 && <div className="zoho-item-suggestions">{suggestions.slice(0, 4).map((suggestion) => <button type="button" key={suggestion.id} onClick={() => onPickSuggestion(item.id, suggestion)}>{suggestion.name}<small>{suggestion.price ? `₹${suggestion.price}` : ''}</small></button>)}</div>}</div>
+        <div className="product-inputs stacked">{isEstimate ? <div className="expense-combobox" ref={pickerOpen ? expensePickerRoot : undefined}><input value={item.productName} role="combobox" aria-label="Expense / Item" aria-autocomplete="list" aria-expanded={pickerOpen} aria-controls={pickerOpen ? `expense-options-${item.id}` : undefined} onFocus={() => setOpenExpensePicker({ id: item.id, showAll: true })} onClick={() => { if (!pickerOpen) setOpenExpensePicker({ id: item.id, showAll: true }) }} onChange={(e) => { update(item.id, { productName: e.target.value }); setOpenExpensePicker({ id: item.id, showAll: false }) }} placeholder="Select or type an expense / item" /><button type="button" className="expense-dropdown-toggle" aria-label={pickerOpen ? 'Hide expense presets' : 'Show all expense presets'} aria-expanded={pickerOpen} onMouseDown={(event) => event.preventDefault()} onClick={() => setOpenExpensePicker((open) => open?.id === item.id ? null : { id: item.id, showAll: true })}><span aria-hidden="true">⌄</span></button>{pickerOpen && expenseOptions.length > 0 && <div id={`expense-options-${item.id}`} className="zoho-item-suggestions estimate-expense-suggestions" role="listbox" aria-label="Expense suggestions">{expenseOptions.map((preset) => <button type="button" role="option" key={preset.name} onMouseDown={(event) => event.preventDefault()} onClick={() => { update(item.id, applyEstimateExpensePreset(item, preset)); setOpenExpensePicker(null) }}><span>{preset.name}</span><small>{preset.price ? `₹${preset.price} per day` : 'Enter cost manually'}</small></button>)}</div>}</div> : <input value={item.productName} onChange={(e) => update(item.id, { productName: e.target.value })} placeholder="Product name" />}
+          <textarea className="line-item-description" rows={1} value={item.description} onChange={(e) => update(item.id, { description: e.target.value })} placeholder="Description" />{!isEstimate && onPickSuggestion && suggestions.length > 0 && <div className="zoho-item-suggestions">{suggestions.slice(0, 4).map((suggestion) => <button type="button" key={suggestion.id} onClick={() => onPickSuggestion(item.id, suggestion)}>{suggestion.name}<small>{suggestion.price ? `₹${suggestion.price}` : ''}</small></button>)}</div>}</div>
         <label className={`mobile-line-field ${isEstimate ? 'field-days' : 'field-qty'}`}><span>{isEstimate ? 'Days' : 'Quantity'}</span><input type="text" inputMode="decimal" value={item.quantity} onChange={(e) => update(item.id, { quantity: Number(e.target.value) })} /></label>
         <label className={`mobile-line-field ${isEstimate ? 'field-cost' : 'field-price'}`}><span>{isEstimate ? 'Cost' : 'Price'}</span><input type="text" inputMode="decimal" value={item.price} onChange={(e) => update(item.id, { price: Number(e.target.value) })} /></label>
         <label className="mobile-line-field field-gst"><span>GST %</span><input type="text" inputMode="decimal" value={item.gst} disabled={!settings.tax.rowLevelGst} onChange={(e) => update(item.id, { gst: Number(e.target.value) })} /></label>
@@ -592,10 +693,10 @@ function DocumentEditModal({ doc, data, setData, items, setItems, settings, tota
   </div>
 }
 
-function EstimateView({ settings, totals, items, setItems, estimateData, setEstimateData, onPdf, onExcel, pdfBusy }: { settings: Settings; totals: Totals; items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; estimateData: Record<string, string>; setEstimateData: (fn: (d: Record<string, string>) => Record<string, string>) => void; onPdf: () => void; onExcel: () => void; pdfBusy?: string | null }) {
-  const visibleEstimateFields = estimateFields.filter((f) => f.visible).sort((a, b) => a.sortOrder - b.sortOrder)
+function EstimateView({ settings, totals, items, setItems, estimateData, setEstimateData, companyLookup, onPickCompany, onPdf, onExcel, pdfBusy }: { settings: Settings; totals: Totals; items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; estimateData: Record<string, string>; setEstimateData: (fn: (d: Record<string, string>) => Record<string, string>) => void; companyLookup: ReturnType<typeof useZohoCompanyLookup>; onPickCompany: (company: ZohoCompany) => void; onPdf: () => void; onExcel: () => void; pdfBusy?: string | null }) {
+  const visibleEstimateFields = settings.estimateFields.filter((f) => f.visible).sort((a, b) => a.sortOrder - b.sortOrder)
   return <div className="page-grid quote-flow estimate-flow">
-    <section className="panel wide"><div className="section-title"><div><h2>Step 1. Estimate details</h2></div></div><DynamicForm fields={visibleEstimateFields} data={estimateData} setData={setEstimateData} /></section>
+    <section className="panel wide"><div className="section-title"><div><h2>Step 1. Estimate details</h2></div></div><DynamicForm fields={visibleEstimateFields} data={estimateData} setData={setEstimateData} companyLookup={companyLookup} onPickCompany={onPickCompany} formName="estimate" /></section>
     <LineItemsPanel items={items} setItems={setItems} settings={settings} mode="estimate" />
     <SummaryCard totals={totals} settings={settings} onPdf={onPdf} onExcel={onExcel} pdfBusy={pdfBusy} />
   </div>

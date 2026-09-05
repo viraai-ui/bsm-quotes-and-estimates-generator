@@ -1,7 +1,8 @@
-/* Strong global typography correction: only headings should feel bold */
+/* Baseline typography normalization. The final hierarchy is refined in
+   premium-dashboard.css, which is intentionally imported after this layer. */
 .dashboard-shell,
-.dashboard-shell *:not(h1):not(h2):not(h3):not(strong) {
-  font-weight: 350 !important;
+.dashboard-shell *:where(:not(h1):not(h2):not(h3):not(strong)) {
+  font-weight: 400 !important;
 }
 
 .dashboard-shell input,
@@ -27,19 +28,19 @@
 .dashboard-shell .zoho-item-suggestions,
 .dashboard-shell .config-list,
 .dashboard-shell .settings-card {
-  font-weight: 350 !important;
+  font-weight: 400 !important;
 }
 
 .dashboard-shell input::placeholder,
 .dashboard-shell textarea::placeholder {
-  font-weight: 350 !important;
+  font-weight: 400 !important;
   color: #737373 !important;
 }
 
 .dashboard-shell h1,
 .dashboard-shell .desktop-page-title h1,
 .dashboard-shell .mobile-page-title h1 {
-  font-weight: 650 !important;
+  font-weight: 700 !important;
   letter-spacing: -0.04em;
 }
 
@@ -50,6 +51,14 @@
 .dashboard-shell .edit-modal-card h2 {
   font-weight: 600 !important;
   letter-spacing: -0.02em;
+}
+
+.dashboard-shell label > span,
+.dashboard-shell .line-head,
+.dashboard-shell .line-head span,
+.dashboard-shell .field-settings-head,
+.dashboard-shell .field-settings-head span {
+  font-weight: 600 !important;
 }
 
 .dashboard-shell .logo-block strong,
@@ -86,6 +95,6 @@
 
 .dashboard-shell textarea,
 .dashboard-shell .sales-quote-options textarea {
-  font-weight: 350 !important;
+  font-weight: 400 !important;
   line-height: 1.55;
 }
