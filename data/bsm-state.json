@@ -448,10 +448,66 @@
       "resetYearly": true,
       "nextEstimate": 8,
       "financialYear": "2026-27",
-      "nextQuotation": 17
+      "nextQuotation": 18
     }
   },
   "documents": [
+    {
+      "id": "722c73dd-84ff-4645-8684-eff611773a31",
+      "type": "quotation",
+      "number": "BSM/QTN/2026-27/0017",
+      "date": "2026-09-05",
+      "customer": "Dhruv",
+      "company": "NMCEE INTERNATIONAL PVT. LTD.",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0017",
+        "quotation_date": "2026-09-05",
+        "valid_till": "",
+        "customer_name": "Dhruv",
+        "company_name": "NMCEE INTERNATIONAL PVT. LTD.",
+        "phone": "9910922355",
+        "email": "",
+        "address": "",
+        "gstin": "",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": "",
+        "quotation_module": "Spare Parts Quotation",
+        "sales_layout": "quotation",
+        "pdf_title": "Spare Parts Quotation",
+        "terms_override": ""
+      },
+      "items": [
+        {
+          "id": "4c46fdb7-0db0-4358-97ae-d62d801d43b5",
+          "productName": "Mother board card ",
+          "description": "",
+          "quantity": 1,
+          "price": 4900,
+          "gst": 18
+        },
+        {
+          "id": "8d5345f8-9822-4b66-a2ef-5d00565b1a52",
+          "productName": "Labour charge ",
+          "description": "",
+          "quantity": 1,
+          "price": 1000,
+          "gst": 0
+        }
+      ],
+      "totals": {
+        "taxable": 5900,
+        "gst": 882,
+        "grand": 6782,
+        "roundOff": 0,
+        "final": 6782,
+        "words": "Six Thousand Seven Hundred Eighty Two rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-09-05T09:01:18.714Z",
+      "updatedAt": "2026-09-05T09:01:18.714Z",
+      "pdfGeneratedAt": "2026-09-05T09:01:24.297Z"
+    },
     {
       "id": "29c8ed52-84b5-4d95-88ad-915017ded542",
       "date": "2026-08-31",
@@ -1535,5 +1591,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-05T09:00:43.934Z"
+  "updatedAt": "2026-09-05T09:01:29.055Z"
 }
