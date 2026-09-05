@@ -454,58 +454,58 @@
   "documents": [
     {
       "id": "722c73dd-84ff-4645-8684-eff611773a31",
-      "type": "quotation",
-      "number": "BSM/QTN/2026-27/0017",
       "date": "2026-09-05",
-      "customer": "Dhruv",
-      "company": "NMCEE INTERNATIONAL PVT. LTD.",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0017",
-        "quotation_date": "2026-09-05",
-        "valid_till": "",
-        "customer_name": "Dhruv",
-        "company_name": "NMCEE INTERNATIONAL PVT. LTD.",
-        "phone": "9910922355",
-        "email": "",
-        "address": "",
-        "gstin": "",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": "",
-        "quotation_module": "Spare Parts Quotation",
-        "sales_layout": "quotation",
-        "pdf_title": "Spare Parts Quotation",
-        "terms_override": ""
-      },
+      "type": "quotation",
       "items": [
         {
           "id": "4c46fdb7-0db0-4358-97ae-d62d801d43b5",
-          "productName": "Mother board card ",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 4900,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "Mother board card "
         },
         {
           "id": "8d5345f8-9822-4b66-a2ef-5d00565b1a52",
-          "productName": "Labour charge ",
-          "description": "",
-          "quantity": 1,
+          "gst": 0,
           "price": 1000,
-          "gst": 0
+          "quantity": 1,
+          "description": "",
+          "productName": "Labour charge "
         }
       ],
-      "totals": {
-        "taxable": 5900,
-        "gst": 882,
-        "grand": 6782,
-        "roundOff": 0,
-        "final": 6782,
-        "words": "Six Thousand Seven Hundred Eighty Two rupees only"
-      },
+      "number": "BSM/QTN/2026-27/0017",
       "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
+      "totals": {
+        "gst": 882,
+        "final": 6782,
+        "grand": 6782,
+        "words": "Six Thousand Seven Hundred Eighty Two rupees only",
+        "taxable": 5900,
+        "roundOff": 0
+      },
+      "company": "NMCEE INTERNATIONAL PVT. LTD.",
+      "customer": "Dhruv",
       "createdAt": "2026-09-05T09:01:18.714Z",
+      "createdBy": "Ainesh Sikdar",
       "updatedAt": "2026-09-05T09:01:18.714Z",
+      "headerData": {
+        "email": "",
+        "gstin": "",
+        "notes": "",
+        "phone": "9910922355",
+        "address": "",
+        "pdf_title": "Spare Parts Quotation",
+        "valid_till": "",
+        "company_name": "NMCEE INTERNATIONAL PVT. LTD.",
+        "sales_layout": "quotation",
+        "customer_name": "Dhruv",
+        "quotation_date": "2026-09-05",
+        "terms_override": "",
+        "quotation_module": "Spare Parts Quotation",
+        "quotation_number": "BSM/QTN/2026-27/0017",
+        "salesperson_name": "Ainesh Sikdar"
+      },
       "pdfGeneratedAt": "2026-09-05T09:01:24.297Z"
     },
     {
@@ -1591,5 +1591,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-05T09:44:22.733Z"
+  "updatedAt": "2026-09-05T09:45:06.776Z"
 }
