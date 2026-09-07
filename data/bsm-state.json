@@ -475,28 +475,36 @@
         },
         {
           "id": "4b1a8373-d6f0-4d66-8934-abc0ab748122",
-          "gst": 0,
+          "gst": 18,
           "price": 1000,
           "quantity": 1,
           "description": "",
           "productName": "Courier Charge "
+        },
+        {
+          "id": "098cfc66-d5f3-4055-bd3f-b0058e8be88a",
+          "productName": "Stopper killi part",
+          "description": "",
+          "quantity": 2,
+          "price": 650,
+          "gst": 5
         }
       ],
       "number": "BSM/QTN/2026-27/0020",
       "status": "Generated",
       "totals": {
-        "gst": 4968,
-        "final": 33568,
-        "grand": 33568,
-        "words": "Thirty Three Thousand Five Hundred Sixty Eight rupees only",
-        "taxable": 28600,
-        "roundOff": 0
+        "taxable": 29900,
+        "gst": 5213,
+        "grand": 35113,
+        "roundOff": 0,
+        "final": 35113,
+        "words": "Thirty Five Thousand One Hundred Thirteen rupees only"
       },
       "company": "Fasshion Exports",
       "customer": "Customer",
       "createdAt": "2026-09-07T12:43:33.748Z",
       "createdBy": "Ainesh Sikdar",
-      "updatedAt": "2026-09-07T12:43:33.748Z",
+      "updatedAt": "2026-09-07T13:15:21.330Z",
       "headerData": {
         "email": "",
         "gstin": "03AACFF9103B1Z7",
@@ -1767,5 +1775,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-07T13:13:42.135Z"
+  "updatedAt": "2026-09-07T13:15:36.533Z"
 }
