@@ -448,10 +448,74 @@
       "resetYearly": true,
       "nextEstimate": 8,
       "financialYear": "2026-27",
-      "nextQuotation": 20
+      "nextQuotation": 21
     }
   },
   "documents": [
+    {
+      "id": "9c2aaa06-6a5b-4daf-a7d1-d149d9b2702e",
+      "type": "sales_quotation",
+      "number": "BSM/QTN/2026-27/0020",
+      "date": "2026-09-07",
+      "customer": "Customer",
+      "company": "Fasshion Exports",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0020",
+        "quotation_date": "2026-09-07",
+        "valid_till": "",
+        "customer_name": "",
+        "company_name": "Fasshion Exports",
+        "phone": " 98144 23111",
+        "email": "",
+        "address": "Jalandhar, Punjab, India",
+        "gstin": "03AACFF9103B1Z7",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": "",
+        "quotation_module": "Sales Quotation",
+        "sales_layout": "quotation",
+        "pdf_title": "Sales Quotation",
+        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed."
+      },
+      "items": [
+        {
+          "id": "7a6b93f6-2499-4cc3-82d8-135ce8f4070d",
+          "productName": "Rubber gutka ",
+          "description": "",
+          "quantity": 4,
+          "price": 650,
+          "gst": 18
+        },
+        {
+          "id": "d287d963-7840-4e96-971e-863fb2f706ae",
+          "productName": "Sillicone sheet 16*24",
+          "description": "",
+          "quantity": 5,
+          "price": 5000,
+          "gst": 18
+        },
+        {
+          "id": "4b1a8373-d6f0-4d66-8934-abc0ab748122",
+          "productName": "Courier Charge ",
+          "description": "",
+          "quantity": 1,
+          "price": 1000,
+          "gst": 0
+        }
+      ],
+      "totals": {
+        "taxable": 28600,
+        "gst": 4968,
+        "grand": 33568,
+        "roundOff": 0,
+        "final": 33568,
+        "words": "Thirty Three Thousand Five Hundred Sixty Eight rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-09-07T12:43:33.748Z",
+      "updatedAt": "2026-09-07T12:43:33.748Z",
+      "pdfGeneratedAt": "2026-09-07T12:43:38.919Z"
+    },
     {
       "id": "47574b26-6bbe-4410-908f-11c679dccc91",
       "date": "2026-09-07",
@@ -1703,5 +1767,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-07T12:36:44.598Z"
+  "updatedAt": "2026-09-07T12:43:44.704Z"
 }
