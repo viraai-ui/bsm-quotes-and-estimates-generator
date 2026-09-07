@@ -454,58 +454,58 @@
   "documents": [
     {
       "id": "47574b26-6bbe-4410-908f-11c679dccc91",
-      "type": "sales_quotation",
-      "number": "BSM/QTN/2026-27/0019",
       "date": "2026-09-07",
-      "customer": "somya",
-      "company": "SI-VI FASHION PRIVATE LIMITED",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0019",
-        "quotation_date": "2026-09-07",
-        "valid_till": "",
-        "customer_name": "somya",
-        "company_name": "SI-VI FASHION PRIVATE LIMITED",
-        "phone": "7838783717",
-        "email": "",
-        "address": "PLOT NO. 7, SECTOR 5, STREET E, Reliance Model Economic Township, Jhajjar,, Haryana, 124103, India",
-        "gstin": "06ABJCS3166J1Z1",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": "",
-        "quotation_module": "Sales Quotation",
-        "sales_layout": "quotation",
-        "pdf_title": "Sales Quotation",
-        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed."
-      },
+      "type": "sales_quotation",
       "items": [
         {
           "id": "9af5f495-3771-455f-96e6-6856f8024686",
-          "productName": "6205 bearing ",
-          "description": "",
-          "quantity": 4,
+          "gst": 18,
           "price": 350,
-          "gst": 18
+          "quantity": 4,
+          "description": "",
+          "productName": "6205 bearing "
         },
         {
           "id": "a4b1b6c4-8905-489e-8dbe-d47a0f1f1d9e",
-          "productName": "seal ",
-          "description": "",
-          "quantity": 4,
+          "gst": 18,
           "price": 350,
-          "gst": 18
+          "quantity": 4,
+          "description": "",
+          "productName": "seal "
         }
       ],
-      "totals": {
-        "taxable": 2800,
-        "gst": 504,
-        "grand": 3304,
-        "roundOff": 0,
-        "final": 3304,
-        "words": "Three Thousand Three Hundred Four rupees only"
-      },
+      "number": "BSM/QTN/2026-27/0019",
       "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
+      "totals": {
+        "gst": 504,
+        "final": 3304,
+        "grand": 3304,
+        "words": "Three Thousand Three Hundred Four rupees only",
+        "taxable": 2800,
+        "roundOff": 0
+      },
+      "company": "SI-VI FASHION PRIVATE LIMITED",
+      "customer": "somya",
       "createdAt": "2026-09-07T10:16:09.902Z",
+      "createdBy": "Ainesh Sikdar",
       "updatedAt": "2026-09-07T10:16:09.902Z",
+      "headerData": {
+        "email": "",
+        "gstin": "06ABJCS3166J1Z1",
+        "notes": "",
+        "phone": "7838783717",
+        "address": "PLOT NO. 7, SECTOR 5, STREET E, Reliance Model Economic Township, Jhajjar,, Haryana, 124103, India",
+        "pdf_title": "Sales Quotation",
+        "valid_till": "",
+        "company_name": "SI-VI FASHION PRIVATE LIMITED",
+        "sales_layout": "quotation",
+        "customer_name": "somya",
+        "quotation_date": "2026-09-07",
+        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed.",
+        "quotation_module": "Sales Quotation",
+        "quotation_number": "BSM/QTN/2026-27/0019",
+        "salesperson_name": "Ainesh Sikdar"
+      },
       "pdfGeneratedAt": "2026-09-07T10:16:15.263Z"
     },
     {
@@ -1703,5 +1703,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-07T10:16:20.384Z"
+  "updatedAt": "2026-09-07T11:32:24.449Z"
 }
