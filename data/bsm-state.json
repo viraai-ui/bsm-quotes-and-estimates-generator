@@ -454,58 +454,58 @@
   "documents": [
     {
       "id": "595083c6-6ed0-47a8-8e82-f7323dc817bc",
-      "type": "sales_quotation",
-      "number": "BSM/QTN/2026-27/0018",
       "date": "2026-09-07",
-      "customer": "Customer",
-      "company": "KAGAZ TEG'S AND LABEL'S",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0018",
-        "quotation_date": "2026-09-07",
-        "valid_till": "2026-09-09",
-        "customer_name": "",
-        "company_name": "KAGAZ TEG'S AND LABEL'S",
-        "phone": "961333341",
-        "email": "",
-        "address": "ABHISHEK ESTATE,, 19/F,, OLD HARIPURA CIVIL ROAD,, GIRDHARNAGAR, ASARWA, AHMEDABAD, Ahmedabad, Gujarat, 380004, India",
-        "gstin": "24BFQPS9032E1Z6",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": "",
-        "quotation_module": "Sales Quotation",
-        "sales_layout": "quotation",
-        "pdf_title": "Sales Quotation",
-        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed."
-      },
+      "type": "sales_quotation",
       "items": [
         {
           "id": "2e7b134c-e0e3-4647-8406-7d8ac6f2423e",
-          "productName": "partten sewing plate ",
-          "description": "",
-          "quantity": 5,
+          "gst": 18,
           "price": 550,
-          "gst": 18
+          "quantity": 5,
+          "description": "",
+          "productName": "partten sewing plate "
         },
         {
           "id": "4746ea79-4b5d-4c0a-a38c-0df06fdb0d32",
-          "productName": "courier charge ",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 100,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "courier charge "
         }
       ],
-      "totals": {
-        "taxable": 2850,
-        "gst": 513,
-        "grand": 3363,
-        "roundOff": 0,
-        "final": 3363,
-        "words": "Three Thousand Three Hundred Sixty Three rupees only"
-      },
+      "number": "BSM/QTN/2026-27/0018",
       "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
+      "totals": {
+        "gst": 513,
+        "final": 3363,
+        "grand": 3363,
+        "words": "Three Thousand Three Hundred Sixty Three rupees only",
+        "taxable": 2850,
+        "roundOff": 0
+      },
+      "company": "KAGAZ TEG'S AND LABEL'S",
+      "customer": "Customer",
       "createdAt": "2026-09-07T08:46:16.675Z",
+      "createdBy": "Ainesh Sikdar",
       "updatedAt": "2026-09-07T08:46:16.675Z",
+      "headerData": {
+        "email": "",
+        "gstin": "24BFQPS9032E1Z6",
+        "notes": "",
+        "phone": "961333341",
+        "address": "ABHISHEK ESTATE,, 19/F,, OLD HARIPURA CIVIL ROAD,, GIRDHARNAGAR, ASARWA, AHMEDABAD, Ahmedabad, Gujarat, 380004, India",
+        "pdf_title": "Sales Quotation",
+        "valid_till": "2026-09-09",
+        "company_name": "KAGAZ TEG'S AND LABEL'S",
+        "sales_layout": "quotation",
+        "customer_name": "",
+        "quotation_date": "2026-09-07",
+        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed.",
+        "quotation_module": "Sales Quotation",
+        "quotation_number": "BSM/QTN/2026-27/0018",
+        "salesperson_name": "Ainesh Sikdar"
+      },
       "pdfGeneratedAt": "2026-09-07T08:46:22.036Z"
     },
     {
@@ -1647,5 +1647,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-07T08:46:27.223Z"
+  "updatedAt": "2026-09-07T09:05:52.898Z"
 }
