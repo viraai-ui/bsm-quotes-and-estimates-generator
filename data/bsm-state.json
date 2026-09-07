@@ -448,10 +448,66 @@
       "resetYearly": true,
       "nextEstimate": 8,
       "financialYear": "2026-27",
-      "nextQuotation": 19
+      "nextQuotation": 20
     }
   },
   "documents": [
+    {
+      "id": "47574b26-6bbe-4410-908f-11c679dccc91",
+      "type": "sales_quotation",
+      "number": "BSM/QTN/2026-27/0019",
+      "date": "2026-09-07",
+      "customer": "somya",
+      "company": "SI-VI FASHION PRIVATE LIMITED",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0019",
+        "quotation_date": "2026-09-07",
+        "valid_till": "",
+        "customer_name": "somya",
+        "company_name": "SI-VI FASHION PRIVATE LIMITED",
+        "phone": "7838783717",
+        "email": "",
+        "address": "PLOT NO. 7, SECTOR 5, STREET E, Reliance Model Economic Township, Jhajjar,, Haryana, 124103, India",
+        "gstin": "06ABJCS3166J1Z1",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": "",
+        "quotation_module": "Sales Quotation",
+        "sales_layout": "quotation",
+        "pdf_title": "Sales Quotation",
+        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed."
+      },
+      "items": [
+        {
+          "id": "9af5f495-3771-455f-96e6-6856f8024686",
+          "productName": "6205 bearing ",
+          "description": "",
+          "quantity": 4,
+          "price": 350,
+          "gst": 18
+        },
+        {
+          "id": "a4b1b6c4-8905-489e-8dbe-d47a0f1f1d9e",
+          "productName": "seal ",
+          "description": "",
+          "quantity": 4,
+          "price": 350,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 2800,
+        "gst": 504,
+        "grand": 3304,
+        "roundOff": 0,
+        "final": 3304,
+        "words": "Three Thousand Three Hundred Four rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-09-07T10:16:09.902Z",
+      "updatedAt": "2026-09-07T10:16:09.902Z",
+      "pdfGeneratedAt": "2026-09-07T10:16:15.263Z"
+    },
     {
       "id": "595083c6-6ed0-47a8-8e82-f7323dc817bc",
       "date": "2026-09-07",
@@ -1647,5 +1703,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-07T10:15:04.558Z"
+  "updatedAt": "2026-09-07T10:16:20.384Z"
 }
