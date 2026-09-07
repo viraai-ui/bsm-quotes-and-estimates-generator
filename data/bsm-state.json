@@ -448,10 +448,66 @@
       "resetYearly": true,
       "nextEstimate": 8,
       "financialYear": "2026-27",
-      "nextQuotation": 18
+      "nextQuotation": 19
     }
   },
   "documents": [
+    {
+      "id": "595083c6-6ed0-47a8-8e82-f7323dc817bc",
+      "type": "sales_quotation",
+      "number": "BSM/QTN/2026-27/0018",
+      "date": "2026-09-07",
+      "customer": "Customer",
+      "company": "KAGAZ TEG'S AND LABEL'S",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0018",
+        "quotation_date": "2026-09-07",
+        "valid_till": "2026-09-09",
+        "customer_name": "",
+        "company_name": "KAGAZ TEG'S AND LABEL'S",
+        "phone": "961333341",
+        "email": "",
+        "address": "ABHISHEK ESTATE,, 19/F,, OLD HARIPURA CIVIL ROAD,, GIRDHARNAGAR, ASARWA, AHMEDABAD, Ahmedabad, Gujarat, 380004, India",
+        "gstin": "24BFQPS9032E1Z6",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": "",
+        "quotation_module": "Sales Quotation",
+        "sales_layout": "quotation",
+        "pdf_title": "Sales Quotation",
+        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed."
+      },
+      "items": [
+        {
+          "id": "2e7b134c-e0e3-4647-8406-7d8ac6f2423e",
+          "productName": "partten sewing plate ",
+          "description": "",
+          "quantity": 5,
+          "price": 550,
+          "gst": 18
+        },
+        {
+          "id": "4746ea79-4b5d-4c0a-a38c-0df06fdb0d32",
+          "productName": "courier charge ",
+          "description": "",
+          "quantity": 1,
+          "price": 100,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 2850,
+        "gst": 513,
+        "grand": 3363,
+        "roundOff": 0,
+        "final": 3363,
+        "words": "Three Thousand Three Hundred Sixty Three rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-09-07T08:46:16.675Z",
+      "updatedAt": "2026-09-07T08:46:16.675Z",
+      "pdfGeneratedAt": "2026-09-07T08:46:22.036Z"
+    },
     {
       "id": "722c73dd-84ff-4645-8684-eff611773a31",
       "date": "2026-09-05",
@@ -1591,5 +1647,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-07T08:44:37.164Z"
+  "updatedAt": "2026-09-07T08:46:27.223Z"
 }
