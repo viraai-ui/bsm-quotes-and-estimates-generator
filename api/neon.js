@@ -4,6 +4,9 @@ const { Pool } = pg
 
 let pool
 
+export const STATE_BACKUP_LIMIT = 3
+export const AUDIT_LOG_LIMIT = 500
+
 export function hasNeon() {
   return Boolean(process.env.NEON_DATABASE_URL || process.env.DATABASE_URL)
 }
@@ -108,6 +111,31 @@ function safeDoc(doc) {
   }
 }
 
+export function documentAuditMetadata(doc, source) {
+  if (!doc) return null
+  return {
+    number: String(doc.number || ''),
+    type: doc.type === 'estimate' ? 'estimate' : doc.type === 'sales_quotation' ? 'sales_quotation' : 'quotation',
+    status: doc.status || null,
+    source,
+  }
+}
+
+export async function writeDocumentAudit(client, action, entityId, oldDoc, newDoc, source) {
+  await client.query(
+    `insert into audit_log(action, entity_type, entity_id, old_value, new_value) values($1, 'document', $2, $3::jsonb, $4::jsonb)`,
+    [action, entityId, oldDoc ? JSON.stringify(documentAuditMetadata(oldDoc, source)) : null, newDoc ? JSON.stringify(documentAuditMetadata(newDoc, source)) : null],
+  )
+}
+
+export async function pruneStateBackups(client) {
+  await client.query(`delete from state_backups where id not in (select id from state_backups order by created_at desc, id desc limit $1)`, [STATE_BACKUP_LIMIT])
+}
+
+export async function pruneAuditLog(client) {
+  await client.query(`delete from audit_log where id not in (select id from audit_log order by created_at desc, id desc limit $1)`, [AUDIT_LOG_LIMIT])
+}
+
 export async function writeNeonState(state, source = 'api') {
   const db = getPool()
   const client = await db.connect()
@@ -116,6 +144,7 @@ export async function writeNeonState(state, source = 'api') {
     await ensureSchema(client)
     const previous = await readNeonStateFromClient(client)
     await client.query(`insert into state_backups(state, source) values($1::jsonb, $2)`, [JSON.stringify(previous), source])
+    await pruneStateBackups(client)
     await client.query(`
       insert into app_settings(id, settings, updated_at)
       values('main', $1::jsonb, now())
@@ -141,17 +170,18 @@ export async function writeNeonState(state, source = 'api') {
       for (const [index, item] of (raw.items || []).entries()) {
         await client.query(`insert into document_items(document_id, item_id, position, item) values($1,$2,$3,$4::jsonb)`, [doc.id, String(item.id || `${doc.id}-${index}`), index, JSON.stringify(item)])
       }
-      await client.query(`insert into audit_log(action, entity_type, entity_id, old_value, new_value) values($1, 'document', $2, $3::jsonb, $4::jsonb)`, [oldDoc ? 'upsert' : 'create', doc.id, oldDoc ? JSON.stringify(oldDoc) : null, JSON.stringify(raw)])
+      await writeDocumentAudit(client, oldDoc ? 'upsert' : 'create', doc.id, oldDoc, raw, source)
     }
 
     for (const oldDoc of previous.documents) {
       if (!incomingIds.has(oldDoc.id)) {
         await client.query(`update documents set deleted_at=coalesce(deleted_at, now()), updated_at=now() where id=$1`, [oldDoc.id])
-        await client.query(`insert into audit_log(action, entity_type, entity_id, old_value) values('soft_delete', 'document', $1, $2::jsonb)`, [oldDoc.id, JSON.stringify(oldDoc)])
+        await writeDocumentAudit(client, 'soft_delete', oldDoc.id, oldDoc, null, source)
       }
     }
 
     await client.query(`insert into audit_log(action, entity_type, new_value) values('state_write', 'state', $1::jsonb)`, [JSON.stringify({ documents: state.documents?.length || 0, source })])
+    await pruneAuditLog(client)
     await client.query('commit')
     return { ok: true }
   } catch (error) {
