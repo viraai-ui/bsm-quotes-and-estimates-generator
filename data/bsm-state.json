@@ -467,7 +467,7 @@
         },
         {
           "id": "26e81abe-0922-424f-a8f7-34ffa31d89f5",
-          "gst": 0,
+          "gst": 18,
           "price": 750,
           "quantity": 1,
           "description": "",
@@ -485,18 +485,18 @@
       "number": "BSM/QTN/2026-27/0022",
       "status": "Generated",
       "totals": {
-        "gst": 486,
-        "final": 3936,
-        "grand": 3936,
-        "words": "Three Thousand Nine Hundred Thirty Six rupees only",
         "taxable": 3450,
-        "roundOff": 0
+        "gst": 621,
+        "grand": 4071,
+        "roundOff": 0,
+        "final": 4071,
+        "words": "Four Thousand Seventy One rupees only"
       },
       "company": "Sri Sai Maruthi Enterprises",
       "customer": "sai",
       "createdAt": "2026-09-08T09:37:56.125Z",
       "createdBy": "Ainesh Sikdar",
-      "updatedAt": "2026-09-08T09:55:44.579Z",
+      "updatedAt": "2026-09-08T10:31:24.556Z",
       "headerData": {
         "email": "",
         "gstin": "33EIXPD2639K1ZT",
@@ -1839,5 +1839,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-08T10:31:20.374Z"
+  "updatedAt": "2026-09-08T10:31:33.527Z"
 }
