@@ -448,10 +448,74 @@
       "resetYearly": true,
       "nextEstimate": 8,
       "financialYear": "2026-27",
-      "nextQuotation": 22
+      "nextQuotation": 23
     }
   },
   "documents": [
+    {
+      "id": "edd58031-0535-4121-aa0b-a7f1e365f013",
+      "type": "quotation",
+      "number": "BSM/QTN/2026-27/0022",
+      "date": "2026-09-08",
+      "customer": "sai",
+      "company": "Sri Sai Maruthi Enterprises",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0022",
+        "quotation_date": "2026-09-08",
+        "valid_till": "",
+        "customer_name": "sai",
+        "company_name": "Sri Sai Maruthi Enterprises",
+        "phone": "7397467499",
+        "email": "",
+        "address": "No.1/22, Bajani Koil Street,Near-Mgr Temple,Nathamedu, Thirunindravur, Chennai, Tamil Nadu, 602024",
+        "gstin": "33EIXPD2639K1ZT",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": "",
+        "quotation_module": "Spare Parts Quotation",
+        "sales_layout": "quotation",
+        "pdf_title": "Spare Parts Quotation",
+        "terms_override": ""
+      },
+      "items": [
+        {
+          "id": "78711678-1359-4376-854e-2f8ac95722a3",
+          "productName": "Electronic tapecutting rubber roller ",
+          "description": "",
+          "quantity": 1,
+          "price": 3000,
+          "gst": 18
+        },
+        {
+          "id": "26e81abe-0922-424f-a8f7-34ffa31d89f5",
+          "productName": "electronic tapecutting belt",
+          "description": "",
+          "quantity": 1,
+          "price": 750,
+          "gst": 0
+        },
+        {
+          "id": "2b086d68-8ec1-49a1-bbf6-2ac9b5ecfdef",
+          "productName": "courier charge ",
+          "description": "",
+          "quantity": 1,
+          "price": 200,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 3950,
+        "gst": 576,
+        "grand": 4526,
+        "roundOff": 0,
+        "final": 4526,
+        "words": "Four Thousand Five Hundred Twenty Six rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-09-08T09:37:56.125Z",
+      "updatedAt": "2026-09-08T09:37:56.125Z",
+      "pdfGeneratedAt": "2026-09-08T09:38:01.321Z"
+    },
     {
       "id": "9c2aaa06-6a5b-4daf-a7d1-d149d9b2702e",
       "date": "2026-09-07",
@@ -1775,5 +1839,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-08T09:36:01.904Z"
+  "updatedAt": "2026-09-08T09:38:06.340Z"
 }
