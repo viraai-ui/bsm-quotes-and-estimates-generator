@@ -482,7 +482,7 @@
           "productName": "Electronic tapecutting rubber roller ",
           "description": "",
           "quantity": 1,
-          "price": 3000,
+          "price": 2500,
           "gst": 18
         },
         {
@@ -503,18 +503,18 @@
         }
       ],
       "totals": {
-        "taxable": 3950,
-        "gst": 576,
-        "grand": 4526,
+        "taxable": 3450,
+        "gst": 486,
+        "grand": 3936,
         "roundOff": 0,
-        "final": 4526,
-        "words": "Four Thousand Five Hundred Twenty Six rupees only"
+        "final": 3936,
+        "words": "Three Thousand Nine Hundred Thirty Six rupees only"
       },
       "status": "Generated",
       "createdBy": "Ainesh Sikdar",
       "createdAt": "2026-09-08T09:37:56.125Z",
-      "updatedAt": "2026-09-08T09:37:56.125Z",
-      "pdfGeneratedAt": "2026-09-08T09:38:01.321Z"
+      "updatedAt": "2026-09-08T09:55:44.579Z",
+      "pdfGeneratedAt": "2026-09-08T09:55:49.755Z"
     },
     {
       "id": "9c2aaa06-6a5b-4daf-a7d1-d149d9b2702e",
@@ -1839,5 +1839,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-08T09:38:06.340Z"
+  "updatedAt": "2026-09-08T09:55:54.061Z"
 }
