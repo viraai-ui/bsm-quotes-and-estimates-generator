@@ -483,22 +483,22 @@
         },
         {
           "id": "098cfc66-d5f3-4055-bd3f-b0058e8be88a",
-          "gst": 5,
-          "price": 650,
-          "quantity": 2,
+          "productName": "Stopper killi part",
           "description": "",
-          "productName": "Stopper killi part"
+          "quantity": 2,
+          "price": 650,
+          "gst": 5
         }
       ],
       "number": "BSM/QTN/2026-27/0020",
       "status": "Generated",
       "totals": {
-        "gst": 5213,
-        "final": 35113,
-        "grand": 35113,
-        "words": "Thirty Five Thousand One Hundred Thirteen rupees only",
         "taxable": 29900,
-        "roundOff": 0
+        "gst": 5213,
+        "grand": 35113,
+        "roundOff": 0,
+        "final": 35113,
+        "words": "Thirty Five Thousand One Hundred Thirteen rupees only"
       },
       "company": "Fasshion Exports",
       "customer": "Customer",
@@ -1775,5 +1775,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-08T05:19:01.487Z"
+  "updatedAt": "2026-09-08T05:19:29.681Z"
 }
