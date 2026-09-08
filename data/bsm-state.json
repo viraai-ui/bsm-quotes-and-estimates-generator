@@ -454,66 +454,66 @@
   "documents": [
     {
       "id": "edd58031-0535-4121-aa0b-a7f1e365f013",
-      "type": "quotation",
-      "number": "BSM/QTN/2026-27/0022",
       "date": "2026-09-08",
-      "customer": "sai",
-      "company": "Sri Sai Maruthi Enterprises",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0022",
-        "quotation_date": "2026-09-08",
-        "valid_till": "",
-        "customer_name": "sai",
-        "company_name": "Sri Sai Maruthi Enterprises",
-        "phone": "7397467499",
-        "email": "",
-        "address": "No.1/22, Bajani Koil Street,Near-Mgr Temple,Nathamedu, Thirunindravur, Chennai, Tamil Nadu, 602024",
-        "gstin": "33EIXPD2639K1ZT",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": "",
-        "quotation_module": "Spare Parts Quotation",
-        "sales_layout": "quotation",
-        "pdf_title": "Spare Parts Quotation",
-        "terms_override": ""
-      },
+      "type": "quotation",
       "items": [
         {
           "id": "78711678-1359-4376-854e-2f8ac95722a3",
-          "productName": "Electronic tapecutting rubber roller ",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 2500,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "Electronic tapecutting rubber roller "
         },
         {
           "id": "26e81abe-0922-424f-a8f7-34ffa31d89f5",
-          "productName": "electronic tapecutting belt",
-          "description": "",
-          "quantity": 1,
+          "gst": 0,
           "price": 750,
-          "gst": 0
+          "quantity": 1,
+          "description": "",
+          "productName": "electronic tapecutting belt"
         },
         {
           "id": "2b086d68-8ec1-49a1-bbf6-2ac9b5ecfdef",
-          "productName": "courier charge ",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 200,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "courier charge "
         }
       ],
-      "totals": {
-        "taxable": 3450,
-        "gst": 486,
-        "grand": 3936,
-        "roundOff": 0,
-        "final": 3936,
-        "words": "Three Thousand Nine Hundred Thirty Six rupees only"
-      },
+      "number": "BSM/QTN/2026-27/0022",
       "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
+      "totals": {
+        "gst": 486,
+        "final": 3936,
+        "grand": 3936,
+        "words": "Three Thousand Nine Hundred Thirty Six rupees only",
+        "taxable": 3450,
+        "roundOff": 0
+      },
+      "company": "Sri Sai Maruthi Enterprises",
+      "customer": "sai",
       "createdAt": "2026-09-08T09:37:56.125Z",
+      "createdBy": "Ainesh Sikdar",
       "updatedAt": "2026-09-08T09:55:44.579Z",
+      "headerData": {
+        "email": "",
+        "gstin": "33EIXPD2639K1ZT",
+        "notes": "",
+        "phone": "7397467499",
+        "address": "No.1/22, Bajani Koil Street,Near-Mgr Temple,Nathamedu, Thirunindravur, Chennai, Tamil Nadu, 602024",
+        "pdf_title": "Spare Parts Quotation",
+        "valid_till": "",
+        "company_name": "Sri Sai Maruthi Enterprises",
+        "sales_layout": "quotation",
+        "customer_name": "sai",
+        "quotation_date": "2026-09-08",
+        "terms_override": "",
+        "quotation_module": "Spare Parts Quotation",
+        "quotation_number": "BSM/QTN/2026-27/0022",
+        "salesperson_name": "Ainesh Sikdar"
+      },
       "pdfGeneratedAt": "2026-09-08T09:55:49.755Z"
     },
     {
@@ -1839,5 +1839,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-08T09:55:54.061Z"
+  "updatedAt": "2026-09-08T10:31:20.374Z"
 }
