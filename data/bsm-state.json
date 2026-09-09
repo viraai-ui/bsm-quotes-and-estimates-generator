@@ -446,12 +446,96 @@
       "estimate": "BSM/EST/{{financial_year}}/{{number}}",
       "quotation": "BSM/QTN/{{financial_year}}/{{number}}",
       "resetYearly": true,
-      "nextEstimate": 9,
+      "nextEstimate": 10,
       "financialYear": "2026-27",
       "nextQuotation": 23
     }
   },
   "documents": [
+    {
+      "id": "dfde55b4-097b-4ece-8141-af99d8008dd8",
+      "type": "estimate",
+      "number": "BSM/EST/2026-27/0009",
+      "date": "2026-09-09",
+      "customer": "Bablu ",
+      "company": "Eastern Footwear",
+      "location": "",
+      "headerData": {
+        "estimate_number": "BSM/EST/2026-27/0009",
+        "estimate_date": "2026-09-09",
+        "customer_name": "Bablu ",
+        "company_name": "Eastern Footwear",
+        "phone": "98755 41181",
+        "email": "",
+        "address": "",
+        "location": "",
+        "duration_days": "",
+        "gstin": ""
+      },
+      "items": [
+        {
+          "id": "e76d5512-7807-4a05-b056-6aff04a35441",
+          "productName": "Technician Wages",
+          "description": "shamshd ji wages",
+          "quantity": 10,
+          "price": 4500,
+          "gst": 18
+        },
+        {
+          "id": "a23d03f2-e41f-4a5e-9d66-857478f9ea0b",
+          "productName": "Food Expenses",
+          "description": "For 3 person ",
+          "quantity": 3,
+          "price": 1500,
+          "gst": 18
+        },
+        {
+          "id": "bb21d91f-1f42-4339-8447-9cf56e3ee9db",
+          "productName": "Hotel Expenses",
+          "description": "party side",
+          "quantity": 0,
+          "price": 1500,
+          "gst": 18
+        },
+        {
+          "id": "75a31c6e-ee5b-4ca6-b64a-91511dc17f0d",
+          "productName": "Transportation",
+          "description": "for 3 person Up And Down @4500",
+          "quantity": 3,
+          "price": 9000,
+          "gst": 18
+        },
+        {
+          "id": "3184c5e6-ee65-4e3a-aa57-a69ed5454a76",
+          "productName": "Local Transportation",
+          "description": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ",
+          "quantity": 2,
+          "price": 2000,
+          "gst": 18
+        },
+        {
+          "id": "c4753047-add3-49a3-a001-8f615cce2170",
+          "productName": "Wages for conveyor ",
+          "description": "Conveyor fittng wager for 2 person per person  @2500",
+          "quantity": 7,
+          "price": 5000,
+          "gst": 0
+        }
+      ],
+      "totals": {
+        "taxable": 115500,
+        "gst": 14490,
+        "grand": 129990,
+        "roundOff": 0,
+        "final": 129990,
+        "words": "One Lakh Twenty Nine Thousand Nine Hundred Ninety rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Admin",
+      "createdAt": "2026-09-09T12:46:59.263Z",
+      "updatedAt": "2026-09-09T12:46:59.263Z",
+      "pdfGeneratedAt": "2026-09-09T12:47:04.847Z"
+    },
     {
       "id": "ca0b1048-60c1-458a-83e0-8de3e6469e72",
       "date": "2026-09-09",
@@ -1915,5 +1999,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-09T12:21:10.864Z"
+  "updatedAt": "2026-09-09T12:47:10.512Z"
 }
