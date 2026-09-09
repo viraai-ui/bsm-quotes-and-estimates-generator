@@ -454,78 +454,78 @@
   "documents": [
     {
       "id": "ca0b1048-60c1-458a-83e0-8de3e6469e72",
-      "type": "estimate",
-      "number": "BSM/EST/2026-27/0008",
       "date": "2026-09-09",
-      "customer": "Customer",
-      "company": "Hi-Alt Expert India",
-      "location": "Banglore",
-      "headerData": {
-        "estimate_number": "BSM/EST/2026-27/0008",
-        "estimate_date": "2026-09-09",
-        "customer_name": "",
-        "company_name": "Hi-Alt Expert India",
-        "phone": "63623 76229",
-        "email": "",
-        "address": "G F Part-B, 1st-3rd Floor, No.59, 8th Main, J.C. Industrial Estate, Yelachenahalli, Kanakapura Main Road, Bengaluru Urban, Karnataka, 560062",
-        "location": "Banglore",
-        "duration_days": "5 day ",
-        "gstin": "29AGLPJ3856E1Z5"
-      },
+      "type": "estimate",
       "items": [
         {
           "id": "891deaf7-3cba-4966-8872-ee57760a8392",
-          "productName": "Technician Wages",
-          "description": "",
-          "quantity": 5,
+          "gst": 0,
           "price": 4500,
-          "gst": 0
+          "quantity": 5,
+          "description": "",
+          "productName": "Technician Wages"
         },
         {
           "id": "21cb0e43-b65a-4dcc-a6bc-fe3a12090adf",
-          "productName": "Food Expenses",
-          "description": "",
-          "quantity": 5,
+          "gst": 0,
           "price": 500,
-          "gst": 0
+          "quantity": 5,
+          "description": "",
+          "productName": "Food Expenses"
         },
         {
           "id": "ae6f745b-38c5-4d56-9646-6e61bc5feaa0",
-          "productName": "Hotel Expenses",
-          "description": "party side",
-          "quantity": 0,
+          "gst": 0,
           "price": 1500,
-          "gst": 0
+          "quantity": 0,
+          "description": "party side",
+          "productName": "Hotel Expenses"
         },
         {
           "id": "253c8126-f675-44b5-836c-0b62479b4cd1",
-          "productName": "Transportation",
-          "description": "party side",
-          "quantity": 0,
+          "gst": 0,
           "price": 0,
-          "gst": 0
+          "quantity": 0,
+          "description": "party side",
+          "productName": "Transportation"
         },
         {
           "id": "33e0ba7f-c1bb-46ad-b50a-8ae87544f8e1",
-          "productName": "Local Transportation",
-          "description": "",
-          "quantity": 1,
+          "gst": 0,
           "price": 1000,
-          "gst": 0
+          "quantity": 1,
+          "description": "",
+          "productName": "Local Transportation"
         }
       ],
-      "totals": {
-        "taxable": 26000,
-        "gst": 0,
-        "grand": 26000,
-        "roundOff": 0,
-        "final": 26000,
-        "words": "Twenty Six Thousand rupees only"
-      },
+      "number": "BSM/EST/2026-27/0008",
       "status": "Generated",
-      "createdBy": "Admin",
+      "totals": {
+        "gst": 0,
+        "final": 26000,
+        "grand": 26000,
+        "words": "Twenty Six Thousand rupees only",
+        "taxable": 26000,
+        "roundOff": 0
+      },
+      "company": "Hi-Alt Expert India",
+      "customer": "Customer",
+      "location": "Banglore",
       "createdAt": "2026-09-09T11:24:51.455Z",
+      "createdBy": "Admin",
       "updatedAt": "2026-09-09T11:24:51.455Z",
+      "headerData": {
+        "email": "",
+        "gstin": "29AGLPJ3856E1Z5",
+        "phone": "63623 76229",
+        "address": "G F Part-B, 1st-3rd Floor, No.59, 8th Main, J.C. Industrial Estate, Yelachenahalli, Kanakapura Main Road, Bengaluru Urban, Karnataka, 560062",
+        "location": "Banglore",
+        "company_name": "Hi-Alt Expert India",
+        "customer_name": "",
+        "duration_days": "5 day ",
+        "estimate_date": "2026-09-09",
+        "estimate_number": "BSM/EST/2026-27/0008"
+      },
       "pdfGeneratedAt": "2026-09-09T11:24:56.861Z"
     },
     {
@@ -1915,5 +1915,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-09T11:25:02.918Z"
+  "updatedAt": "2026-09-09T12:21:10.864Z"
 }
