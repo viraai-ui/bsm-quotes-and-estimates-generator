@@ -485,12 +485,12 @@
       "number": "BSM/QTN/2026-27/0022",
       "status": "Generated",
       "totals": {
-        "taxable": 3450,
         "gst": 621,
-        "grand": 4071,
-        "roundOff": 0,
         "final": 4071,
-        "words": "Four Thousand Seventy One rupees only"
+        "grand": 4071,
+        "words": "Four Thousand Seventy One rupees only",
+        "taxable": 3450,
+        "roundOff": 0
       },
       "company": "Sri Sai Maruthi Enterprises",
       "customer": "sai",
@@ -1839,5 +1839,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-08T10:31:33.527Z"
+  "updatedAt": "2026-09-09T11:21:45.737Z"
 }
