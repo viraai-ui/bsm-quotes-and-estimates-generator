@@ -446,12 +446,88 @@
       "estimate": "BSM/EST/{{financial_year}}/{{number}}",
       "quotation": "BSM/QTN/{{financial_year}}/{{number}}",
       "resetYearly": true,
-      "nextEstimate": 8,
+      "nextEstimate": 9,
       "financialYear": "2026-27",
       "nextQuotation": 23
     }
   },
   "documents": [
+    {
+      "id": "ca0b1048-60c1-458a-83e0-8de3e6469e72",
+      "type": "estimate",
+      "number": "BSM/EST/2026-27/0008",
+      "date": "2026-09-09",
+      "customer": "Customer",
+      "company": "Hi-Alt Expert India",
+      "location": "Banglore",
+      "headerData": {
+        "estimate_number": "BSM/EST/2026-27/0008",
+        "estimate_date": "2026-09-09",
+        "customer_name": "",
+        "company_name": "Hi-Alt Expert India",
+        "phone": "63623 76229",
+        "email": "",
+        "address": "G F Part-B, 1st-3rd Floor, No.59, 8th Main, J.C. Industrial Estate, Yelachenahalli, Kanakapura Main Road, Bengaluru Urban, Karnataka, 560062",
+        "location": "Banglore",
+        "duration_days": "5 day ",
+        "gstin": "29AGLPJ3856E1Z5"
+      },
+      "items": [
+        {
+          "id": "891deaf7-3cba-4966-8872-ee57760a8392",
+          "productName": "Technician Wages",
+          "description": "",
+          "quantity": 5,
+          "price": 4500,
+          "gst": 0
+        },
+        {
+          "id": "21cb0e43-b65a-4dcc-a6bc-fe3a12090adf",
+          "productName": "Food Expenses",
+          "description": "",
+          "quantity": 5,
+          "price": 500,
+          "gst": 0
+        },
+        {
+          "id": "ae6f745b-38c5-4d56-9646-6e61bc5feaa0",
+          "productName": "Hotel Expenses",
+          "description": "party side",
+          "quantity": 0,
+          "price": 1500,
+          "gst": 0
+        },
+        {
+          "id": "253c8126-f675-44b5-836c-0b62479b4cd1",
+          "productName": "Transportation",
+          "description": "party side",
+          "quantity": 0,
+          "price": 0,
+          "gst": 0
+        },
+        {
+          "id": "33e0ba7f-c1bb-46ad-b50a-8ae87544f8e1",
+          "productName": "Local Transportation",
+          "description": "",
+          "quantity": 1,
+          "price": 1000,
+          "gst": 0
+        }
+      ],
+      "totals": {
+        "taxable": 26000,
+        "gst": 0,
+        "grand": 26000,
+        "roundOff": 0,
+        "final": 26000,
+        "words": "Twenty Six Thousand rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Admin",
+      "createdAt": "2026-09-09T11:24:51.455Z",
+      "updatedAt": "2026-09-09T11:24:51.455Z",
+      "pdfGeneratedAt": "2026-09-09T11:24:56.861Z"
+    },
     {
       "id": "edd58031-0535-4121-aa0b-a7f1e365f013",
       "date": "2026-09-08",
@@ -1839,5 +1915,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-09T11:21:45.737Z"
+  "updatedAt": "2026-09-09T11:25:02.918Z"
 }
