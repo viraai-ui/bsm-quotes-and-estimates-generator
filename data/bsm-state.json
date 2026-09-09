@@ -446,12 +446,87 @@
       "estimate": "BSM/EST/{{financial_year}}/{{number}}",
       "quotation": "BSM/QTN/{{financial_year}}/{{number}}",
       "resetYearly": true,
-      "nextEstimate": 10,
+      "nextEstimate": 11,
       "financialYear": "2026-27",
       "nextQuotation": 23
     }
   },
   "documents": [
+    {
+      "id": "1c5f63e9-e94c-417d-82b2-92bcb3c056b4",
+      "type": "estimate",
+      "number": "BSM/EST/2026-27/0010",
+      "date": "2026-09-09",
+      "customer": "Customer",
+      "company": "",
+      "location": "",
+      "headerData": {
+        "estimate_number": "BSM/EST/2026-27/0010",
+        "estimate_date": "2026-09-09",
+        "customer_name": "",
+        "company_name": "",
+        "phone": "",
+        "email": "",
+        "address": "",
+        "location": "",
+        "duration_days": ""
+      },
+      "items": [
+        {
+          "id": "5508cb00-4086-4c37-93f6-9775cea1c06e",
+          "productName": "Technician Wages",
+          "description": "",
+          "quantity": 1,
+          "price": 0,
+          "gst": 0
+        },
+        {
+          "id": "c2c8be36-cc64-47d5-855c-c67bfaf3ca8c",
+          "productName": "Food Expenses",
+          "description": "",
+          "quantity": 1,
+          "price": 500,
+          "gst": 0
+        },
+        {
+          "id": "5886ec8a-ec62-477e-9e48-4dee4b357f3c",
+          "productName": "Hotel Expenses",
+          "description": "",
+          "quantity": 1,
+          "price": 1500,
+          "gst": 0
+        },
+        {
+          "id": "b72d7ea2-f755-4105-a786-fcf494b4c16f",
+          "productName": "Transportation",
+          "description": "",
+          "quantity": 1,
+          "price": 0,
+          "gst": 0
+        },
+        {
+          "id": "818273bf-1357-406f-a411-3f872abee1db",
+          "productName": "Local Transportation",
+          "description": "",
+          "quantity": 1,
+          "price": 0,
+          "gst": 0
+        }
+      ],
+      "totals": {
+        "taxable": 2000,
+        "gst": 0,
+        "grand": 2000,
+        "roundOff": 0,
+        "final": 2000,
+        "words": "Two Thousand rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Admin",
+      "createdAt": "2026-09-09T12:48:09.073Z",
+      "updatedAt": "2026-09-09T12:48:09.073Z",
+      "pdfGeneratedAt": "2026-09-09T12:48:14.502Z"
+    },
     {
       "id": "dfde55b4-097b-4ece-8141-af99d8008dd8",
       "type": "estimate",
@@ -1999,5 +2074,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-09T12:47:10.512Z"
+  "updatedAt": "2026-09-09T12:48:20.472Z"
 }
