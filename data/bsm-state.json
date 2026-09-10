@@ -448,10 +448,66 @@
       "resetYearly": true,
       "nextEstimate": 11,
       "financialYear": "2026-27",
-      "nextQuotation": 23
+      "nextQuotation": 24
     }
   },
   "documents": [
+    {
+      "id": "f501c74d-c51c-4356-803e-768a8090bb67",
+      "type": "sales_quotation",
+      "number": "BSM/QTN/2026-27/0023",
+      "date": "2026-09-10",
+      "customer": "Aashima Gupta",
+      "company": "ENSAC World",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0023",
+        "quotation_date": "2026-09-10",
+        "valid_till": "2026-09-17",
+        "customer_name": "Aashima Gupta",
+        "company_name": "ENSAC World",
+        "phone": "+919910474000",
+        "email": "",
+        "address": "PHASE-1, T-1/100, MANGOLPURI INDUSTRIAL AREA, Delhi, 110083, India",
+        "gstin": "07AXBPJ5030D1Z2",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": "",
+        "quotation_module": "Sales Quotation",
+        "sales_layout": "quotation",
+        "pdf_title": "Sales Quotation",
+        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed."
+      },
+      "items": [
+        {
+          "id": "8f165fc0-714b-4295-9bb5-d834dd6fe4cc",
+          "productName": "Edge Coloring Machine (Hand Held)",
+          "description": "",
+          "quantity": 1,
+          "price": 9500,
+          "gst": 18
+        },
+        {
+          "id": "e5e9c671-aff3-4271-bc0d-11e7a4fc1ead",
+          "productName": "Freight Charges",
+          "description": "Carrier Charges (China to India)",
+          "quantity": 1,
+          "price": 2500,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 12000,
+        "gst": 2160,
+        "grand": 14160,
+        "roundOff": 0,
+        "final": 14160,
+        "words": "Fourteen Thousand One Hundred Sixty rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-09-10T06:03:22.492Z",
+      "updatedAt": "2026-09-10T06:03:22.492Z",
+      "pdfGeneratedAt": "2026-09-10T06:03:27.923Z"
+    },
     {
       "id": "1c5f63e9-e94c-417d-82b2-92bcb3c056b4",
       "date": "2026-09-09",
@@ -2074,5 +2130,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-10T06:01:32.950Z"
+  "updatedAt": "2026-09-10T06:04:27.154Z"
 }
