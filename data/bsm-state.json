@@ -454,161 +454,161 @@
   "documents": [
     {
       "id": "1c5f63e9-e94c-417d-82b2-92bcb3c056b4",
-      "type": "estimate",
-      "number": "BSM/EST/2026-27/0010",
       "date": "2026-09-09",
-      "customer": "Customer",
-      "company": "",
-      "location": "",
-      "headerData": {
-        "estimate_number": "BSM/EST/2026-27/0010",
-        "estimate_date": "2026-09-09",
-        "customer_name": "",
-        "company_name": "",
-        "phone": "",
-        "email": "",
-        "address": "",
-        "location": "",
-        "duration_days": ""
-      },
+      "type": "estimate",
       "items": [
         {
           "id": "5508cb00-4086-4c37-93f6-9775cea1c06e",
-          "productName": "Technician Wages",
-          "description": "",
-          "quantity": 1,
+          "gst": 0,
           "price": 0,
-          "gst": 0
+          "quantity": 1,
+          "description": "",
+          "productName": "Technician Wages"
         },
         {
           "id": "c2c8be36-cc64-47d5-855c-c67bfaf3ca8c",
-          "productName": "Food Expenses",
-          "description": "",
-          "quantity": 1,
+          "gst": 0,
           "price": 500,
-          "gst": 0
+          "quantity": 1,
+          "description": "",
+          "productName": "Food Expenses"
         },
         {
           "id": "5886ec8a-ec62-477e-9e48-4dee4b357f3c",
-          "productName": "Hotel Expenses",
-          "description": "",
-          "quantity": 1,
+          "gst": 0,
           "price": 1500,
-          "gst": 0
+          "quantity": 1,
+          "description": "",
+          "productName": "Hotel Expenses"
         },
         {
           "id": "b72d7ea2-f755-4105-a786-fcf494b4c16f",
-          "productName": "Transportation",
-          "description": "",
-          "quantity": 1,
+          "gst": 0,
           "price": 0,
-          "gst": 0
+          "quantity": 1,
+          "description": "",
+          "productName": "Transportation"
         },
         {
           "id": "818273bf-1357-406f-a411-3f872abee1db",
-          "productName": "Local Transportation",
-          "description": "",
-          "quantity": 1,
+          "gst": 0,
           "price": 0,
-          "gst": 0
+          "quantity": 1,
+          "description": "",
+          "productName": "Local Transportation"
         }
       ],
-      "totals": {
-        "taxable": 2000,
-        "gst": 0,
-        "grand": 2000,
-        "roundOff": 0,
-        "final": 2000,
-        "words": "Two Thousand rupees only"
-      },
+      "number": "BSM/EST/2026-27/0010",
       "status": "Generated",
-      "createdBy": "Admin",
+      "totals": {
+        "gst": 0,
+        "final": 2000,
+        "grand": 2000,
+        "words": "Two Thousand rupees only",
+        "taxable": 2000,
+        "roundOff": 0
+      },
+      "company": "",
+      "customer": "Customer",
+      "location": "",
       "createdAt": "2026-09-09T12:48:09.073Z",
+      "createdBy": "Admin",
       "updatedAt": "2026-09-09T12:48:09.073Z",
+      "headerData": {
+        "email": "",
+        "phone": "",
+        "address": "",
+        "location": "",
+        "company_name": "",
+        "customer_name": "",
+        "duration_days": "",
+        "estimate_date": "2026-09-09",
+        "estimate_number": "BSM/EST/2026-27/0010"
+      },
       "pdfGeneratedAt": "2026-09-09T12:48:14.502Z"
     },
     {
       "id": "dfde55b4-097b-4ece-8141-af99d8008dd8",
-      "type": "estimate",
-      "number": "BSM/EST/2026-27/0009",
       "date": "2026-09-09",
-      "customer": "Bablu ",
-      "company": "Eastern Footwear",
-      "location": "",
-      "headerData": {
-        "estimate_number": "BSM/EST/2026-27/0009",
-        "estimate_date": "2026-09-09",
-        "customer_name": "Bablu ",
-        "company_name": "Eastern Footwear",
-        "phone": "98755 41181",
-        "email": "",
-        "address": "",
-        "location": "",
-        "duration_days": "",
-        "gstin": ""
-      },
+      "type": "estimate",
       "items": [
         {
           "id": "e76d5512-7807-4a05-b056-6aff04a35441",
-          "productName": "Technician Wages",
-          "description": "shamshd ji wages",
-          "quantity": 10,
+          "gst": 18,
           "price": 4500,
-          "gst": 18
+          "quantity": 10,
+          "description": "shamshd ji wages",
+          "productName": "Technician Wages"
         },
         {
           "id": "a23d03f2-e41f-4a5e-9d66-857478f9ea0b",
-          "productName": "Food Expenses",
-          "description": "For 3 person ",
-          "quantity": 3,
+          "gst": 18,
           "price": 1500,
-          "gst": 18
+          "quantity": 3,
+          "description": "For 3 person ",
+          "productName": "Food Expenses"
         },
         {
           "id": "bb21d91f-1f42-4339-8447-9cf56e3ee9db",
-          "productName": "Hotel Expenses",
-          "description": "party side",
-          "quantity": 0,
+          "gst": 18,
           "price": 1500,
-          "gst": 18
+          "quantity": 0,
+          "description": "party side",
+          "productName": "Hotel Expenses"
         },
         {
           "id": "75a31c6e-ee5b-4ca6-b64a-91511dc17f0d",
-          "productName": "Transportation",
-          "description": "for 3 person Up And Down @4500",
-          "quantity": 3,
+          "gst": 18,
           "price": 9000,
-          "gst": 18
+          "quantity": 3,
+          "description": "for 3 person Up And Down @4500",
+          "productName": "Transportation"
         },
         {
           "id": "3184c5e6-ee65-4e3a-aa57-a69ed5454a76",
-          "productName": "Local Transportation",
-          "description": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ",
-          "quantity": 2,
+          "gst": 18,
           "price": 2000,
-          "gst": 18
+          "quantity": 2,
+          "description": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ",
+          "productName": "Local Transportation"
         },
         {
           "id": "c4753047-add3-49a3-a001-8f615cce2170",
-          "productName": "Wages for conveyor ",
-          "description": "Conveyor fittng wager for 2 person per person  @2500",
-          "quantity": 7,
+          "gst": 0,
           "price": 5000,
-          "gst": 0
+          "quantity": 7,
+          "description": "Conveyor fittng wager for 2 person per person  @2500",
+          "productName": "Wages for conveyor "
         }
       ],
-      "totals": {
-        "taxable": 115500,
-        "gst": 14490,
-        "grand": 129990,
-        "roundOff": 0,
-        "final": 129990,
-        "words": "One Lakh Twenty Nine Thousand Nine Hundred Ninety rupees only"
-      },
+      "number": "BSM/EST/2026-27/0009",
       "status": "Generated",
-      "createdBy": "Admin",
+      "totals": {
+        "gst": 14490,
+        "final": 129990,
+        "grand": 129990,
+        "words": "One Lakh Twenty Nine Thousand Nine Hundred Ninety rupees only",
+        "taxable": 115500,
+        "roundOff": 0
+      },
+      "company": "Eastern Footwear",
+      "customer": "Bablu ",
+      "location": "",
       "createdAt": "2026-09-09T12:46:59.263Z",
+      "createdBy": "Admin",
       "updatedAt": "2026-09-09T12:46:59.263Z",
+      "headerData": {
+        "email": "",
+        "gstin": "",
+        "phone": "98755 41181",
+        "address": "",
+        "location": "",
+        "company_name": "Eastern Footwear",
+        "customer_name": "Bablu ",
+        "duration_days": "",
+        "estimate_date": "2026-09-09",
+        "estimate_number": "BSM/EST/2026-27/0009"
+      },
       "pdfGeneratedAt": "2026-09-09T12:47:04.847Z"
     },
     {
@@ -2074,5 +2074,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-09T12:48:20.472Z"
+  "updatedAt": "2026-09-10T06:01:32.950Z"
 }
