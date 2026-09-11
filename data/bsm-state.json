@@ -448,10 +448,58 @@
       "resetYearly": true,
       "nextEstimate": 11,
       "financialYear": "2026-27",
-      "nextQuotation": 25
+      "nextQuotation": 26
     }
   },
   "documents": [
+    {
+      "id": "d978de9a-b46b-427a-8754-90fe2fe91f7a",
+      "type": "quotation",
+      "number": "BSM/QTN/2026-27/0025",
+      "date": "2026-09-11",
+      "customer": "Sandeep ",
+      "company": "Manjeet Plastic Industries",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0025",
+        "quotation_date": "2026-09-11",
+        "valid_till": "",
+        "customer_name": "Sandeep ",
+        "company_name": "Manjeet Plastic Industries",
+        "phone": "9992323554",
+        "email": "",
+        "address": "P. No. 336, Sec-17,, Footwear Park HSIIDC, Bahadurgarh,, Haryana",
+        "gstin": "06AAFPK3583R1Z3",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": "",
+        "quotation_module": "Spare Parts Quotation",
+        "sales_layout": "quotation",
+        "pdf_title": "Spare Parts Quotation",
+        "terms_override": ""
+      },
+      "items": [
+        {
+          "id": "69af6b05-8303-4f5a-803f-d4fdce373322",
+          "productName": "multispane controllar",
+          "description": "",
+          "quantity": 1,
+          "price": 2200,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 2200,
+        "gst": 396,
+        "grand": 2596,
+        "roundOff": 0,
+        "final": 2596,
+        "words": "Two Thousand Five Hundred Ninety Six rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-09-11T07:14:49.183Z",
+      "updatedAt": "2026-09-11T07:14:49.183Z",
+      "pdfGeneratedAt": "2026-09-11T07:14:54.944Z"
+    },
     {
       "id": "eaa8486b-8870-42a7-b859-d4c486183170",
       "date": "2026-09-10",
@@ -2194,5 +2242,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-11T07:12:57.626Z"
+  "updatedAt": "2026-09-11T07:15:00.774Z"
 }
