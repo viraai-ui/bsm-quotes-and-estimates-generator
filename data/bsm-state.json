@@ -454,66 +454,66 @@
   "documents": [
     {
       "id": "eaa8486b-8870-42a7-b859-d4c486183170",
-      "type": "sales_quotation",
-      "number": "BSM/QTN/2026-27/0024",
       "date": "2026-09-10",
-      "customer": "SAJAL MJDAR ",
-      "company": "KSR FOOTWEAR LIMITED",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0024",
-        "quotation_date": "2026-09-10",
-        "valid_till": "",
-        "customer_name": "SAJAL MJDAR ",
-        "company_name": "KSR FOOTWEAR LIMITED",
-        "phone": "96816 19481",
-        "email": "",
-        "address": "Plot No. 154,158,157 delhi Road Po-Belumilki, ps - sreerampore, Hooghly, West Bengal,, 712223, India",
-        "gstin": "19AAKCK4627J1Z3",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": "",
-        "quotation_module": "Sales Quotation",
-        "sales_layout": "quotation",
-        "pdf_title": "Sales Quotation",
-        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed."
-      },
+      "type": "sales_quotation",
       "items": [
         {
           "id": "ab8b2e53-440c-489a-8efd-1174fd402740",
-          "productName": "blade Shafat ",
-          "description": "",
-          "quantity": 3,
+          "gst": 18,
           "price": 1500,
-          "gst": 18
+          "quantity": 3,
+          "description": "",
+          "productName": "blade Shafat "
         },
         {
           "id": "5ae079f8-347c-41ec-909c-0ac89f2f9604",
-          "productName": "Main Shafat Rodd",
-          "description": "",
-          "quantity": 3,
+          "gst": 18,
           "price": 2500,
-          "gst": 18
+          "quantity": 3,
+          "description": "",
+          "productName": "Main Shafat Rodd"
         },
         {
           "id": "fbcc5fb7-d102-4160-8609-200e707e855d",
-          "productName": "courier charge ",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 250,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "courier charge "
         }
       ],
-      "totals": {
-        "taxable": 12250,
-        "gst": 2205,
-        "grand": 14455,
-        "roundOff": 0,
-        "final": 14455,
-        "words": "Fourteen Thousand Four Hundred Fifty Five rupees only"
-      },
+      "number": "BSM/QTN/2026-27/0024",
       "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
+      "totals": {
+        "gst": 2205,
+        "final": 14455,
+        "grand": 14455,
+        "words": "Fourteen Thousand Four Hundred Fifty Five rupees only",
+        "taxable": 12250,
+        "roundOff": 0
+      },
+      "company": "KSR FOOTWEAR LIMITED",
+      "customer": "SAJAL MJDAR ",
       "createdAt": "2026-09-10T11:42:10.658Z",
+      "createdBy": "Ainesh Sikdar",
       "updatedAt": "2026-09-10T11:42:10.658Z",
+      "headerData": {
+        "email": "",
+        "gstin": "19AAKCK4627J1Z3",
+        "notes": "",
+        "phone": "96816 19481",
+        "address": "Plot No. 154,158,157 delhi Road Po-Belumilki, ps - sreerampore, Hooghly, West Bengal,, 712223, India",
+        "pdf_title": "Sales Quotation",
+        "valid_till": "",
+        "company_name": "KSR FOOTWEAR LIMITED",
+        "sales_layout": "quotation",
+        "customer_name": "SAJAL MJDAR ",
+        "quotation_date": "2026-09-10",
+        "terms_override": "1. Prices are valid till {{valid_till}}.\n2. GST will be charged as shown.\n3. Delivery and installation as mutually agreed.",
+        "quotation_module": "Sales Quotation",
+        "quotation_number": "BSM/QTN/2026-27/0024",
+        "salesperson_name": "Ainesh Sikdar"
+      },
       "pdfGeneratedAt": "2026-09-10T11:42:16.136Z"
     },
     {
@@ -2194,5 +2194,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-10T11:42:21.919Z"
+  "updatedAt": "2026-09-11T07:12:57.626Z"
 }
