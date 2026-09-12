@@ -752,7 +752,7 @@
           "id": "e76d5512-7807-4a05-b056-6aff04a35441",
           "gst": 18,
           "price": 4500,
-          "quantity": 10,
+          "quantity": 12,
           "description": "shamshd ji wages",
           "productName": "Technician Wages"
         },
@@ -790,7 +790,7 @@
         },
         {
           "id": "c4753047-add3-49a3-a001-8f615cce2170",
-          "gst": 0,
+          "gst": 18,
           "price": 5000,
           "quantity": 7,
           "description": "Conveyor fittng wager for 2 person per person  @2500",
@@ -800,19 +800,19 @@
       "number": "BSM/EST/2026-27/0009",
       "status": "Generated",
       "totals": {
-        "gst": 14490,
-        "final": 129990,
-        "grand": 129990,
-        "words": "One Lakh Twenty Nine Thousand Nine Hundred Ninety rupees only",
-        "taxable": 115500,
-        "roundOff": 0
+        "taxable": 124500,
+        "gst": 22410,
+        "grand": 146910,
+        "roundOff": 0,
+        "final": 146910,
+        "words": "One Lakh Forty Six Thousand Nine Hundred Ten rupees only"
       },
       "company": "Eastern Footwear",
       "customer": "Bablu ",
       "location": "",
       "createdAt": "2026-09-09T12:46:59.263Z",
       "createdBy": "Admin",
-      "updatedAt": "2026-09-09T12:46:59.263Z",
+      "updatedAt": "2026-09-12T10:10:52.297Z",
       "headerData": {
         "email": "",
         "gstin": "",
@@ -825,7 +825,7 @@
         "estimate_date": "2026-09-09",
         "estimate_number": "BSM/EST/2026-27/0009"
       },
-      "pdfGeneratedAt": "2026-09-09T12:47:04.847Z"
+      "pdfGeneratedAt": "2026-09-12T10:10:57.514Z"
     },
     {
       "id": "ca0b1048-60c1-458a-83e0-8de3e6469e72",
@@ -2290,5 +2290,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-12T10:06:28.532Z"
+  "updatedAt": "2026-09-12T10:11:02.839Z"
 }
