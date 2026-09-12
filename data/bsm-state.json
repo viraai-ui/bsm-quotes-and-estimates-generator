@@ -454,50 +454,50 @@
   "documents": [
     {
       "id": "d978de9a-b46b-427a-8754-90fe2fe91f7a",
-      "type": "quotation",
-      "number": "BSM/QTN/2026-27/0025",
       "date": "2026-09-11",
-      "customer": "Sandeep ",
-      "company": "Manjeet Plastic Industries",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0025",
-        "quotation_date": "2026-09-11",
-        "valid_till": "",
-        "customer_name": "Sandeep ",
-        "company_name": "Manjeet Plastic Industries",
-        "phone": "9992323554",
-        "email": "",
-        "address": "P. No. 336, Sec-17,, Footwear Park HSIIDC, Bahadurgarh,, Haryana",
-        "gstin": "06AAFPK3583R1Z3",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": "",
-        "quotation_module": "Spare Parts Quotation",
-        "sales_layout": "quotation",
-        "pdf_title": "Spare Parts Quotation",
-        "terms_override": ""
-      },
+      "type": "quotation",
       "items": [
         {
           "id": "69af6b05-8303-4f5a-803f-d4fdce373322",
-          "productName": "multispane controllar",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 2200,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "multispane controllar"
         }
       ],
-      "totals": {
-        "taxable": 2200,
-        "gst": 396,
-        "grand": 2596,
-        "roundOff": 0,
-        "final": 2596,
-        "words": "Two Thousand Five Hundred Ninety Six rupees only"
-      },
+      "number": "BSM/QTN/2026-27/0025",
       "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
+      "totals": {
+        "gst": 396,
+        "final": 2596,
+        "grand": 2596,
+        "words": "Two Thousand Five Hundred Ninety Six rupees only",
+        "taxable": 2200,
+        "roundOff": 0
+      },
+      "company": "Manjeet Plastic Industries",
+      "customer": "Sandeep ",
       "createdAt": "2026-09-11T07:14:49.183Z",
+      "createdBy": "Ainesh Sikdar",
       "updatedAt": "2026-09-11T07:14:49.183Z",
+      "headerData": {
+        "email": "",
+        "gstin": "06AAFPK3583R1Z3",
+        "notes": "",
+        "phone": "9992323554",
+        "address": "P. No. 336, Sec-17,, Footwear Park HSIIDC, Bahadurgarh,, Haryana",
+        "pdf_title": "Spare Parts Quotation",
+        "valid_till": "",
+        "company_name": "Manjeet Plastic Industries",
+        "sales_layout": "quotation",
+        "customer_name": "Sandeep ",
+        "quotation_date": "2026-09-11",
+        "terms_override": "",
+        "quotation_module": "Spare Parts Quotation",
+        "quotation_number": "BSM/QTN/2026-27/0025",
+        "salesperson_name": "Ainesh Sikdar"
+      },
       "pdfGeneratedAt": "2026-09-11T07:14:54.944Z"
     },
     {
@@ -2242,5 +2242,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-11T07:15:00.774Z"
+  "updatedAt": "2026-09-12T05:33:00.015Z"
 }
