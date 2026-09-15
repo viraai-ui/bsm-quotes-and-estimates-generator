@@ -454,126 +454,126 @@
   "documents": [
     {
       "id": "82e926ee-5e32-4458-9ed1-15c26333fe56",
-      "type": "estimate",
-      "number": "BSM/EST/2026-27/0011",
       "date": "2026-09-15",
-      "customer": "Customer",
-      "company": "SUN LEATHER",
-      "location": "",
-      "headerData": {
-        "estimate_number": "BSM/EST/2026-27/0011",
-        "estimate_date": "2026-09-15",
-        "customer_name": "",
-        "company_name": "SUN LEATHER",
-        "phone": "9889402163",
-        "email": "",
-        "address": "674/39-40, KDA COLONY, JAJMAU, KANPUR, Uttar Pradesh, 208010, India",
-        "location": "",
-        "duration_days": "",
-        "gstin": "09AVTPK5261D1ZA"
-      },
+      "type": "estimate",
       "items": [
         {
           "id": "9057787f-d811-4af3-bcec-5b57c8fc4f90",
-          "productName": "Technician Wages",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 3500,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "Technician Wages"
         },
         {
           "id": "816072e2-2bc8-4942-aa9c-cadd02983499",
-          "productName": "Food Expenses",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 500,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "Food Expenses"
         },
         {
           "id": "27ed6abb-bdf7-46db-b83e-d108dadb86ed",
-          "productName": "Transportation",
-          "description": "Up And Down ",
-          "quantity": 2,
+          "gst": 18,
           "price": 850,
-          "gst": 18
+          "quantity": 2,
+          "description": "Up And Down ",
+          "productName": "Transportation"
         },
         {
           "id": "491e77a7-9a77-4703-99f9-be56b541c48f",
-          "productName": "Local Transportation",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 1000,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "Local Transportation"
         }
       ],
-      "totals": {
-        "taxable": 6700,
-        "gst": 1206,
-        "grand": 7906,
-        "roundOff": 0,
-        "final": 7906,
-        "words": "Seven Thousand Nine Hundred Six rupees only"
-      },
+      "number": "BSM/EST/2026-27/0011",
       "status": "Generated",
-      "createdBy": "Admin",
+      "totals": {
+        "gst": 1206,
+        "final": 7906,
+        "grand": 7906,
+        "words": "Seven Thousand Nine Hundred Six rupees only",
+        "taxable": 6700,
+        "roundOff": 0
+      },
+      "company": "SUN LEATHER",
+      "customer": "Customer",
+      "location": "",
       "createdAt": "2026-09-15T11:27:50.838Z",
+      "createdBy": "Admin",
       "updatedAt": "2026-09-15T11:27:50.838Z",
+      "headerData": {
+        "email": "",
+        "gstin": "09AVTPK5261D1ZA",
+        "phone": "9889402163",
+        "address": "674/39-40, KDA COLONY, JAJMAU, KANPUR, Uttar Pradesh, 208010, India",
+        "location": "",
+        "company_name": "SUN LEATHER",
+        "customer_name": "",
+        "duration_days": "",
+        "estimate_date": "2026-09-15",
+        "estimate_number": "BSM/EST/2026-27/0011"
+      },
       "pdfGeneratedAt": "2026-09-15T11:27:56.465Z"
     },
     {
       "id": "5903273c-ed60-4525-9a66-d15d2b1b7900",
-      "type": "quotation",
-      "number": "BSM/QTN/2026-27/0029",
       "date": "2026-09-15",
-      "customer": "6289 389 837",
-      "company": "Super Trading Company",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0029",
-        "quotation_date": "2026-09-15",
-        "valid_till": "",
-        "customer_name": "6289 389 837",
-        "company_name": "Super Trading Company",
-        "phone": "Anisha",
-        "email": "",
-        "address": "5/F,, East Topsia Road, Kolkata, 700046",
-        "gstin": "19AMIPS1713L1ZO",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": "",
-        "quotation_module": "Spare Parts Quotation",
-        "sales_layout": "quotation",
-        "pdf_title": "Spare Parts Quotation",
-        "terms_override": ""
-      },
+      "type": "quotation",
       "items": [
         {
           "id": "65f2194f-9b8a-496e-9a43-5c098e335733",
-          "productName": "Trimming motor repaired ",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 1800,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "Trimming motor repaired "
         },
         {
           "id": "4fdc7778-dd4b-4ca7-9fd6-584dc4c2c695",
-          "productName": "Courier Charge ",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 750,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "Courier Charge "
         }
       ],
-      "totals": {
-        "taxable": 2550,
-        "gst": 459,
-        "grand": 3009,
-        "roundOff": 0,
-        "final": 3009,
-        "words": "Three Thousand Nine rupees only"
-      },
+      "number": "BSM/QTN/2026-27/0029",
       "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
+      "totals": {
+        "gst": 459,
+        "final": 3009,
+        "grand": 3009,
+        "words": "Three Thousand Nine rupees only",
+        "taxable": 2550,
+        "roundOff": 0
+      },
+      "company": "Super Trading Company",
+      "customer": "6289 389 837",
       "createdAt": "2026-09-15T10:15:38.381Z",
+      "createdBy": "Ainesh Sikdar",
       "updatedAt": "2026-09-15T10:15:38.381Z",
+      "headerData": {
+        "email": "",
+        "gstin": "19AMIPS1713L1ZO",
+        "notes": "",
+        "phone": "Anisha",
+        "address": "5/F,, East Topsia Road, Kolkata, 700046",
+        "pdf_title": "Spare Parts Quotation",
+        "valid_till": "",
+        "company_name": "Super Trading Company",
+        "sales_layout": "quotation",
+        "customer_name": "6289 389 837",
+        "quotation_date": "2026-09-15",
+        "terms_override": "",
+        "quotation_module": "Spare Parts Quotation",
+        "quotation_number": "BSM/QTN/2026-27/0029",
+        "salesperson_name": "Ainesh Sikdar"
+      },
       "pdfGeneratedAt": "2026-09-15T10:15:44.113Z"
     },
     {
@@ -601,12 +601,12 @@
       "number": "BSM/QTN/2026-27/0028",
       "status": "Generated",
       "totals": {
-        "taxable": 3300,
         "gst": 594,
-        "grand": 3894,
-        "roundOff": 0,
         "final": 3894,
-        "words": "Three Thousand Eight Hundred Ninety Four rupees only"
+        "grand": 3894,
+        "words": "Three Thousand Eight Hundred Ninety Four rupees only",
+        "taxable": 3300,
+        "roundOff": 0
       },
       "company": "Asian Footwear Pvt.Ltd. (303)",
       "customer": "rohit",
@@ -2526,5 +2526,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-15T11:28:02.914Z"
+  "updatedAt": "2026-09-15T11:50:42.354Z"
 }
