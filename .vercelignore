@@ -1,0 +1,34 @@
+# Local dependencies and build/test output
+node_modules/
+dist/
+.vercel/
+test-results/
+coverage/
+
+# Local QA captures and one-off audit tooling
+qa-*/
+**/qa-output/
+*screenshot*
+*.pdf
+mobile-qa.mjs
+mobile-header-qa.mjs
+scripts/ui-audit.mjs
+
+# Local and historical mutable-state backups (keep data/bsm-state.json)
+data/backups/
+data/*.backup-*.json
+data/*-backup-*.json
+backups/
+*.backup*.json
+*state*backup*.json
+**/state-backups/
+
+# Development-only material
+.github/
+tests/
+*.md
+*.log
+.env*
+
+# Keep application source, api/, public/, package manifests, config files,
+# scripts/vercel-ignore-build.mjs, and data/bsm-state.json deployable.

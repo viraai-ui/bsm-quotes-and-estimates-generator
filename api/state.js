@@ -28,7 +28,7 @@ function json(res, status, data) {
   res.end(JSON.stringify(data))
 }
 
-async function readState(token) {
+export async function readState(token) {
   const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`
   const r = await fetch(url, { headers: headers(token) })
   if (r.status === 404) return { state: { settings: null, documents: [] }, sha: null }
@@ -60,9 +60,9 @@ function assertSafeState(state) {
   if (problems.length) throw new Error(`Unsafe state blocked: ${problems.join(', ')}`)
 }
 
-function protectState(nextState, current) {
-  const currentSettings = current.state?.settings || {}
-  const currentDocs = Array.isArray(current.state?.documents) ? current.state.documents : []
+export function protectState(nextState, currentState) {
+  const currentSettings = currentState?.settings || {}
+  const currentDocs = Array.isArray(currentState?.documents) ? currentState.documents : []
   const incomingDocs = Array.isArray(nextState.documents) ? nextState.documents : []
   const incomingSettings = nextState.settings || currentSettings
   const currentLogo = currentSettings.company?.logoImage
@@ -106,47 +106,66 @@ async function writeBackup(token, state) {
   await writeGithubFile(token, backupPath, state, null, `Backup BSM dashboard cloud state ${stamp}`)
 }
 
-async function writeState(token, state) {
+export async function writeGithubState(token, state) {
   const current = await readState(token)
   assertSafeState(current.state)
+  // The backup must succeed before replacing the fallback snapshot.
   await writeBackup(token, current.state)
-  const safeState = protectState(state, current)
-  const writtenState = { ...safeState, updatedAt: new Date().toISOString() }
+  const writtenState = { ...protectState(state, current.state), updatedAt: new Date().toISOString() }
   await writeGithubFile(token, path, writtenState, current.sha, 'Update BSM dashboard cloud state')
   return { ok: true, state: writtenState }
 }
 
-export default async function handler(req, res) {
-  const token = process.env.BSM_STATE_GITHUB_TOKEN
-  if (!token) return json(res, 500, { error: 'Cloud database is not configured' })
+export function createStateHandler(deps = {}) {
+  const neonConfigured = deps.hasNeon || hasNeon
+  const readNeon = deps.readNeonState || readNeonState
+  const writeNeon = deps.writeNeonState || writeNeonState
+  const readGithub = deps.readState || readState
+  const writeGithub = deps.writeGithubState || writeGithubState
+  const getToken = deps.getGithubToken || (() => process.env.BSM_STATE_GITHUB_TOKEN)
 
-  try {
-    if (req.method === 'GET') {
-      if (hasNeon()) {
-        try {
-          return json(res, 200, await readNeonState())
-        } catch (error) {
-          console.error('Neon read failed; using GitHub fallback', error)
+  return async function handler(req, res) {
+    const token = getToken()
+    try {
+      if (req.method === 'GET') {
+        if (neonConfigured()) {
+          try {
+            return json(res, 200, await readNeon())
+          } catch (error) {
+            console.error('Neon read failed; using GitHub fallback', error)
+          }
         }
+        if (!token) return json(res, 500, { error: 'Cloud database is not configured' })
+        const { state } = await readGithub(token)
+        return json(res, 200, state)
       }
-      const { state } = await readState(token)
-      return json(res, 200, state)
-    }
 
-    if (req.method === 'PUT') {
-      const chunks = []
-      for await (const chunk of req) chunks.push(chunk)
-      const body = JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}')
-      if (!body || typeof body !== 'object') return json(res, 400, { error: 'Invalid state' })
-      const nextState = { settings: body.settings || null, documents: Array.isArray(body.documents) ? body.documents : [] }
-      const safeGithubWrite = await writeState(token, nextState)
-      if (hasNeon()) await writeNeonState(safeGithubWrite.state, 'api')
-      return json(res, 200, { ok: true })
-    }
+      if (req.method === 'PUT') {
+        const chunks = []
+        for await (const chunk of req) chunks.push(chunk)
+        const body = JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}')
+        if (!body || typeof body !== 'object') return json(res, 400, { error: 'Invalid state' })
+        const nextState = { settings: body.settings || null, documents: Array.isArray(body.documents) ? body.documents : [] }
 
-    res.setHeader('Allow', 'GET, PUT')
-    return json(res, 405, { error: 'Method not allowed' })
-  } catch (error) {
-    return json(res, 500, { error: error instanceof Error ? error.message : 'Unknown database error' })
+        if (neonConfigured()) {
+          // Neon is authoritative when configured. Read/protect/write it only; a failed
+          // Neon write is reported rather than creating a divergent GitHub write.
+          const current = await readNeon()
+          const safeState = protectState(nextState, current)
+          await writeNeon(safeState, 'api')
+        } else {
+          if (!token) return json(res, 500, { error: 'Cloud database is not configured' })
+          await writeGithub(token, nextState)
+        }
+        return json(res, 200, { ok: true })
+      }
+
+      res.setHeader('Allow', 'GET, PUT')
+      return json(res, 405, { error: 'Method not allowed' })
+    } catch (error) {
+      return json(res, 500, { error: error instanceof Error ? error.message : 'Unknown database error' })
+    }
   }
 }
+
+export default createStateHandler()
