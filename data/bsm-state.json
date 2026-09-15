@@ -454,122 +454,122 @@
   "documents": [
     {
       "id": "afb72c1e-a04f-4053-96a9-8997cbd748af",
-      "type": "quotation",
-      "number": "BSM/QTN/2026-27/0028",
       "date": "2026-09-15",
-      "customer": "rohit",
-      "company": "Asian Footwear Pvt.Ltd. (303)",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0028",
-        "quotation_date": "2026-09-15",
-        "valid_till": "",
-        "customer_name": "rohit",
-        "company_name": "Asian Footwear Pvt.Ltd. (303)",
-        "phone": "8591912624",
-        "email": "",
-        "address": "Plot No. 303, Sect-17, HSIIDC, Indl.Estate, Bahadurgarh (Hr.), Haryana",
-        "gstin": "06AAHCA6753A1ZZ",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": "",
-        "quotation_module": "Spare Parts Quotation",
-        "sales_layout": "quotation",
-        "pdf_title": "Spare Parts Quotation",
-        "terms_override": ""
-      },
+      "type": "quotation",
       "items": [
         {
           "id": "9d7e63c5-30bb-4a04-b948-539d9bb4c1f9",
-          "productName": "HF Drum Patti ",
-          "description": "",
-          "quantity": 4,
+          "gst": 18,
           "price": 450,
-          "gst": 18
+          "quantity": 4,
+          "description": "",
+          "productName": "HF Drum Patti "
         },
         {
           "id": "58a1ab23-3a39-449b-ab53-046fb5519ea1",
-          "productName": "HF Contector ",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 5500,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "HF Contector "
         },
         {
           "id": "d6fe018f-b108-4395-b47a-126d4d95543b",
-          "productName": "Service Charge ",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 1500,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "Service Charge "
         }
       ],
-      "totals": {
-        "taxable": 8800,
-        "gst": 1584,
-        "grand": 10384,
-        "roundOff": 0,
-        "final": 10384,
-        "words": "Ten Thousand Three Hundred Eighty Four rupees only"
-      },
+      "number": "BSM/QTN/2026-27/0028",
       "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
+      "totals": {
+        "gst": 1584,
+        "final": 10384,
+        "grand": 10384,
+        "words": "Ten Thousand Three Hundred Eighty Four rupees only",
+        "taxable": 8800,
+        "roundOff": 0
+      },
+      "company": "Asian Footwear Pvt.Ltd. (303)",
+      "customer": "rohit",
       "createdAt": "2026-09-15T09:24:23.223Z",
+      "createdBy": "Ainesh Sikdar",
       "updatedAt": "2026-09-15T09:24:23.223Z",
+      "headerData": {
+        "email": "",
+        "gstin": "06AAHCA6753A1ZZ",
+        "notes": "",
+        "phone": "8591912624",
+        "address": "Plot No. 303, Sect-17, HSIIDC, Indl.Estate, Bahadurgarh (Hr.), Haryana",
+        "pdf_title": "Spare Parts Quotation",
+        "valid_till": "",
+        "company_name": "Asian Footwear Pvt.Ltd. (303)",
+        "sales_layout": "quotation",
+        "customer_name": "rohit",
+        "quotation_date": "2026-09-15",
+        "terms_override": "",
+        "quotation_module": "Spare Parts Quotation",
+        "quotation_number": "BSM/QTN/2026-27/0028",
+        "salesperson_name": "Ainesh Sikdar"
+      },
       "pdfGeneratedAt": "2026-09-15T09:24:29.172Z"
     },
     {
       "id": "9423cc22-7c8d-4414-8533-104bae06995b",
-      "type": "quotation",
-      "number": "BSM/QTN/2026-27/0027",
       "date": "2026-09-15",
-      "customer": "Kamlesh ji",
-      "company": "Narsingh Footcare Industries",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0027",
-        "quotation_date": "2026-09-15",
-        "valid_till": "",
-        "customer_name": "Kamlesh ji",
-        "company_name": "Narsingh Footcare Industries",
-        "phone": "820 018 5637",
-        "email": "",
-        "address": "Ground Floor And Second Floor, Plot No. 150,151,152,, Unity Estate, Nr. Batliboi, Bhestan,, Surat, Gujarat, 395023",
-        "gstin": "24BCSPA1746C1ZZ",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": "",
-        "quotation_module": "Spare Parts Quotation",
-        "sales_layout": "quotation",
-        "pdf_title": "Spare Parts Quotation",
-        "terms_override": ""
-      },
+      "type": "quotation",
       "items": [
         {
           "id": "9b96de74-4e7e-44ba-8cde-ead05856dd94",
-          "productName": "Motor Bush ",
-          "description": "",
-          "quantity": 1,
+          "gst": 5,
           "price": 1100,
-          "gst": 5
+          "quantity": 1,
+          "description": "",
+          "productName": "Motor Bush "
         },
         {
           "id": "39615995-86ea-45fa-bfda-65b74429178e",
-          "productName": "Courier charge ",
-          "description": "",
-          "quantity": 1,
+          "gst": 5,
           "price": 100,
-          "gst": 5
+          "quantity": 1,
+          "description": "",
+          "productName": "Courier charge "
         }
       ],
-      "totals": {
-        "taxable": 1200,
-        "gst": 60,
-        "grand": 1260,
-        "roundOff": 0,
-        "final": 1260,
-        "words": "One Thousand Two Hundred Sixty rupees only"
-      },
+      "number": "BSM/QTN/2026-27/0027",
       "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
+      "totals": {
+        "gst": 60,
+        "final": 1260,
+        "grand": 1260,
+        "words": "One Thousand Two Hundred Sixty rupees only",
+        "taxable": 1200,
+        "roundOff": 0
+      },
+      "company": "Narsingh Footcare Industries",
+      "customer": "Kamlesh ji",
       "createdAt": "2026-09-15T09:14:08.233Z",
+      "createdBy": "Ainesh Sikdar",
       "updatedAt": "2026-09-15T09:14:08.233Z",
+      "headerData": {
+        "email": "",
+        "gstin": "24BCSPA1746C1ZZ",
+        "notes": "",
+        "phone": "820 018 5637",
+        "address": "Ground Floor And Second Floor, Plot No. 150,151,152,, Unity Estate, Nr. Batliboi, Bhestan,, Surat, Gujarat, 395023",
+        "pdf_title": "Spare Parts Quotation",
+        "valid_till": "",
+        "company_name": "Narsingh Footcare Industries",
+        "sales_layout": "quotation",
+        "customer_name": "Kamlesh ji",
+        "quotation_date": "2026-09-15",
+        "terms_override": "",
+        "quotation_module": "Spare Parts Quotation",
+        "quotation_number": "BSM/QTN/2026-27/0027",
+        "salesperson_name": "Ainesh Sikdar"
+      },
       "pdfGeneratedAt": "2026-09-15T09:14:14.501Z"
     },
     {
@@ -2410,5 +2410,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-15T09:24:37.011Z"
+  "updatedAt": "2026-09-15T09:30:11.087Z"
 }
