@@ -448,10 +448,66 @@
       "resetYearly": true,
       "nextEstimate": 11,
       "financialYear": "2026-27",
-      "nextQuotation": 29
+      "nextQuotation": 30
     }
   },
   "documents": [
+    {
+      "id": "5903273c-ed60-4525-9a66-d15d2b1b7900",
+      "type": "quotation",
+      "number": "BSM/QTN/2026-27/0029",
+      "date": "2026-09-15",
+      "customer": "6289 389 837",
+      "company": "Super Trading Company",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0029",
+        "quotation_date": "2026-09-15",
+        "valid_till": "",
+        "customer_name": "6289 389 837",
+        "company_name": "Super Trading Company",
+        "phone": "Anisha",
+        "email": "",
+        "address": "5/F,, East Topsia Road, Kolkata, 700046",
+        "gstin": "19AMIPS1713L1ZO",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": "",
+        "quotation_module": "Spare Parts Quotation",
+        "sales_layout": "quotation",
+        "pdf_title": "Spare Parts Quotation",
+        "terms_override": ""
+      },
+      "items": [
+        {
+          "id": "65f2194f-9b8a-496e-9a43-5c098e335733",
+          "productName": "Trimming motor repaired ",
+          "description": "",
+          "quantity": 1,
+          "price": 1800,
+          "gst": 18
+        },
+        {
+          "id": "4fdc7778-dd4b-4ca7-9fd6-584dc4c2c695",
+          "productName": "Courier Charge ",
+          "description": "",
+          "quantity": 1,
+          "price": 750,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 2550,
+        "gst": 459,
+        "grand": 3009,
+        "roundOff": 0,
+        "final": 3009,
+        "words": "Three Thousand Nine rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-09-15T10:15:38.381Z",
+      "updatedAt": "2026-09-15T10:15:38.381Z",
+      "pdfGeneratedAt": "2026-09-15T10:15:44.113Z"
+    },
     {
       "id": "afb72c1e-a04f-4053-96a9-8997cbd748af",
       "date": "2026-09-15",
@@ -506,7 +562,7 @@
         "quotation_number": "BSM/QTN/2026-27/0028",
         "salesperson_name": "Ainesh Sikdar"
       },
-      "pdfGeneratedAt": "2026-09-15T09:24:29.172Z"
+      "pdfGeneratedAt": "2026-09-15T09:30:22.690Z"
     },
     {
       "id": "9423cc22-7c8d-4414-8533-104bae06995b",
@@ -2402,5 +2458,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-15T09:30:26.955Z"
+  "updatedAt": "2026-09-15T10:15:49.851Z"
 }
