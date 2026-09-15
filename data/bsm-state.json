@@ -448,10 +448,66 @@
       "resetYearly": true,
       "nextEstimate": 11,
       "financialYear": "2026-27",
-      "nextQuotation": 27
+      "nextQuotation": 28
     }
   },
   "documents": [
+    {
+      "id": "9423cc22-7c8d-4414-8533-104bae06995b",
+      "type": "quotation",
+      "number": "BSM/QTN/2026-27/0027",
+      "date": "2026-09-15",
+      "customer": "Kamlesh ji",
+      "company": "Narsingh Footcare Industries",
+      "headerData": {
+        "quotation_number": "BSM/QTN/2026-27/0027",
+        "quotation_date": "2026-09-15",
+        "valid_till": "",
+        "customer_name": "Kamlesh ji",
+        "company_name": "Narsingh Footcare Industries",
+        "phone": "820 018 5637",
+        "email": "",
+        "address": "Ground Floor And Second Floor, Plot No. 150,151,152,, Unity Estate, Nr. Batliboi, Bhestan,, Surat, Gujarat, 395023",
+        "gstin": "24BCSPA1746C1ZZ",
+        "salesperson_name": "Ainesh Sikdar",
+        "notes": "",
+        "quotation_module": "Spare Parts Quotation",
+        "sales_layout": "quotation",
+        "pdf_title": "Spare Parts Quotation",
+        "terms_override": ""
+      },
+      "items": [
+        {
+          "id": "9b96de74-4e7e-44ba-8cde-ead05856dd94",
+          "productName": "Motor Bush ",
+          "description": "",
+          "quantity": 1,
+          "price": 1100,
+          "gst": 5
+        },
+        {
+          "id": "39615995-86ea-45fa-bfda-65b74429178e",
+          "productName": "Courier charge ",
+          "description": "",
+          "quantity": 1,
+          "price": 100,
+          "gst": 5
+        }
+      ],
+      "totals": {
+        "taxable": 1200,
+        "gst": 60,
+        "grand": 1260,
+        "roundOff": 0,
+        "final": 1260,
+        "words": "One Thousand Two Hundred Sixty rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Ainesh Sikdar",
+      "createdAt": "2026-09-15T09:14:08.233Z",
+      "updatedAt": "2026-09-15T09:14:08.233Z",
+      "pdfGeneratedAt": "2026-09-15T09:14:14.501Z"
+    },
     {
       "id": "dfde55b4-097b-4ece-8141-af99d8008dd8",
       "date": "2026-09-09",
@@ -2290,5 +2346,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-15T09:06:51.128Z"
+  "updatedAt": "2026-09-15T09:14:21.859Z"
 }
