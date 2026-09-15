@@ -466,14 +466,6 @@
           "productName": "HF Drum Patti "
         },
         {
-          "id": "58a1ab23-3a39-449b-ab53-046fb5519ea1",
-          "gst": 18,
-          "price": 5500,
-          "quantity": 1,
-          "description": "",
-          "productName": "HF Contector "
-        },
-        {
           "id": "d6fe018f-b108-4395-b47a-126d4d95543b",
           "gst": 18,
           "price": 1500,
@@ -485,18 +477,18 @@
       "number": "BSM/QTN/2026-27/0028",
       "status": "Generated",
       "totals": {
-        "gst": 1584,
-        "final": 10384,
-        "grand": 10384,
-        "words": "Ten Thousand Three Hundred Eighty Four rupees only",
-        "taxable": 8800,
-        "roundOff": 0
+        "taxable": 3300,
+        "gst": 594,
+        "grand": 3894,
+        "roundOff": 0,
+        "final": 3894,
+        "words": "Three Thousand Eight Hundred Ninety Four rupees only"
       },
       "company": "Asian Footwear Pvt.Ltd. (303)",
       "customer": "rohit",
       "createdAt": "2026-09-15T09:24:23.223Z",
       "createdBy": "Ainesh Sikdar",
-      "updatedAt": "2026-09-15T09:24:23.223Z",
+      "updatedAt": "2026-09-15T09:30:16.478Z",
       "headerData": {
         "email": "",
         "gstin": "06AAHCA6753A1ZZ",
@@ -2410,5 +2402,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-15T09:30:11.087Z"
+  "updatedAt": "2026-09-15T09:30:26.955Z"
 }
