@@ -446,12 +446,80 @@
       "estimate": "BSM/EST/{{financial_year}}/{{number}}",
       "quotation": "BSM/QTN/{{financial_year}}/{{number}}",
       "resetYearly": true,
-      "nextEstimate": 11,
+      "nextEstimate": 12,
       "financialYear": "2026-27",
       "nextQuotation": 30
     }
   },
   "documents": [
+    {
+      "id": "82e926ee-5e32-4458-9ed1-15c26333fe56",
+      "type": "estimate",
+      "number": "BSM/EST/2026-27/0011",
+      "date": "2026-09-15",
+      "customer": "Customer",
+      "company": "SUN LEATHER",
+      "location": "",
+      "headerData": {
+        "estimate_number": "BSM/EST/2026-27/0011",
+        "estimate_date": "2026-09-15",
+        "customer_name": "",
+        "company_name": "SUN LEATHER",
+        "phone": "9889402163",
+        "email": "",
+        "address": "674/39-40, KDA COLONY, JAJMAU, KANPUR, Uttar Pradesh, 208010, India",
+        "location": "",
+        "duration_days": "",
+        "gstin": "09AVTPK5261D1ZA"
+      },
+      "items": [
+        {
+          "id": "9057787f-d811-4af3-bcec-5b57c8fc4f90",
+          "productName": "Technician Wages",
+          "description": "",
+          "quantity": 1,
+          "price": 3500,
+          "gst": 18
+        },
+        {
+          "id": "816072e2-2bc8-4942-aa9c-cadd02983499",
+          "productName": "Food Expenses",
+          "description": "",
+          "quantity": 1,
+          "price": 500,
+          "gst": 18
+        },
+        {
+          "id": "27ed6abb-bdf7-46db-b83e-d108dadb86ed",
+          "productName": "Transportation",
+          "description": "Up And Down ",
+          "quantity": 2,
+          "price": 850,
+          "gst": 18
+        },
+        {
+          "id": "491e77a7-9a77-4703-99f9-be56b541c48f",
+          "productName": "Local Transportation",
+          "description": "",
+          "quantity": 1,
+          "price": 1000,
+          "gst": 18
+        }
+      ],
+      "totals": {
+        "taxable": 6700,
+        "gst": 1206,
+        "grand": 7906,
+        "roundOff": 0,
+        "final": 7906,
+        "words": "Seven Thousand Nine Hundred Six rupees only"
+      },
+      "status": "Generated",
+      "createdBy": "Admin",
+      "createdAt": "2026-09-15T11:27:50.838Z",
+      "updatedAt": "2026-09-15T11:27:50.838Z",
+      "pdfGeneratedAt": "2026-09-15T11:27:56.465Z"
+    },
     {
       "id": "5903273c-ed60-4525-9a66-d15d2b1b7900",
       "type": "quotation",
@@ -2458,5 +2526,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-15T10:15:49.851Z"
+  "updatedAt": "2026-09-15T11:28:02.914Z"
 }
