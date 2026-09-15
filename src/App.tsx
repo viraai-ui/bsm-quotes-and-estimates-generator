@@ -4,6 +4,7 @@ import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import * as XLSX from 'xlsx'
 import { companySearchQuery, mergeSelectedCompany } from './zohoCompany'
+import { normalizeUploadedImage, optimizeForPdf, pdfImageFormat } from './imageOptimization'
 import type { ZohoCompany } from './zohoCompany'
 import { applyEstimateExpensePreset, createDefaultEstimateRows, matchingEstimateExpenses } from './estimateExpenses'
 import { freshDocumentData, freshEstimateDocument } from './formReset'
@@ -405,7 +406,7 @@ function App() {
     await waitForPaint()
     try {
       const doc = createDoc()
-      downloadQuotationPdf(doc, settings)
+      await downloadQuotationPdf(doc, settings)
       setDocuments((docs) => docs.map((d) => d.id === doc.id ? { ...d, pdfGeneratedAt: new Date().toISOString(), status: 'Generated' } : d))
       onSuccess?.()
     } catch (error) {
@@ -612,7 +613,7 @@ function LineItemsPanel({ items, setItems, settings, mode = 'quotation', suggest
   async function onImage(id: string, e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
-    const image = await fileToDataUrl(file)
+    const image = await normalizeUploadedImage(file, 'product')
     update(id, { image, imageName: file.name })
   }
   return <section className="panel line-panel wide">
@@ -751,7 +752,7 @@ function CompanySettings({ settings, setSettings }: { settings: Settings; setSet
   const onLogo = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    const logoImage = await fileToDataUrl(file)
+    const logoImage = await normalizeUploadedImage(file, 'logo')
     setSettings((s) => ({ ...s, company: { ...s.company, logoImage } }))
   }
   return <section className="panel settings-card"><h2>Company Profile</h2><div className="logo-upload-row"><div className="logo-preview">{(settings.company.logoImage || DEFAULT_BSM_LOGO) ? <img src={settings.company.logoImage || DEFAULT_BSM_LOGO} alt="Company logo" /> : <span>{settings.company.logoText || 'BSM'}</span>}</div><label className="logo-upload-control"><span>Upload company logo</span><input type="file" accept="image/*" onChange={onLogo} /></label>{settings.company.logoImage && settings.company.logoImage !== DEFAULT_BSM_LOGO && <button className="ghost" onClick={() => setSettings((s) => ({ ...s, company: { ...s.company, logoImage: DEFAULT_BSM_LOGO } }))}>Reset Logo</button>}</div><div className="compact-form">{keys.map((k) => <label key={k}><span>{labelize(k)}</span><input value={settings.company[k] || ''} onChange={(e) => setSettings((s) => ({ ...s, company: { ...s.company, [k]: e.target.value } }))} /></label>)}</div><SaveSettingsButton /></section>
@@ -800,8 +801,15 @@ function Toggle({ label, value, onChange }: { label: string; value: boolean; onC
   return <label className="toggle"><input type="checkbox" checked={value} onChange={(e) => onChange(e.target.checked)} /><span>{label}</span></label>
 }
 
-function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
-  const pdf = new jsPDF('p', 'mm', 'a4')
+async function downloadQuotationPdf(sourceDoc: SavedDocument, settings: Settings) {
+  // Optimize a detached copy so legacy saved documents benefit immediately without
+  // rewriting their image data in local state or Neon.
+  const [logoImage, ...itemImages] = await Promise.all([
+    optimizeForPdf(settings.company.logoImage || DEFAULT_BSM_LOGO, 54, 18),
+    ...sourceDoc.items.map((item) => item.image ? optimizeForPdf(item.image, 20, 18) : Promise.resolve('')),
+  ])
+  const doc: SavedDocument = { ...sourceDoc, items: sourceDoc.items.map((item, index) => item.image ? { ...item, image: itemImages[index] } : item) }
+  const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true })
   const pageWidth = pdf.internal.pageSize.getWidth()
   const red: [number, number, number] = [215, 25, 32]
   const dark: [number, number, number] = [17, 24, 39]
@@ -812,7 +820,6 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
   const numberKey = isEstimate ? 'estimate_number' : 'quotation_number'
 
   pdf.setFillColor(255, 255, 255); pdf.rect(0, 0, pageWidth, 297, 'F')
-  const logoImage = settings.company.logoImage || DEFAULT_BSM_LOGO
   if (logoImage) {
     try {
       const props = pdf.getImageProperties(logoImage)
@@ -820,8 +827,7 @@ function downloadQuotationPdf(doc: SavedDocument, settings: Settings) {
       const ratio = Math.min(maxW / props.width, maxH / props.height)
       const logoW = props.width * ratio
       const logoH = props.height * ratio
-      const logoFormat = logoImage.startsWith('data:image/jpeg') || logoImage.startsWith('data:image/jpg') ? 'JPEG' : 'PNG'
-      pdf.addImage(logoImage, logoFormat, 14, 10, logoW, logoH)
+      pdf.addImage(logoImage, pdfImageFormat(logoImage), 14, 10, logoW, logoH, undefined, 'FAST')
     } catch { pdf.setTextColor(...red); pdf.setFontSize(24); pdf.setFont('helvetica', 'bold'); pdf.text(settings.company.logoText || 'BSM', 14, 22) }
   } else {
     pdf.setTextColor(...red); pdf.setFontSize(24); pdf.setFont('helvetica', 'bold'); pdf.text(settings.company.logoText || 'BSM', 14, 22)
@@ -955,10 +961,6 @@ function downloadExcel(doc: SavedDocument, settings: Settings) {
   void settings
 }
 
-async function fileToDataUrl(file: File): Promise<string> {
-  return new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.onerror = reject; reader.readAsDataURL(file) })
-}
-
 function waitForPaint() {
   return new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
 }
@@ -971,8 +973,7 @@ function drawContainedPdfImage(pdf: jsPDF, image: string, boxX: number, boxY: nu
     const imageH = props.height * ratio
     const imageX = boxX + (boxW - imageW) / 2
     const imageY = boxY + (boxH - imageH) / 2
-    const format = image.startsWith('data:image/png') ? 'PNG' : 'JPEG'
-    pdf.addImage(image, format, imageX, imageY, imageW, imageH)
+    pdf.addImage(image, pdfImageFormat(image), imageX, imageY, imageW, imageH, undefined, 'FAST')
   } catch { /* ignore broken images */ }
 }
 
