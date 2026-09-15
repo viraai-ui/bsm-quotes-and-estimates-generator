@@ -454,70 +454,70 @@
   "documents": [
     {
       "id": "b4386180-8235-4308-a9e7-79dcc80fa44e",
-      "type": "estimate",
-      "number": "BSM/EST/2026-27/0012",
       "date": "2026-09-15",
-      "customer": "vinit dhamle ",
-      "company": "Vrindawan Bihari Rubber Products Pvt Ltd",
-      "location": "",
-      "headerData": {
-        "estimate_number": "BSM/EST/2026-27/0012",
-        "estimate_date": "2026-09-15",
-        "customer_name": "vinit dhamle ",
-        "company_name": "Vrindawan Bihari Rubber Products Pvt Ltd",
-        "phone": "8090163354",
-        "email": "",
-        "address": "46/157, Halsey Road,, Kanpur,, Uttar Pradesh, 208001",
-        "location": "",
-        "duration_days": "",
-        "gstin": "09AABCV1734G1ZF"
-      },
+      "type": "estimate",
       "items": [
         {
           "id": "22b77284-8d82-4b56-8a5c-244be0f3cfb1",
-          "productName": "Technician Wages",
-          "description": "",
-          "quantity": 2,
+          "gst": 18,
           "price": 1500,
-          "gst": 18
+          "quantity": 2,
+          "description": "",
+          "productName": "Technician Wages"
         },
         {
           "id": "726e5e3f-8821-4cd5-b355-e229b41f1394",
-          "productName": "Food Expenses",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 500,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "Food Expenses"
         },
         {
           "id": "5b1ac30f-8ff8-4507-8f28-099b6feaf3e1",
-          "productName": "Transportation",
-          "description": "Up And Down ",
-          "quantity": 2,
+          "gst": 18,
           "price": 850,
-          "gst": 18
+          "quantity": 2,
+          "description": "Up And Down ",
+          "productName": "Transportation"
         },
         {
           "id": "cd34aaa8-e061-41ad-9ffc-c1d5d0c76cf0",
-          "productName": "Local Transportation",
-          "description": "",
-          "quantity": 1,
+          "gst": 18,
           "price": 1000,
-          "gst": 18
+          "quantity": 1,
+          "description": "",
+          "productName": "Local Transportation"
         }
       ],
-      "totals": {
-        "taxable": 6200,
-        "gst": 1116,
-        "grand": 7316,
-        "roundOff": 0,
-        "final": 7316,
-        "words": "Seven Thousand Three Hundred Sixteen rupees only"
-      },
+      "number": "BSM/EST/2026-27/0012",
       "status": "Generated",
-      "createdBy": "Admin",
+      "totals": {
+        "gst": 1116,
+        "final": 7316,
+        "grand": 7316,
+        "words": "Seven Thousand Three Hundred Sixteen rupees only",
+        "taxable": 6200,
+        "roundOff": 0
+      },
+      "company": "Vrindawan Bihari Rubber Products Pvt Ltd",
+      "customer": "vinit dhamle ",
+      "location": "",
       "createdAt": "2026-09-15T12:38:56.371Z",
+      "createdBy": "Admin",
       "updatedAt": "2026-09-15T12:38:56.371Z",
+      "headerData": {
+        "email": "",
+        "gstin": "09AABCV1734G1ZF",
+        "phone": "8090163354",
+        "address": "46/157, Halsey Road,, Kanpur,, Uttar Pradesh, 208001",
+        "location": "",
+        "company_name": "Vrindawan Bihari Rubber Products Pvt Ltd",
+        "customer_name": "vinit dhamle ",
+        "duration_days": "",
+        "estimate_date": "2026-09-15",
+        "estimate_number": "BSM/EST/2026-27/0012"
+      },
       "pdfGeneratedAt": "2026-09-15T12:39:02.437Z"
     },
     {
@@ -2652,5 +2652,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-15T12:39:09.133Z"
+  "updatedAt": "2026-09-15T12:50:53.488Z"
 }
