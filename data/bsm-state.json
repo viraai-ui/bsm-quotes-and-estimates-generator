@@ -453,51 +453,135 @@
   },
   "documents": [
     {
-      "id": "249cb1f9-51af-400d-af7b-334702b6a5eb",
-      "type": "quotation",
-      "number": "BSM/QTN/2026-27/0026",
-      "date": "2026-09-12",
-      "customer": "Customer",
-      "company": "Relaxo Footwear unit 8",
-      "headerData": {
-        "quotation_number": "BSM/QTN/2026-27/0026",
-        "quotation_date": "2026-09-12",
-        "valid_till": "",
-        "customer_name": "",
-        "company_name": "Relaxo Footwear unit 8",
-        "phone": "9794217191",
-        "email": "",
-        "address": "plot no 37 sec 4B Industrial estate Bahadurgarh Pin 124507",
-        "gstin": "",
-        "salesperson_name": "Ainesh Sikdar",
-        "notes": "",
-        "quotation_module": "Spare Parts Quotation",
-        "sales_layout": "quotation",
-        "pdf_title": "Spare Parts Quotation",
-        "terms_override": ""
+      "id": "dfde55b4-097b-4ece-8141-af99d8008dd8",
+      "date": "2026-09-09",
+      "type": "estimate",
+      "items": [
+        {
+          "id": "e76d5512-7807-4a05-b056-6aff04a35441",
+          "gst": 18,
+          "price": 4500,
+          "quantity": 12,
+          "description": "shamshd ji wages",
+          "productName": "Technician Wages"
+        },
+        {
+          "id": "a23d03f2-e41f-4a5e-9d66-857478f9ea0b",
+          "gst": 18,
+          "price": 1500,
+          "quantity": 3,
+          "description": "For 3 person ",
+          "productName": "Food Expenses"
+        },
+        {
+          "id": "bb21d91f-1f42-4339-8447-9cf56e3ee9db",
+          "gst": 18,
+          "price": 1500,
+          "quantity": 0,
+          "description": "party side",
+          "productName": "Hotel Expenses"
+        },
+        {
+          "id": "75a31c6e-ee5b-4ca6-b64a-91511dc17f0d",
+          "gst": 18,
+          "price": 9000,
+          "quantity": 3,
+          "description": "for 3 person Up And Down @4500",
+          "productName": "Transportation"
+        },
+        {
+          "id": "3184c5e6-ee65-4e3a-aa57-a69ed5454a76",
+          "gst": 18,
+          "price": 2000,
+          "quantity": 2,
+          "description": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ",
+          "productName": "Local Transportation"
+        },
+        {
+          "id": "c4753047-add3-49a3-a001-8f615cce2170",
+          "gst": 18,
+          "price": 5000,
+          "quantity": 7,
+          "description": "Conveyor fittng wager for 2 person per person  @2500",
+          "productName": "Wages for conveyor "
+        }
+      ],
+      "number": "BSM/EST/2026-27/0009",
+      "status": "Generated",
+      "totals": {
+        "gst": 22410,
+        "final": 146910,
+        "grand": 146910,
+        "words": "One Lakh Forty Six Thousand Nine Hundred Ten rupees only",
+        "taxable": 124500,
+        "roundOff": 0
       },
+      "company": "Eastern Footwear",
+      "customer": "Bablu ",
+      "location": "",
+      "createdAt": "2026-09-09T12:46:59.263Z",
+      "createdBy": "Admin",
+      "updatedAt": "2026-09-12T10:10:52.297Z",
+      "headerData": {
+        "email": "",
+        "gstin": "",
+        "phone": "98755 41181",
+        "address": "",
+        "location": "",
+        "company_name": "Eastern Footwear",
+        "customer_name": "Bablu ",
+        "duration_days": "",
+        "estimate_date": "2026-09-09",
+        "estimate_number": "BSM/EST/2026-27/0009"
+      },
+      "pdfGeneratedAt": "2026-09-12T10:10:57.514Z"
+    },
+    {
+      "id": "249cb1f9-51af-400d-af7b-334702b6a5eb",
+      "date": "2026-09-12",
+      "type": "quotation",
       "items": [
         {
           "id": "01599786-cf53-4e0c-b014-77c7c95b0da1",
-          "productName": "Film Exposer controllar ",
-          "description": "",
-          "quantity": 2,
+          "gst": 18,
           "price": 3000,
-          "gst": 18
+          "quantity": 2,
+          "description": "",
+          "productName": "Film Exposer controllar "
         }
       ],
-      "totals": {
-        "taxable": 6000,
-        "gst": 1080,
-        "grand": 7080,
-        "roundOff": 0,
-        "final": 7080,
-        "words": "Seven Thousand Eighty rupees only"
-      },
+      "number": "BSM/QTN/2026-27/0026",
       "status": "Generated",
-      "createdBy": "Ainesh Sikdar",
+      "totals": {
+        "gst": 1080,
+        "final": 7080,
+        "grand": 7080,
+        "words": "Seven Thousand Eighty rupees only",
+        "taxable": 6000,
+        "roundOff": 0
+      },
+      "company": "Relaxo Footwear unit 8",
+      "customer": "Customer",
       "createdAt": "2026-09-12T10:06:13.330Z",
+      "createdBy": "Ainesh Sikdar",
       "updatedAt": "2026-09-12T10:06:13.330Z",
+      "headerData": {
+        "email": "",
+        "gstin": "",
+        "notes": "",
+        "phone": "9794217191",
+        "address": "plot no 37 sec 4B Industrial estate Bahadurgarh Pin 124507",
+        "pdf_title": "Spare Parts Quotation",
+        "valid_till": "",
+        "company_name": "Relaxo Footwear unit 8",
+        "sales_layout": "quotation",
+        "customer_name": "",
+        "quotation_date": "2026-09-12",
+        "terms_override": "",
+        "quotation_module": "Spare Parts Quotation",
+        "quotation_number": "BSM/QTN/2026-27/0026",
+        "salesperson_name": "Ainesh Sikdar"
+      },
       "pdfGeneratedAt": "2026-09-12T10:06:19.016Z"
     },
     {
@@ -742,90 +826,6 @@
         "estimate_number": "BSM/EST/2026-27/0010"
       },
       "pdfGeneratedAt": "2026-09-09T12:48:14.502Z"
-    },
-    {
-      "id": "dfde55b4-097b-4ece-8141-af99d8008dd8",
-      "date": "2026-09-09",
-      "type": "estimate",
-      "items": [
-        {
-          "id": "e76d5512-7807-4a05-b056-6aff04a35441",
-          "gst": 18,
-          "price": 4500,
-          "quantity": 12,
-          "description": "shamshd ji wages",
-          "productName": "Technician Wages"
-        },
-        {
-          "id": "a23d03f2-e41f-4a5e-9d66-857478f9ea0b",
-          "gst": 18,
-          "price": 1500,
-          "quantity": 3,
-          "description": "For 3 person ",
-          "productName": "Food Expenses"
-        },
-        {
-          "id": "bb21d91f-1f42-4339-8447-9cf56e3ee9db",
-          "gst": 18,
-          "price": 1500,
-          "quantity": 0,
-          "description": "party side",
-          "productName": "Hotel Expenses"
-        },
-        {
-          "id": "75a31c6e-ee5b-4ca6-b64a-91511dc17f0d",
-          "gst": 18,
-          "price": 9000,
-          "quantity": 3,
-          "description": "for 3 person Up And Down @4500",
-          "productName": "Transportation"
-        },
-        {
-          "id": "3184c5e6-ee65-4e3a-aa57-a69ed5454a76",
-          "gst": 18,
-          "price": 2000,
-          "quantity": 2,
-          "description": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ",
-          "productName": "Local Transportation"
-        },
-        {
-          "id": "c4753047-add3-49a3-a001-8f615cce2170",
-          "gst": 18,
-          "price": 5000,
-          "quantity": 7,
-          "description": "Conveyor fittng wager for 2 person per person  @2500",
-          "productName": "Wages for conveyor "
-        }
-      ],
-      "number": "BSM/EST/2026-27/0009",
-      "status": "Generated",
-      "totals": {
-        "taxable": 124500,
-        "gst": 22410,
-        "grand": 146910,
-        "roundOff": 0,
-        "final": 146910,
-        "words": "One Lakh Forty Six Thousand Nine Hundred Ten rupees only"
-      },
-      "company": "Eastern Footwear",
-      "customer": "Bablu ",
-      "location": "",
-      "createdAt": "2026-09-09T12:46:59.263Z",
-      "createdBy": "Admin",
-      "updatedAt": "2026-09-12T10:10:52.297Z",
-      "headerData": {
-        "email": "",
-        "gstin": "",
-        "phone": "98755 41181",
-        "address": "",
-        "location": "",
-        "company_name": "Eastern Footwear",
-        "customer_name": "Bablu ",
-        "duration_days": "",
-        "estimate_date": "2026-09-09",
-        "estimate_number": "BSM/EST/2026-27/0009"
-      },
-      "pdfGeneratedAt": "2026-09-12T10:10:57.514Z"
     },
     {
       "id": "ca0b1048-60c1-458a-83e0-8de3e6469e72",
@@ -2290,5 +2290,5 @@
       }
     }
   ],
-  "updatedAt": "2026-09-12T10:11:02.839Z"
+  "updatedAt": "2026-09-15T05:31:53.882Z"
 }
