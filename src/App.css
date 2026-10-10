@@ -346,6 +346,12 @@ textarea:focus {
   align-items: center;
 }
 
+.sales-lines .line-head,
+.sales-lines .line-row {
+  min-width: 1180px;
+  grid-template-columns: 130px minmax(260px, 1fr) 80px 110px 100px 80px 130px 88px;
+}
+
 .line-head {
   color: var(--dash-muted);
   font-size: 12px;

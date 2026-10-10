@@ -1,0 +1,15 @@
+/* Sales Quotation-only line layout for the additional Wooden amount. */
+@media (max-width: 820px) {
+  .sales-lines .line-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-template-areas:
+      "image product product product"
+      "qty price wooden gst"
+      "total total total total" !important;
+  }
+
+  .sales-lines .line-row > .field-qty { grid-area: qty !important; }
+  .sales-lines .line-row > .field-price { grid-area: price !important; }
+  .sales-lines .line-row > .field-wooden { grid-area: wooden !important; }
+  .sales-lines .line-row > .field-gst { grid-area: gst !important; }
+}

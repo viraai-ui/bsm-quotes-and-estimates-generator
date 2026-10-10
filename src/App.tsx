@@ -8,6 +8,7 @@ import { normalizeUploadedImage, optimizeForPdf, pdfImageFormat } from './imageO
 import type { ZohoCompany } from './zohoCompany'
 import { applyEstimateExpensePreset, createDefaultEstimateRows, matchingEstimateExpenses } from './estimateExpenses'
 import { freshDocumentData, freshEstimateDocument } from './formReset'
+import { salesLineAmounts } from './salesQuotation'
 import './App.css'
 import './ai-polish.css'
 import './settings-saas.css'
@@ -27,6 +28,7 @@ import './sales-quote-options.css'
 import './typography-normalize.css'
 import './premium-dashboard.css'
 import './mobile-premium-final.css'
+import './sales-quotation.css'
 import { DEFAULT_BSM_LOGO } from './assets/bsmLogoData'
 
 type FieldType = 'Text' | 'Number' | 'Date' | 'Dropdown' | 'Textarea' | 'Email' | 'Phone' | 'Image/File' | 'Checkbox'
@@ -87,6 +89,7 @@ type QuoteItem = {
   description: string
   quantity: number
   price: number
+  wooden?: number
   gst: number
 }
 
@@ -309,14 +312,14 @@ function App() {
   const [itemSuggestions, setItemSuggestions] = useState<ZohoItem[]>([])
   const [estimateData, setEstimateData] = useState<Record<string, string>>(() => ({ ...makeDefaults(defaultSettings.estimateFields), estimate_number: nextNumber(defaultSettings.numbering.estimate, defaultSettings.numbering.financialYear, defaultSettings.numbering.nextEstimate, defaultSettings.numbering.padding), estimate_date: today() }))
   const [items, setItems] = useState<QuoteItem[]>([newItem(defaultSettings.tax.defaultGst)])
-  const [salesItems, setSalesItems] = useState<QuoteItem[]>([newItem(defaultSettings.tax.defaultGst)])
+  const [salesItems, setSalesItems] = useState<QuoteItem[]>([newSalesItem(defaultSettings.tax.defaultGst)])
   const [estimateItems, setEstimateItems] = useState<QuoteItem[]>(() => createDefaultEstimateRows(defaultSettings.tax.defaultGst))
   const salesCompanyLookup = useZohoCompanyLookup(salesQuoteData.company_name)
   const sparesCompanyLookup = useZohoCompanyLookup(quoteData.company_name)
   const estimateCompanyLookup = useZohoCompanyLookup(estimateData.company_name)
   const [docTab, setDocTab] = useState<'quotation' | 'estimate'>('quotation')
   const totals = useMemo(() => computeTotals(items, settings.tax), [items, settings.tax])
-  const salesTotals = useMemo(() => computeTotals(salesItems, settings.tax), [salesItems, settings.tax])
+  const salesTotals = useMemo(() => computeTotals(salesItems, settings.tax, true), [salesItems, settings.tax])
   const estimateTotals = useMemo(() => computeTotals(estimateItems, settings.tax), [estimateItems, settings.tax])
   const visibleQuoteFields = settings.quotationFields.filter((f) => f.visible && f.key !== 'notes' && f.key !== 'salesperson_name').sort((a, b) => a.sortOrder - b.sortOrder)
 
@@ -385,7 +388,7 @@ function App() {
     const number = nextNumber(settings.numbering.quotation, settings.numbering.financialYear, settings.numbering.nextQuotation, settings.numbering.padding)
     const now = new Date().toISOString()
     const sourceData = kind === 'sales_quotation' ? salesQuoteData : quoteData
-    const sourceItems = kind === 'sales_quotation' ? salesItems : items
+    const sourceItems = kind === 'sales_quotation' ? salesItems.map((item) => ({ ...item, wooden: item.wooden ?? 0 })) : items
     const sourceTotals = kind === 'sales_quotation' ? salesTotals : totals
     const moduleLabel = kind === 'sales_quotation' ? 'Sales Quotation' : 'Spare Parts Quotation'
     const layoutLabel = kind === 'sales_quotation' && salesLayout === 'proforma' ? 'Proforma Invoice' : moduleLabel
@@ -422,7 +425,7 @@ function App() {
     const fresh = freshDocumentData(makeDefaults(settings.quotationFields), 'quotation_number', next, 'quotation_date', today())
     if (kind === 'sales_quotation') {
       setSalesQuoteData(fresh)
-      setSalesItems([newItem(settings.tax.defaultGst)])
+      setSalesItems([newSalesItem(settings.tax.defaultGst)])
       salesCompanyLookup.clear()
       setItemSuggestions([])
       setSalesLayout('quotation')
@@ -514,7 +517,7 @@ function App() {
         {active === 'sales-quotation' && <div className="page-grid quote-flow">
           <section className="panel wide"><div className="section-title"><div><h2>Step 1. Sales quotation details</h2></div></div><DynamicForm fields={visibleQuoteFields} data={salesQuoteData} setData={setSalesQuoteData} companyLookup={salesCompanyLookup} onPickCompany={(company) => applyCompany(company, setSalesQuoteData, salesCompanyLookup.clear)} formName="sales-quotation" /></section>
           <SalesQuoteOptions layout={salesLayout} setLayout={setSalesLayout} terms={salesTerms} setTerms={setSalesTerms} />
-          <LineItemsPanel items={salesItems} setItems={setSalesItems} settings={settings} suggestions={itemSuggestions} onPickSuggestion={applySalesItem} />
+          <LineItemsPanel items={salesItems} setItems={setSalesItems} settings={settings} mode="sales_quotation" suggestions={itemSuggestions} onPickSuggestion={applySalesItem} />
           <SummaryCard totals={salesTotals} settings={settings} onPdf={generateSalesPdf} onExcel={() => downloadExcel(saveQuotation('Generated', 'sales_quotation'), settings)} pdfBusy={pdfBusy} />
         </div>}
 
@@ -588,13 +591,14 @@ function LoadingButton({ children, busy, className = '', onClick }: { children: 
   return <button className={`${className} loading-button ${busy ? 'is-loading' : ''}`} onClick={onClick} disabled={Boolean(busy)} aria-busy={Boolean(busy)}>{busy ? <><span className="button-spinner" aria-hidden="true" />{busy}</> : children}</button>
 }
 
-function LineItemsPanel({ items, setItems, settings, mode = 'quotation', suggestions = [], onPickSuggestion }: { items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; settings: Settings; mode?: 'quotation' | 'estimate'; suggestions?: ZohoItem[]; onPickSuggestion?: (rowId: string, item: ZohoItem) => void }) {
+function LineItemsPanel({ items, setItems, settings, mode = 'quotation', suggestions = [], onPickSuggestion }: { items: QuoteItem[]; setItems: React.Dispatch<React.SetStateAction<QuoteItem[]>>; settings: Settings; mode?: 'quotation' | 'sales_quotation' | 'estimate'; suggestions?: ZohoItem[]; onPickSuggestion?: (rowId: string, item: ZohoItem) => void }) {
   const [openExpensePicker, setOpenExpensePicker] = useState<{ id: string; showAll: boolean } | null>(null)
   const expensePickerRoot = useRef<HTMLDivElement | null>(null)
-  const addItem = () => setItems((rows) => [...rows, newItem(settings.tax.defaultGst)])
+  const addItem = () => setItems((rows) => [...rows, isSalesQuotation ? newSalesItem(settings.tax.defaultGst) : newItem(settings.tax.defaultGst)])
   const update = (id: string, patch: Partial<QuoteItem>) => setItems((rows) => rows.map((r) => r.id === id ? { ...r, ...patch } : r))
   const remove = (id: string) => { setOpenExpensePicker((open) => open?.id === id ? null : open); setItems((rows) => rows.filter((r) => r.id !== id)) }
   const isEstimate = mode === 'estimate'
+  const isSalesQuotation = mode === 'sales_quotation'
   useEffect(() => {
     if (!openExpensePicker) return
     const closeOnOutsidePointer = (event: PointerEvent) => {
@@ -618,19 +622,20 @@ function LineItemsPanel({ items, setItems, settings, mode = 'quotation', suggest
   }
   return <section className="panel line-panel wide">
     <div className="section-title"><div><h2>Step 2. {isEstimate ? 'Estimate line items' : 'Product line items'}</h2></div></div>
-    <div className={`line-table ${isEstimate ? 'estimate-lines' : ''}`}>
-      <div className="line-head">{!isEstimate && <span>Picture</span>}<span>{isEstimate ? 'Expense / Item' : 'Product'}</span><span>{isEstimate ? 'Days' : 'Qty'}</span><span>{isEstimate ? 'Cost' : 'Price'}</span><span>GST %</span><span>Total</span><span></span></div>
-      {items.map((item) => { const taxable = item.quantity * item.price; const total = taxable + (settings.tax.gstEnabled ? taxable * ((settings.tax.rowLevelGst ? item.gst : settings.tax.defaultGst) / 100) : 0); const pickerOpen = openExpensePicker?.id === item.id; const expenseOptions = matchingEstimateExpenses(item.productName, pickerOpen && openExpensePicker.showAll); return <div className={`line-row ${pickerOpen ? 'has-open-expense-picker' : ''}`} key={item.id}>
+    <div className={`line-table ${isEstimate ? 'estimate-lines' : ''} ${isSalesQuotation ? 'sales-lines' : ''}`}>
+      <div className="line-head">{!isEstimate && <span>Picture</span>}<span>{isEstimate ? 'Expense / Item' : 'Product'}</span><span>{isEstimate ? 'Days' : 'Qty'}</span><span>{isEstimate ? 'Cost' : 'Price'}</span>{isSalesQuotation && <span>WOODEN</span>}<span>GST %</span><span>Total</span><span></span></div>
+      {items.map((item) => { const taxable = isSalesQuotation ? salesLineAmounts(item).taxable : item.quantity * item.price; const total = taxable + (settings.tax.gstEnabled ? taxable * ((settings.tax.rowLevelGst ? item.gst : settings.tax.defaultGst) / 100) : 0); const pickerOpen = openExpensePicker?.id === item.id; const expenseOptions = matchingEstimateExpenses(item.productName, pickerOpen && openExpensePicker.showAll); return <div className={`line-row ${pickerOpen ? 'has-open-expense-picker' : ''}`} key={item.id}>
         {!isEstimate && <div className={`image-cell ${item.image ? 'has-image' : ''}`}><div className="image-picker" tabIndex={0} role="button" aria-label={item.image ? 'Replace product image' : 'Add product image'} onClick={(event) => event.currentTarget.parentElement?.querySelector('input')?.click()} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); event.currentTarget.parentElement?.querySelector('input')?.click() } }}>{item.image ? <img src={item.image} alt={item.productName || 'Product'} /> : <span className="image-placeholder">No image</span>}<span className="camera-badge" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M8.5 5.5 10 3.75h4l1.5 1.75H19A2.5 2.5 0 0 1 21.5 8v9A2.5 2.5 0 0 1 19 19.5H5A2.5 2.5 0 0 1 2.5 17V8A2.5 2.5 0 0 1 5 5.5h3.5ZM12 16.25a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0-1.75a2.25 2.25 0 1 1 0-4.5 2.25 2.25 0 0 1 0 4.5Z" /></svg></span></div><input className="image-file-input" type="file" accept="image/*" capture="environment" tabIndex={-1} aria-hidden="true" onChange={(e) => onImage(item.id, e)} />{item.image && <button type="button" className="remove-image" aria-label="Remove product image" title="Remove product image" onClick={(event) => { event.stopPropagation(); update(item.id, { image: undefined, imageName: undefined }) }}>×</button>}</div>}
         <div className="product-inputs stacked">{isEstimate ? <div className="expense-combobox" ref={pickerOpen ? expensePickerRoot : undefined}><input value={item.productName} role="combobox" aria-label="Expense / Item" aria-autocomplete="list" aria-expanded={pickerOpen} aria-controls={pickerOpen ? `expense-options-${item.id}` : undefined} onFocus={() => setOpenExpensePicker({ id: item.id, showAll: true })} onClick={() => { if (!pickerOpen) setOpenExpensePicker({ id: item.id, showAll: true }) }} onChange={(e) => { update(item.id, { productName: e.target.value }); setOpenExpensePicker({ id: item.id, showAll: false }) }} placeholder="Select or type an expense / item" /><button type="button" className="expense-dropdown-toggle" aria-label={pickerOpen ? 'Hide expense presets' : 'Show all expense presets'} aria-expanded={pickerOpen} onMouseDown={(event) => event.preventDefault()} onClick={() => setOpenExpensePicker((open) => open?.id === item.id ? null : { id: item.id, showAll: true })}><span aria-hidden="true">⌄</span></button>{pickerOpen && expenseOptions.length > 0 && <div id={`expense-options-${item.id}`} className="zoho-item-suggestions estimate-expense-suggestions" role="listbox" aria-label="Expense suggestions">{expenseOptions.map((preset) => <button type="button" role="option" key={preset.name} onMouseDown={(event) => event.preventDefault()} onClick={() => { update(item.id, applyEstimateExpensePreset(item, preset)); setOpenExpensePicker(null) }}><span>{preset.name}</span><small>{preset.price ? `₹${preset.price} per day` : 'Enter cost manually'}</small></button>)}</div>}</div> : <input value={item.productName} onChange={(e) => update(item.id, { productName: e.target.value })} placeholder="Product name" />}
           <textarea className="line-item-description" rows={1} value={item.description} onChange={(e) => update(item.id, { description: e.target.value })} placeholder="Description" />{!isEstimate && onPickSuggestion && suggestions.length > 0 && <div className="zoho-item-suggestions">{suggestions.slice(0, 4).map((suggestion) => <button type="button" key={suggestion.id} onClick={() => onPickSuggestion(item.id, suggestion)}>{suggestion.name}<small>{suggestion.price ? `₹${suggestion.price}` : ''}</small></button>)}</div>}</div>
         <label className={`mobile-line-field ${isEstimate ? 'field-days' : 'field-qty'}`}><span>{isEstimate ? 'Days' : 'Quantity'}</span><input type="text" inputMode="decimal" value={item.quantity} onChange={(e) => update(item.id, { quantity: Number(e.target.value) })} /></label>
         <label className={`mobile-line-field ${isEstimate ? 'field-cost' : 'field-price'}`}><span>{isEstimate ? 'Cost' : 'Price'}</span><input type="text" inputMode="decimal" value={item.price} onChange={(e) => update(item.id, { price: Number(e.target.value) })} /></label>
+        {isSalesQuotation && <label className="mobile-line-field field-wooden"><span>Wooden</span><input type="text" inputMode="decimal" value={item.wooden ?? 0} onChange={(e) => update(item.id, { wooden: Number(e.target.value) })} /></label>}
         <label className="mobile-line-field field-gst"><span>GST %</span><input type="text" inputMode="decimal" value={item.gst} disabled={!settings.tax.rowLevelGst} onChange={(e) => update(item.id, { gst: Number(e.target.value) })} /></label>
         <div className="mobile-total-chip"><span>Total</span><strong>{money(total)}</strong></div><button className="icon-button delete-row" aria-label="Delete row" title="Delete row" onClick={() => remove(item.id)}>🗑</button>
       </div>})}
     </div>
-    <div className="line-footer-actions"><button className="ghost" onClick={addItem}>{isEstimate ? '+ Add expense' : '+ Add item'}</button><button className="icon-button mobile-footer-delete" aria-label="Delete last item" title="Delete last item" onClick={() => items.length > 1 ? remove(items[items.length - 1].id) : setItems([newItem(settings.tax.defaultGst)])}>🗑</button></div>
+    <div className="line-footer-actions"><button className="ghost" onClick={addItem}>{isEstimate ? '+ Add expense' : '+ Add item'}</button><button className="icon-button mobile-footer-delete" aria-label="Delete last item" title="Delete last item" onClick={() => items.length > 1 ? remove(items[items.length - 1].id) : setItems([isSalesQuotation ? newSalesItem(settings.tax.defaultGst) : newItem(settings.tax.defaultGst)])}>🗑</button></div>
   </section>
 }
 
@@ -643,7 +648,7 @@ function DocumentsView({ documents, tab, setTab, settings, onSave, onDuplicate, 
   const docs = documents.filter((d) => (tab === 'quotation' ? d.type === 'quotation' || d.type === 'sales_quotation' : d.type === 'estimate') && d.status !== 'Draft' && JSON.stringify(d).toLowerCase().includes(search.toLowerCase()))
   const confirmAction = (label: string, action: () => void) => { if (window.confirm(`Are you sure you want to ${label}?`)) action() }
   const openEdit = (doc: SavedDocument) => { setEditing(doc); setEditData({ ...doc.headerData }); setEditItems(doc.items.map((i) => ({ ...i }))) }
-  const editTotals = useMemo(() => computeTotals(editItems, settings.tax), [editItems, settings.tax])
+  const editTotals = useMemo(() => computeTotals(editItems, settings.tax, editing?.type === 'sales_quotation'), [editItems, settings.tax, editing?.type])
   const saveEdit = (download = false) => {
     if (!editing) return
     const isEstimate = editing.type === 'estimate'
@@ -687,7 +692,7 @@ function DocumentEditModal({ doc, data, setData, items, setItems, settings, tota
       <div className="edit-modal-head"><div><h2>Edit {isEstimate ? 'Estimate' : 'Quotation'}</h2><span>{doc.number}</span></div><button className="ghost" onClick={onClose}>Close</button></div>
       <div className="edit-modal-scroll">
         <section className="panel"><h2>Details</h2><DynamicForm fields={fields} data={data} setData={setData} /></section>
-        <LineItemsPanel items={items} setItems={setItems} settings={settings} mode={isEstimate ? 'estimate' : 'quotation'} />
+        <LineItemsPanel items={items} setItems={setItems} settings={settings} mode={isEstimate ? 'estimate' : doc.type === 'sales_quotation' ? 'sales_quotation' : 'quotation'} />
         <section className="panel summary-card final-step"><h2>{money(totals.final)}</h2><div className="summary-grid"><div className="total-row"><span>Taxable Amount</span><strong>{money(totals.taxable)}</strong></div><div className="total-row"><span>Total GST</span><strong>{settings.tax.gstEnabled ? money(totals.gst) : 'Disabled'}</strong></div><div className="total-row grand"><span>Final Amount</span><strong>{money(totals.final)}</strong></div></div></section>
       </div>
       <div className="edit-modal-actions"><button className="ghost" onClick={onSave}>Save Changes</button><button className="primary" onClick={onPdf}>Save & Generate PDF</button></div>
@@ -815,6 +820,7 @@ async function downloadQuotationPdf(sourceDoc: SavedDocument, settings: Settings
   const dark: [number, number, number] = [17, 24, 39]
   const muted: [number, number, number] = [107, 114, 128]
   const isEstimate = doc.type === 'estimate'
+  const isSalesQuotation = doc.type === 'sales_quotation'
   const title = isEstimate ? 'Estimate' : doc.headerData.pdf_title || (doc.type === 'sales_quotation' ? 'Sales Quotation' : 'Spare Parts Quotation')
   const numberLabel = isEstimate ? 'Estimate No.' : 'Quotation No.'
   const numberKey = isEstimate ? 'estimate_number' : 'quotation_number'
@@ -871,13 +877,15 @@ async function downloadQuotationPdf(sourceDoc: SavedDocument, settings: Settings
     customerY += 1.2
   })
 
-  const headers = isEstimate ? [['#', 'Expense / Item', 'Days', 'Cost', 'GST %', 'GST Amt.', 'Total Amount']] : [['#', 'Product', 'Picture', 'Qty', 'List Price', 'Tax %', 'Tax Amt.', 'Total Amount']]
+  const headers = isEstimate ? [['#', 'Expense / Item', 'Days', 'Cost', 'GST %', 'GST Amt.', 'Total Amount']] : isSalesQuotation ? [['#', 'Product', 'Picture', 'Qty', 'List Price', 'WOODEN', 'Tax %', 'Tax Amt.', 'Total Amount']] : [['#', 'Product', 'Picture', 'Qty', 'List Price', 'Tax %', 'Tax Amt.', 'Total Amount']]
   const body = doc.items.map((item, i) => {
-    const taxable = item.quantity * item.price
+    const taxable = isSalesQuotation ? salesLineAmounts(item).taxable : item.quantity * item.price
     const gstAmt = settings.tax.gstEnabled ? taxable * ((settings.tax.rowLevelGst ? item.gst : settings.tax.defaultGst) / 100) : 0
     return isEstimate
       ? [String(i + 1), `${item.productName || 'Expense'}${item.description ? `\n${item.description}` : ''}`, item.quantity, moneyPlain(item.price), item.gst, moneyPlain(gstAmt), moneyPlain(taxable + gstAmt)]
-      : [String(i + 1), `${item.productName || 'Product'}${item.description ? `\n${item.description}` : ''}`, item.image ? 'Image' : '-', item.quantity, moneyPlain(item.price), item.gst, moneyPlain(gstAmt), moneyPlain(taxable + gstAmt)]
+      : isSalesQuotation
+        ? [String(i + 1), `${item.productName || 'Product'}${item.description ? `\n${item.description}` : ''}`, item.image ? 'Image' : '-', item.quantity, moneyPlain(item.price), moneyPlain(item.wooden ?? 0), item.gst, moneyPlain(gstAmt), moneyPlain(taxable + gstAmt)]
+        : [String(i + 1), `${item.productName || 'Product'}${item.description ? `\n${item.description}` : ''}`, item.image ? 'Image' : '-', item.quantity, moneyPlain(item.price), item.gst, moneyPlain(gstAmt), moneyPlain(taxable + gstAmt)]
   })
   autoTable(pdf, {
     startY: 132,
@@ -953,7 +961,11 @@ async function downloadQuotationPdf(sourceDoc: SavedDocument, settings: Settings
 }
 
 function downloadExcel(doc: SavedDocument, settings: Settings) {
-  const rows = doc.items.map((item, i) => ({ 'S.No.': i + 1, 'Quotation Number': doc.number, Date: doc.date, Customer: doc.customer, Company: doc.company, 'Product Name': item.productName, Description: item.description, Quantity: item.quantity, Price: item.price, 'GST %': item.gst, 'GST Amount': item.quantity * item.price * item.gst / 100, Total: item.quantity * item.price * (1 + item.gst / 100), 'Image Link': item.imageName || '' }))
+  const rows = doc.items.map((item, i) => {
+    const taxable = doc.type === 'sales_quotation' ? salesLineAmounts(item).taxable : item.quantity * item.price
+    const gstAmount = settings.tax.gstEnabled ? taxable * ((settings.tax.rowLevelGst ? item.gst : settings.tax.defaultGst) / 100) : 0
+    return { 'S.No.': i + 1, 'Quotation Number': doc.number, Date: doc.date, Customer: doc.customer, Company: doc.company, 'Product Name': item.productName, Description: item.description, Quantity: item.quantity, Price: item.price, ...(doc.type === 'sales_quotation' ? { Wooden: item.wooden ?? 0 } : {}), 'GST %': item.gst, 'GST Amount': gstAmount, Total: taxable + gstAmount, 'Image Link': item.imageName || '' }
+  })
   rows.push({ 'S.No.': '', 'Quotation Number': '', Date: '', Customer: '', Company: '', 'Product Name': 'Grand Total', Description: doc.headerData.notes || '', Quantity: '', Price: '', 'GST %': '', 'GST Amount': doc.totals.gst, Total: doc.totals.final, 'Image Link': '' } as any)
   const ws = XLSX.utils.json_to_sheet(rows)
   const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, doc.type === 'estimate' ? 'Estimate' : doc.type === 'sales_quotation' ? 'Sales Quotation' : 'Spare Parts')
@@ -985,7 +997,8 @@ function usePersistentState<T>(key: string, initial: T) {
 
 function makeDefaults(fields: FieldConfig[]) { return Object.fromEntries(fields.map((f) => [f.key, f.key.includes('date') ? today() : f.defaultValue || ''])) }
 function newItem(gst: number): QuoteItem { return { id: crypto.randomUUID(), productName: '', description: '', quantity: 1, price: 0, gst } }
-function computeTotals(items: QuoteItem[], tax: TaxSettings): Totals { const taxable = items.reduce((s, i) => s + i.quantity * i.price, 0); const gst = tax.gstEnabled ? items.reduce((s, i) => s + i.quantity * i.price * ((tax.rowLevelGst ? i.gst : tax.defaultGst) / 100), 0) : 0; const grand = taxable + gst; const final = grand; return { taxable, gst, grand, roundOff: 0, final, words: `${numberToWords(Math.round(final))} rupees only` } }
+function newSalesItem(gst: number): QuoteItem { return { ...newItem(gst), wooden: 0 } }
+function computeTotals(items: QuoteItem[], tax: TaxSettings, salesQuotation = false): Totals { const base = (i: QuoteItem) => salesQuotation ? salesLineAmounts(i).taxable : i.quantity * i.price; const taxable = items.reduce((s, i) => s + base(i), 0); const gst = tax.gstEnabled ? items.reduce((s, i) => s + base(i) * ((tax.rowLevelGst ? i.gst : tax.defaultGst) / 100), 0) : 0; const grand = taxable + gst; const final = grand; return { taxable, gst, grand, roundOff: 0, final, words: `${numberToWords(Math.round(final))} rupees only` } }
 function today() { return new Date().toISOString().slice(0, 10) }
 function inputType(t: FieldType) { return t === 'Date' ? 'date' : t === 'Email' ? 'email' : t === 'Phone' ? 'tel' : 'text' }
 function money(v: number) { return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(v || 0) }
